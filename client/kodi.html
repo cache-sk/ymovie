@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>YMovie Kodi connector</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#fec401">
+	<link rel="stylesheet" href="/css/theme.css">
+	<link rel="icon" type="image/png" href="/img/favicon.png">
+	<link rel="apple-touch-icon" href="/img/favicon.png">
+	<style>
+	body {
+		background-image: url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: 50px;
+	}
+	</style>
+</head>
+<body></body>
+<script>
+function send(data){
+	window.opener.postMessage(data, "*");
+}
+
+function isAvailable(endpoint){
+	connect(endpoint, () => send({result:"OK"}), () => send(connectionError))
+}
+
+function play(endpoint, file){
+	const success = event => {
+		const ws = event.target;
+		const params = {item:{file}};
+		request(ws, "Player.Open", params, send);
+	}
+	connect(endpoint, success, () => send(connectionError));
+}
+
+function connect(endpoint, success, fail){
+	try {
+		const ws = new WebSocket(endpoint);
+		ws.addEventListener('open', success);
+		ws.addEventListener('error', fail);
+	} catch (error) {
+		fail();
+	}
+}
+
+function request(ws, method, params, callback){
+	const id = new Date().getTime();
+	const request = {id, method, params, jsonrpc:"2.0"};
+	console.log(request);
+	const listener = event => {
+		const response = JSON.parse(event.data);
+		if(response.id === id){
+			ws.removeEventListener("message", listener);
+			callback(response);
+		}
+	}
+	ws.addEventListener("message", listener);
+	ws.send(JSON.stringify(request));
+}
+
+const connectionError =  {error:{message:"Connection failed."}};
+const payload = JSON.parse(decodeURIComponent(document.location.hash.substring(1)));
+window[payload.command].apply(null, payload.params);
+
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-183634-10', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+</html>
