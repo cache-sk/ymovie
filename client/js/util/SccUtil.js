@@ -109,6 +109,11 @@ class SccUtil {
 				.filter((value, index, self) => self.indexOf(value) === index)
 				.sort()
 				.join("/"),
+			subtitles: source.subtitles
+				.map(item => item.language.toUpperCase() || "?")
+				.filter((value, index, self) => self.indexOf(value) === index)
+				.sort()
+				.join("/"),
 			width: video.width,
 			height: video.height,
 			videoCodec: source.video

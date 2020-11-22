@@ -162,9 +162,9 @@ class ItemDecorator {
 		if(url.indexOf("image.tmdb.org") > -1)
 			return url.replace("/original/", "/w342/");
 		// https://img.csfd.cz/files/images/film/posters/159/449/159449928_d6eea3.png
-		// w250, w500
+		// w180, h180, w600h800
 		if(url.indexOf("img.csfd.cz") > -1)
-			return `${url}?w250`;
+			return `${url}?w180`;
 		// https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb.jpg
 		// to https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb_t.jpg
 		// https://thetvdb.com/banners/posters/71470-2.jpg

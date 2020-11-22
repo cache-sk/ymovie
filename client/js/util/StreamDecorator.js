@@ -1,7 +1,8 @@
 /**
 Stream
 	size:Number = 123456
-	language:String = "EN, CZ, SK"
+	language:String = "EN/CZ/SK"
+	subtitles:String = "CZ/SK/EN"
 	width:Number = 1920
 	height:Number = 1080
 	audioCodec:String = "EAC3"
@@ -23,6 +24,10 @@ class StreamDecorator {
 	
 	get language(){
 		return this.source.language;
+	}
+	
+	get subtitles(){
+		return this.source.subtitles;
 	}
 	
 	get width(){

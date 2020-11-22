@@ -8,6 +8,7 @@ class StreamItem extends StreamOption {
 		return DOM.span("info", [
 			this.add("size", decorator.formatSize),
 			this.add("language", decorator.language),
+			this.add("subtitles", decorator.subtitles),
 			this.add("hdr", decorator.formatHDR),
 			this.add("3d", decorator.format3D),
 			this.add("quality", `${decorator.width}x${decorator.height}`),
