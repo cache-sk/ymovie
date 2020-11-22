@@ -12,8 +12,8 @@ npm start debug
 
 ## Deploy
 
-1. upload sources to ftp://srv1.sc2.zone:21
-2. ask Lada to do the magic
+1. upload sources to ftp://srv1.sc2.zone:21 
+2. changes automatically available on https://ymovie.streamcinema.cz/ 
 
 ## TODO
 
