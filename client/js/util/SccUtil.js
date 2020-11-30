@@ -84,16 +84,23 @@ class SccUtil {
 	
 	static normalizeSeason(source, result){
 		result.type = CatalogueItemType.SCC_SEASON;
-		result.seriesTitle = source.i18n_info_labels.find(item => item.parent_titles[0])?.parent_titles[0];
+		result.seriesTitle = this.normalizeRootTitle(source);
 		result.seasonNumber = source.info_labels.season;
 	}
 	
 	static normalizeEpisode(source, result){
 		result.type = CatalogueItemType.SCC_EPISODE;
 		this.normalizePlayable(source, result);
-		result.seriesTitle = source.i18n_info_labels.find(item => item.parent_titles[0])?.parent_titles[0];
+		result.seriesTitle = this.normalizeRootTitle(source);
 		result.seasonNumber = source.info_labels.season;
 		result.episodeNumber = source.info_labels.episode;
+	}
+	
+	static normalizeRootTitle(source){
+		return source.i18n_info_labels
+				.find(item => item?.parent_titles?.[0])?.parent_titles?.[0]
+			|| source?.root_info_labels?.originaltitle
+			|| "(?) " + source?.root_parent;
 	}
 	
 	static normalizeStreams(source){
