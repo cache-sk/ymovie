@@ -20,6 +20,7 @@ class CatalogueMedia extends CatalogueItem {
 		const img = this.renderPoster();
 		this.append([img, title, rating]);
 		this.element.classList.toggle('playable', decorator.isPlayable);
+		this.element.classList.toggle('watched', decorator.isWatched);
 		return super.render();
 	}
 	

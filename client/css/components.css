@@ -282,16 +282,32 @@
 	background-image: var(--image-star);
 }
 
-.CatalogueMedia.playable::after {
-	content: " ";
+.CatalogueMedia.playable::after,
+.CatalogueMedia.watched::after {
+	content: "";
 	background-size: 100%;
-	background-image: var(--image-play);
 	position: absolute;
 	width: 20px;
 	height: 20px;
 	left: 10px;
 	top: 10px;
 	filter: drop-shadow(1px 1px 1px #00000080);
+	background-repeat: no-repeat;
+}
+
+.CatalogueMedia.playable::after {
+	background-image: var(--image-play);
+}
+
+.CatalogueMedia.watched::after {
+	background-image: var(--image-watched);
+}
+
+.CatalogueMedia.playable.watched::after {
+	background-image: var(--image-play), var(--image-watched);
+	background-position: 0 0, 0 25px;
+	background-size: 20px, 20px;
+	height: 45px;
 }
 
 .CatalogueItemCustom {

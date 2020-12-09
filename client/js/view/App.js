@@ -243,9 +243,11 @@ class App extends Component {
 		const path = data.path;
 		const state = data.state;
 		if(nav.isSccMovie(path))
-			this.api.addWatchedMovie(state.id);
+			WatchedUtil.addMovie(state.id);
 		if(nav.isSccSeries(path))
-			this.api.addWatchedSeries(state.id);
+			WatchedUtil.addSeries(state.id);
+		if(nav.isSccEpisode(path))
+			WatchedUtil.addEpisode(state.id);
 		
 		if(nav.isSccMovie(previousPath) || nav.isSccEpisode(previousPath) || nav.isWebshareVideo(previousPath))
 			return this.detailView.hide();
@@ -260,10 +262,10 @@ class App extends Component {
 			return this.aboutView.show();
 		if(nav.isSccWatchedMovies(path))
 			return await this.loadCatalogue(null,
-				async () => await this.api.loadIds(this.api.watchedMovies, data.title));
+				async () => await this.api.loadIds(WatchedUtil.movies, data.title));
 		if(nav.isSccWatchedSeries(path))
 			return await this.loadCatalogue(null,
-				async () => await this.api.loadIds(this.api.watchedSeries, data.title));
+				async () => await this.api.loadIds(WatchedUtil.series, data.title));
 		if(nav.isSccMovie(path) || nav.isSccEpisode(path))
 			return this.detailView.update(state);
 		if(nav.isSccSeries(path))

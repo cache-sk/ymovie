@@ -2,9 +2,6 @@ class Api {
 	static KEY_UUID = "UUID";
 	static KEY_KODI_ENDPOINT = "KODI_ENDPOINT";
 	static KEY_WEBSHARE_TOKEN = "WEBSHARE_TOKEN";
-	static KEY_WATCHED_MOVIES = "KEY_WATCHED_MOVIES";
-	static KEY_WATCHED_SERIES = "KEY_WATCHED_SERIES";
-	static MAX_WATCHED_LENGTH = 100;
 	
 	constructor(){
 		Util.enhanceDispatcher(this);
@@ -23,7 +20,7 @@ class Api {
 	}
 	
 	get uuid(){
-		const result = this.getItem(this.constructor.KEY_UUID);
+		const result = MyStorage.get(this.constructor.KEY_UUID);
 		if(result)
 			return result;
 		
@@ -34,77 +31,37 @@ class Api {
 	
 	set uuid(value){
 		if(value === null)
-			this.removeItem(this.constructor.KEY_UUID);
+			MyStorage.remove(this.constructor.KEY_UUID);
 		else
-			this.setItem(this.constructor.KEY_UUID, value);
+			MyStorage.set(this.constructor.KEY_UUID, value);
 	}
 	
 	get webshareToken(){
-		return this.getItem(this.constructor.KEY_WEBSHARE_TOKEN);
+		return MyStorage.get(this.constructor.KEY_WEBSHARE_TOKEN);
 	}
 	
 	set webshareToken(value){
 		if(value === null)
-			this.removeItem(this.constructor.KEY_WEBSHARE_TOKEN);
+			MyStorage.remove(this.constructor.KEY_WEBSHARE_TOKEN);
 		else
-			this.setItem(this.constructor.KEY_WEBSHARE_TOKEN, value);
-	}
-	
-	get storage(){
-		return window.localStorage;
-	}
-	
-	setItem(key, value){
-		this.storage.setItem(key, value);
-	}
-	
-	getItem(key){
-		return this.storage.getItem(key);
-	}
-	
-	removeItem(key){
-		this.storage.removeItem(key);
+			MyStorage.set(this.constructor.KEY_WEBSHARE_TOKEN, value);
 	}
 	
 	getKodiEndpoint(position){
 		const key = this.constructor.KEY_KODI_ENDPOINT + (position === 1 ? "" : position);
-		return this.getItem(key);
+		return MyStorage.get(key);
 	}
 	
 	setKodiEndpoint(position, value){
 		const key = this.constructor.KEY_KODI_ENDPOINT + (position === 1 ? "" : position);
 		if(value === null)
-			this.removeItem(key);
+			MyStorage.remove(key);
 		else
-			this.setItem(key, value);
+			MyStorage.set(key, value);
 	}
 	
 	getKodiStatusKey(position){
 		return "kodiStatus" + (position === 1 ? "" : position);
-	}
-	
-	addWatchedMovie(id){
-		const key = this.constructor.KEY_WATCHED_MOVIES;
-		const max = this.constructor.MAX_WATCHED_LENGTH;
-		this.setItem(key, Util.unshiftAndLimit(this.watchedMovies, id, max).join(","));
-	}
-	
-	get watchedMovies(){
-		const key = this.constructor.KEY_WATCHED_MOVIES;
-		const data = this.getItem(key);
-		return data ? data.split(",") : [];
-	}
-	
-	addWatchedSeries(id){
-		const key = this.constructor.KEY_WATCHED_SERIES;
-		const max = this.constructor.MAX_WATCHED_LENGTH;
-		this.setItem(key, Util.unshiftAndLimit(this.watchedSeries, id, max).join(","));
-	}
-	
-	get watchedSeries(){
-		const key = this.constructor.KEY_WATCHED_SERIES;
-		const data = this.getItem(key);
-		return data ? data.split(",") : [];
 	}
 	
 	async searchScc(query, title){

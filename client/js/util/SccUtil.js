@@ -49,7 +49,7 @@ class SccUtil {
 		const result = {id:item._id, poster:this.resolvePoster(source.i18n_info_labels)};
 		if(info2.title) result.title = info2.title;
 		if(info.year) result.year = info.year;
-		if(info2.rating) result.rating = info2.rating;
+		this.normalizeRating(source, result);
 		if(info.mediatype === "movie") this.normalizeMovie(source, result);
 		if(info.mediatype === "tvshow") this.normalizeSeries(source, result);
 		if(info.mediatype === "season") this.normalizeSeason(source, result);
@@ -71,6 +71,19 @@ class SccUtil {
 		if(info.genre?.length) result.genres = info.genre.join(", ");
 		if(info.director?.length) result.directors = info.director.join(", ");
 		if(source.cast?.length) result.cast = source.cast.map(item => item.name).join(", ");
+	}
+	
+	static normalizeRating(source, result){
+		if(!source?.ratings)
+			return;
+		var count = 0;
+		var rating = 0;
+		for (const key in source.ratings) {
+			rating += source.ratings[key].rating;
+			count++;
+		}
+		if(count > 0)
+			result.rating = rating / count;
 	}
 	
 	static normalizeMovie(source, result){
