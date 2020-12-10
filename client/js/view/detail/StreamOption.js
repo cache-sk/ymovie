@@ -36,6 +36,11 @@ class StreamOption extends Component {
 			? DOM.a("android", "Play on Android", `intent:${url}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
 			: null;
 		
+		const url2 = WebshareUtil.containsExtension(url) ? null : `${url}.mkv`;
+		const android2 = url2 && Util.getAndroidVersion()
+			? DOM.a("android fix", "Play on Android", `intent:${url2}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
+			: null;
+		
 		const play = DOM.a("play", "Play in new window", isYoutube ? url : `play.html#${encodeURIComponent(url)}`, "_blank");
 		
 		const cast = DOM.span("cast", "Cast");
@@ -52,6 +57,7 @@ class StreamOption extends Component {
 		return DOM.div("options", [textarea, 
 			isYoutube ? null : download, 
 			isYoutube ? null : android, 
+			isYoutube ? null : android2, 
 			play, 
 			isYoutube ? null : cast, 
 			isYoutube ? null : kodi,

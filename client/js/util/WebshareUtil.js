@@ -67,4 +67,10 @@ class WebshareUtil {
 				.join("/"),
 		}];
 	}
+	
+	static containsExtension(url) {
+		var chunks = url.split(".");
+		var extension = chunks[chunks.length - 1];
+		return extension.length < 5;
+	}
 }

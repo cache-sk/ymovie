@@ -38,6 +38,7 @@ class AboutView extends Dialogue {
 	<li class="browser">Browser - limited compatibility, usually works with <a href="https://en.wikipedia.org/wiki/Advanced_Video_Coding" target="_blank">h264</a>+<a target="_blank" href="https://en.wikipedia.org/wiki/Advanced_Audio_Coding">AAC</a> or <a href="https://en.wikipedia.org/wiki/MP3" target="_blank">MP3</a>, mute on <a href="https://en.wikipedia.org/wiki/Dolby_Digital" target="_blank">AC3</a> or <a href="https://en.wikipedia.org/wiki/Dolby_Digital_Plus" target="_blank">EAC3</a>.</li>
 	<li class="cast">Cast (chromecast) - capabilities similiar to browser + <a href="https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding" target="_blank">HEVC</a></li>
 	<li class="android">Android - opens system dialogue to pick installed video app (or executes the default one)</li>
+	<li class="android fix">Android fix - same as Android while appends .mkv extension to the url to satisfy DLNA players.</li>
 </ul>
 
 <p>Smart TV, gaming consoles, Set-top boxes and similiar devices compatible with <a href="https://en.wikipedia.org/wiki/Digital_Living_Network_Alliance" target="_blank">DLNA</a> or <a href="https://en.wikipedia.org/wiki/Universal_Plug_and_Play" target="_blank">UPnP</a> can be controlled by <a href="https://play.google.com/store/apps/details?id=com.bubblesoft.android.bubbleupnp&hl=en_US" target="_blank">BubbleUPNP</a> Android app.</p>
