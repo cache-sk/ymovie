@@ -23,7 +23,14 @@ class StreamItem extends StreamOption {
 	
 	onClick(){
 		this.element.classList.add("loading");
-		this.trigger(Action.RESOLVE_STREAM_URL, {stream:this.data.stream, callback:this.onUrl.bind(this)})
+		this.trigger(Action.RESOLVE_STREAM_URL, {stream:this.data.stream, callback:this.onUrl.bind(this)});
+		const decorator = ItemDecorator.create(this.data.source);
+		if(decorator.isSccMovie)
+			WatchedUtil.addMovie(decorator.id);
+		if(decorator.isSccEpisode) {
+			WatchedUtil.addSeries(decorator.seriesId);
+			WatchedUtil.addEpisode(decorator.id);
+		}
 	}
 	
 	onUrl(url){

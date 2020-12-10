@@ -97,6 +97,7 @@ class SccUtil {
 	
 	static normalizeSeason(source, result){
 		result.type = CatalogueItemType.SCC_SEASON;
+		result.seriesId = this.normalizeRootId(source);
 		result.seriesTitle = this.normalizeRootTitle(source);
 		result.seasonNumber = source.info_labels.season;
 	}
@@ -104,6 +105,7 @@ class SccUtil {
 	static normalizeEpisode(source, result){
 		result.type = CatalogueItemType.SCC_EPISODE;
 		this.normalizePlayable(source, result);
+		result.seriesId = this.normalizeRootId(source);
 		result.seriesTitle = this.normalizeRootTitle(source);
 		result.seasonNumber = source.info_labels.season;
 		result.episodeNumber = source.info_labels.episode;
@@ -114,6 +116,10 @@ class SccUtil {
 				.find(item => item?.parent_titles?.[0])?.parent_titles?.[0]
 			|| source?.root_info_labels?.originaltitle
 			|| "(?) " + source?.root_parent;
+	}
+	
+	static normalizeRootId(source){
+		return source?.root_parent;
 	}
 	
 	static normalizeStreams(source){

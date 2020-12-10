@@ -242,12 +242,6 @@ class App extends Component {
 		const previousPath = data.previous?.path;
 		const path = data.path;
 		const state = data.state;
-		if(nav.isSccMovie(path))
-			WatchedUtil.addMovie(state.id);
-		if(nav.isSccSeries(path))
-			WatchedUtil.addSeries(state.id);
-		if(nav.isSccEpisode(path))
-			WatchedUtil.addEpisode(state.id);
 		
 		if(nav.isSccMovie(previousPath) || nav.isSccEpisode(previousPath) || nav.isWebshareVideo(previousPath))
 			return this.detailView.hide();

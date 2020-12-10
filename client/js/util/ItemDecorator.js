@@ -61,6 +61,10 @@ class ItemDecorator {
 		return this.isSccEpisode ? `Season ${this.seasonNumber}, Episode ${this.episodeNumber}` : null;
 	}
 	
+	get seriesId(){
+		return this.source.seriesId;
+	}
+	
 	get seriesTitle(){
 		return this.source.seriesTitle;
 	}
@@ -203,15 +207,5 @@ class ItemDecorator {
 	
 	get isWebshareVideo(){
 		return this.source.type === CatalogueItemType.WEBSHARE_VIDEO;
-	}
-	
-	get isWatched(){
-		if(this.isSccMovie)
-			return WatchedUtil.movies?.indexOf(this.id) != -1;
-		if(this.isSccSeries)
-			return WatchedUtil.series?.indexOf(this.id) != -1;
-		if(this.isSccEpisode)
-			return WatchedUtil.episodes?.indexOf(this.id) != -1;
-		return false;
 	}
 }

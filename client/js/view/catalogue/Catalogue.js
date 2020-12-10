@@ -7,8 +7,9 @@ class Catalogue extends Component {
 		this.clean();
 		this.element.classList.toggle("error", false);
 		this.element.classList.toggle("empty", false);
+		const watched = WatchedUtil.getMap();
 		if(Util.isArray(this.data) && this.data.length){
-			this.append(this.data.map(this.renderItem));
+			this.append(this.data.map(data => this.renderItem(data, watched)));
 		} else if(Util.isError(this.data)) {
 			this.append(DOM.p(null, `Error: ${this.data.message}`));
 			this.element.classList.toggle("error", true);
@@ -19,7 +20,7 @@ class Catalogue extends Component {
 		return super.render();
 	}
 	
-	renderItem(data){
+	renderItem(data, watched){
 		switch(data.type){
 			case CatalogueItemType.CALLBACK:
 			case CatalogueItemType.SCC_LINK:
@@ -27,7 +28,7 @@ class Catalogue extends Component {
 			case CatalogueItemType.TRIGGER:
 				return CatalogueTrigger.create(data).render();
 			default:
-				return CatalogueMedia.create(data).render();
+				return CatalogueMedia.create(data, watched).render();
 		}
 	}
 }

@@ -37,4 +37,12 @@ class WatchedUtil {
 		const data = MyStorage.get(key);
 		return data ? data.split(",") : [];
 	}
+	
+	static getMap(){
+		return {
+			movies: new Set(this.movies),
+			series: new Set(this.series),
+			episodes: new Set(this.episodes)
+		}
+	}
 }
