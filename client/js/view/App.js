@@ -100,16 +100,20 @@ class App extends Component {
 
 	createHome(){
 		return [
-			CatalogueUtil.createSccLink("movie", "Released Movies", ApiScc.PATH_MOVIES_AIRED),
-			CatalogueUtil.createSccLink("series", "Released Series", ApiScc.PATH_SERIES_AIRED),
-			CatalogueUtil.createSccLink("movie", "Released Movies CZ/SK", ApiScc.PATH_DUBBED_MOVIES_AIRED),
-			CatalogueUtil.createSccLink("series", "Released Series CZ/SK", ApiScc.PATH_DUBBED_SERIES_AIRED),
-			CatalogueUtil.createSccLink("movie", "Popular Movies", ApiScc.PATH_MOVIES_POPULAR),
-			CatalogueUtil.createSccLink("series", "Popular Series", ApiScc.PATH_SERIES_POPULAR),
+			CatalogueUtil.createSccLink("movie", "New Movies", ApiScc.PATH_MOVIES_AIRED),
+			CatalogueUtil.createSccLink("series", "New Series", ApiScc.PATH_SERIES_AIRED),
+			CatalogueUtil.createSccLink("concert", "New Concerts", ApiScc.PATH_NEW_CONCERTS),
+			CatalogueUtil.createSccLink("fairyTale", "New Fairy Tales", ApiScc.PATH_NEW_FAIRY_TALES),
+			CatalogueUtil.createSccLink("animated", "Animated Movies", ApiScc.PATH_NEW_ANIMATED_MOVIES),
+			CatalogueUtil.createSccLink("animated", "Animated Series", ApiScc.PATH_NEW_ANIMATED_SERIES),
+			CatalogueUtil.createSccLink("movie", "New Movies CZ/SK", ApiScc.PATH_DUBBED_MOVIES_AIRED),
+			CatalogueUtil.createSccLink("series", "New Series CZ/SK", ApiScc.PATH_DUBBED_SERIES_AIRED),
+			CatalogueUtil.createSccLink("popular", "Popular Movies", ApiScc.PATH_MOVIES_POPULAR),
+			CatalogueUtil.createSccLink("popular", "Popular Series", ApiScc.PATH_SERIES_POPULAR),
 			CatalogueUtil.createSccLink("movie", "Added Movies", ApiScc.PATH_MOVIES_ADDED),
 			CatalogueUtil.createSccLink("series", "Added Series", ApiScc.PATH_SERIES_ADDED),
-			CatalogueUtil.createCallback("movie", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
-			CatalogueUtil.createCallback("series", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))];
+			CatalogueUtil.createCallback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
+			CatalogueUtil.createCallback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))];
 	}
 
 	toggleClass(key, toggle){

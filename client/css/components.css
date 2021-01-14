@@ -332,6 +332,26 @@
 	background-image: var(--image-series);
 }
 
+.CatalogueItemCustom.concert {
+	background-image: var(--image-concert);
+}
+
+.CatalogueItemCustom.fairyTale {
+	background-image: var(--image-fairyTale);
+}
+
+.CatalogueItemCustom.popular {
+	background-image: var(--image-popular);
+}
+
+.CatalogueItemCustom.animated {
+	background-image: var(--image-animated);
+}
+
+.CatalogueItemCustom.watched {
+	background-image: var(--image-watched);
+}
+
 .Dialogue {
 	position: fixed;
 	left: 0px;
