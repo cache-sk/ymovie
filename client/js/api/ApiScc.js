@@ -4,11 +4,11 @@ class ApiScc {
 	static PATH_MOVIES_POPULAR = "/api/media/filter/all?type=movie&sort=playCount&order=desc";
 	static PATH_MOVIES_ADDED = "/api/media/filter/all?type=movie&sort=dateAdded&order=desc";
 	static PATH_MOVIES_AIRED = "/api/media/filter/news?type=movie&sort=dateAdded&order=desc&days=365";
-	static PATH_DUBBED_MOVIES_AIRED = "/api/media/filter/newsDubbed?type=movie&sort=dateAdded&order=desc&lang=cs&lang=sk&days=365";
+	static PATH_DUBBED_MOVIES_AIRED = "/api/media/filter/newsDubbed?type=movie&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
 	static PATH_SERIES_POPULAR = "/api/media/filter/all?type=tvshow&sort=playCount&order=desc";
 	static PATH_SERIES_ADDED = "/api/media/filter/all?type=tvshow&sort=dateAdded&order=desc";
 	static PATH_SERIES_AIRED = "/api/media/filter/news?type=tvshow&sort=dateAdded&order=desc&days=365";
-	static PATH_DUBBED_SERIES_AIRED = "/api/media/filter/newsDubbed?type=tvshow&sort=dateAdded&order=desc&lang=cs&lang=sk&days=365";
+	static PATH_DUBBED_SERIES_AIRED = "/api/media/filter/newsDubbed?type=tvshow&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
 
 	static TOKEN_PARAM_NAME = "access_token"
 	static TOKEN_PARAM_VALUE = "th2tdy0no8v1zoh1fs59";
