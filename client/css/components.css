@@ -249,6 +249,10 @@
 	overflow-wrap: break-word;
 }
 
+.CatalogueItem .name::after {
+	content: " ";
+}
+
 .CatalogueItem .title {
 	position: absolute;
 	bottom: 0;
@@ -268,7 +272,7 @@
 }
 
 .CatalogueItem .subtitle::after {
-	content: ")";
+	content: ") ";
 }
 
 .CatalogueItem .year,
@@ -278,10 +282,11 @@
 	text-shadow: none;
 	color: black;
 	border-radius: 3px;
-	margin-left: 4px;
+	margin-right: 4px;
 	padding: 0px 3px;
 	font-size: .8em;
 	font-weight: bold;
+	display: inline-block;
 }
 
 
