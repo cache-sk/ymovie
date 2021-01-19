@@ -37,7 +37,9 @@ class Nav {
 			? path.match(regexp)?.[1] : null;
 		const webshareMediaId = this.isWebshareVideo(path)
 			? path.match(regexp)?.[1] : null;
-		return {path, sccMediaId, webshareMediaId};
+		const sccLinkLabel = this.isSccBrowse(path)
+			? path.match(regexp)?.[1] : null;
+		return {path, sccMediaId, webshareMediaId, sccLinkLabel};
 	}
 	
 	pushState(state, title, url, replace){

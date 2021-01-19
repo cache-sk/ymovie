@@ -210,6 +210,10 @@
 	cursor: pointer;
 }
 
+.DiscoveryView.type-home .CatalogueItem {
+	padding-bottom: 80%;
+}
+
 .DiscoveryView.type-webshare .CatalogueItem {
 	padding-bottom: 56%;
 }
@@ -255,17 +259,31 @@
 	text-shadow: 2px 2px #000;
 }
 
-.CatalogueItem .year::before,
-.CatalogueItem .subtitle::before,
-.CatalogueItem .size::before {
+.DiscoveryView.type-home .CatalogueItem .title {
+	padding-top: 45px;
+}
+
+.CatalogueItem .subtitle::before {
 	content: " (";
 }
 
-.CatalogueItem .year::after,
-.CatalogueItem .subtitle::after,
-.CatalogueItem .size::after {
+.CatalogueItem .subtitle::after {
 	content: ")";
 }
+
+.CatalogueItem .year,
+.CatalogueItem .language,
+.CatalogueItem .size {
+	background: #666;
+	text-shadow: none;
+	color: black;
+	border-radius: 3px;
+	margin-left: 4px;
+	padding: 0px 3px;
+	font-size: .8em;
+	font-weight: bold;
+}
+
 
 .CatalogueItem .rating {
 	position: absolute;
@@ -314,6 +332,10 @@
 	background-size: 50%;
 	background-repeat: no-repeat;
 	background-position: center;
+}
+
+.DiscoveryView.type-home .CatalogueItem {
+	background-position: center 33%;
 }
 
 .DiscoveryView.type-webshare .CatalogueItemCustom {

@@ -6,6 +6,7 @@ Item
 	*title:String = "Avatar";
 	*year:Numer = 2020
 	*rating:Number = 7.1
+	*isCZSK:Bool;
 
 Playable extends Common
 	*plot:String = "Abc. Def."
@@ -187,6 +188,10 @@ class ItemDecorator {
 			return null;
 		const mb = this.size / 1024 / 1024;
 		return mb > 100 ? (mb / 1024).toFixed(1) + "G" : mb.toFixed(1) + "M";
+	}
+	
+	get isCZSK(){
+		return this.source.isCZSK;
 	}
 	
 	get isSccMovie(){

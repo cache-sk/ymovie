@@ -50,6 +50,7 @@ class SccUtil {
 		if(info2.title) result.title = info2.title;
 		if(info.year) result.year = info.year;
 		this.normalizeRating(source, result);
+		this.normalizeLanguage(source, result);
 		if(info.mediatype === "movie") this.normalizeMovie(source, result);
 		if(info.mediatype === "tvshow") this.normalizeSeries(source, result);
 		if(info.mediatype === "season") this.normalizeSeason(source, result);
@@ -84,6 +85,18 @@ class SccUtil {
 		}
 		if(count > 0)
 			result.rating = rating / count;
+	}
+	
+	static normalizeLanguage(source, result){
+		const stream = source?.stream_info;
+		const streams = source?.available_streams;
+		if(stream?.audio?.language == "cs"
+			|| stream?.audio?.language == "sk"
+			|| stream?.subtitles?.language == "cs"
+			|| stream?.subtitles?.language == "sk"
+			|| streams?.languages?.audio?.items?.find(item => item.lang == "cs" || item.lang == "sk")
+			|| streams?.languages?.subtitles?.items?.find(item => item.lang == "cs" || item.lang == "sk"))
+			result.isCZSK = true;
 	}
 	
 	static normalizeMovie(source, result){

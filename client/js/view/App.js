@@ -21,6 +21,22 @@ class App extends Component {
 		this.api = new Api();
 		this.nav = new Nav();
 		this.ga = new GA();
+		this.menu = {home:[
+			CatalogueUtil.createSccLink("movie", "New Movies", ApiScc.PATH_MOVIES_AIRED),
+			CatalogueUtil.createSccLink("series", "New Series", ApiScc.PATH_SERIES_AIRED),
+			CatalogueUtil.createSccLink("concert", "New Concerts", ApiScc.PATH_NEW_CONCERTS),
+			CatalogueUtil.createSccLink("fairyTale", "New Fairy Tales", ApiScc.PATH_NEW_FAIRY_TALES),
+			CatalogueUtil.createSccLink("animated", "Animated Movies", ApiScc.PATH_NEW_ANIMATED_MOVIES),
+			CatalogueUtil.createSccLink("animated", "Animated Series", ApiScc.PATH_NEW_ANIMATED_SERIES),
+			CatalogueUtil.createSccLink("movie", "New Movies CZ/SK", ApiScc.PATH_DUBBED_MOVIES_AIRED),
+			CatalogueUtil.createSccLink("series", "New Series CZ/SK", ApiScc.PATH_DUBBED_SERIES_AIRED),
+			CatalogueUtil.createSccLink("popular", "Popular Movies", ApiScc.PATH_MOVIES_POPULAR),
+			CatalogueUtil.createSccLink("popular", "Popular Series", ApiScc.PATH_SERIES_POPULAR),
+			CatalogueUtil.createSccLink("movie", "Added Movies", ApiScc.PATH_MOVIES_ADDED),
+			CatalogueUtil.createSccLink("series", "Added Series", ApiScc.PATH_SERIES_ADDED),
+			CatalogueUtil.createCallback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
+			CatalogueUtil.createCallback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))
+		]};
 		
 		this.setupView = new SetupView(this.api);
 		this.aboutView = new AboutView();
@@ -64,11 +80,15 @@ class App extends Component {
 	}
 	
 	async initDeeplink(){
-		const {path, sccMediaId, webshareMediaId} = this.nav.locationData;
+		const {path, sccMediaId, webshareMediaId, sccLinkLabel} = this.nav.locationData;
+		const sccLink = sccLinkLabel && this.menu.home.find(item => sccLinkLabel == this.nav.safePath(item.label));
 		if(sccMediaId)
 			return this.nav.goReplaceMedia(await this.api.loadMedia(sccMediaId));
 		if(webshareMediaId)
 			return this.nav.goReplaceMedia(await this.api.loadWebshareMedia(webshareMediaId));
+		if(sccLink)
+			return this.nav.goSccBrowse(sccLink);
+		
 		if(this.nav.isAbout(path))
 			return this.nav.goAbout(true);
 		if(this.nav.isSetup(path))
@@ -90,30 +110,12 @@ class App extends Component {
 	
 	render(){
 		this.append([
-			this.updateCatalogue(this.createHome()),
+			this.updateCatalogue(this.menu.home, "home"),
 			this.detailView.render(),
 			this.setupView.render(),
 			this.aboutView.render(),
 			this.notificationView.render()]);
 		return super.render();
-	}
-
-	createHome(){
-		return [
-			CatalogueUtil.createSccLink("movie", "New Movies", ApiScc.PATH_MOVIES_AIRED),
-			CatalogueUtil.createSccLink("series", "New Series", ApiScc.PATH_SERIES_AIRED),
-			CatalogueUtil.createSccLink("concert", "New Concerts", ApiScc.PATH_NEW_CONCERTS),
-			CatalogueUtil.createSccLink("fairyTale", "New Fairy Tales", ApiScc.PATH_NEW_FAIRY_TALES),
-			CatalogueUtil.createSccLink("animated", "Animated Movies", ApiScc.PATH_NEW_ANIMATED_MOVIES),
-			CatalogueUtil.createSccLink("animated", "Animated Series", ApiScc.PATH_NEW_ANIMATED_SERIES),
-			CatalogueUtil.createSccLink("movie", "New Movies CZ/SK", ApiScc.PATH_DUBBED_MOVIES_AIRED),
-			CatalogueUtil.createSccLink("series", "New Series CZ/SK", ApiScc.PATH_DUBBED_SERIES_AIRED),
-			CatalogueUtil.createSccLink("popular", "Popular Movies", ApiScc.PATH_MOVIES_POPULAR),
-			CatalogueUtil.createSccLink("popular", "Popular Series", ApiScc.PATH_SERIES_POPULAR),
-			CatalogueUtil.createSccLink("movie", "Added Movies", ApiScc.PATH_MOVIES_ADDED),
-			CatalogueUtil.createSccLink("series", "Added Series", ApiScc.PATH_SERIES_ADDED),
-			CatalogueUtil.createCallback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
-			CatalogueUtil.createCallback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))];
 	}
 
 	toggleClass(key, toggle){
@@ -286,6 +288,6 @@ class App extends Component {
 			return await this.loadCatalogue(state.catalogue,
 				async () => await this.api.searchWebshare(state.query, data.title, state.page), "webshare");
 		
-		this.updateCatalogue(this.createHome());
+		this.updateCatalogue(this.menu.home, "home");
 	}
 }

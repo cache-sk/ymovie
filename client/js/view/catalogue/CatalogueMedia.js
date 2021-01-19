@@ -27,9 +27,10 @@ class CatalogueMedia extends CatalogueItem {
 	render(){
 		const decorator = this.decorator;
 		const name = DOM.span("name", decorator.title);
+		const language = decorator.isCZSK ? DOM.span("language", "CZ/SK") : null;
 		const size = decorator.size ? DOM.span("size", decorator.formatSize) : null;
 		const year = decorator.year ? DOM.span("year", decorator.year) : null;
-		const title = DOM.span("title", [name, size || year]);
+		const title = DOM.span("title", [name, language, size || year]);
 		const rating = decorator.rating ? DOM.span("rating", decorator.rating) : null;
 		const img = this.renderPoster();
 		this.append([img, title, rating]);
