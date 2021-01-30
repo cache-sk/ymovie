@@ -169,7 +169,7 @@ class ItemDecorator {
 		// https://img.csfd.cz/files/images/film/posters/158/066/158066908_cf9118.jpg
 		// to https://image.pmgstatic.com/cache/resized/w180/files/images/film/posters/158/066/158066908_cf9118.jpg
 		if(url.indexOf("img.csfd.cz") > -1)
-			return url.replace("https://img.csfd.cz", "https://image.pmgstatic.com/cache/resized/w180");
+			return url.replace("//img.csfd.cz", "//image.pmgstatic.com/cache/resized/w180");
 		// https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb.jpg
 		// to https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb_t.jpg
 		// https://thetvdb.com/banners/posters/71470-2.jpg
