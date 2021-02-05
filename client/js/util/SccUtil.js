@@ -136,10 +136,12 @@ class SccUtil {
 	}
 	
 	static normalizeStreams(source){
-		return source.map(item => this.normalizeStream(item));
+		return source.map(item => this.normalizeStream(item)).filter(item => item != null);
 	}
 	
 	static normalizeStream(source){
+		if(!source.video || !source.video.length)
+			return null;
 		const video = source.video[0];
 		const result = {
 			size: source.size,
