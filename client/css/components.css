@@ -537,6 +537,8 @@ body:not(.webshare-na) .DetailView .WebshareSetup {
 .StreamOption .info .subtitles {
 	background: var(--image-subtitles) no-repeat 0 / 12px;
 	padding-left: 16px;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 

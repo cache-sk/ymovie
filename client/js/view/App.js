@@ -248,8 +248,10 @@ class App extends Component {
 		const previousPath = data.previous?.path;
 		const path = data.path;
 		const state = data.state;
+		const isDetail = path => nav.isSccMovie(path) || nav.isSccEpisode(path) || nav.isWebshareVideo(path);
 		
-		if(nav.isSccMovie(previousPath) || nav.isSccEpisode(previousPath) || nav.isWebshareVideo(previousPath))
+		/** Short circuit here on popup closing to avoid flickering catalogue */
+		if(isDetail(previousPath) && !isDetail(path))
 			return this.detailView.hide();
 		if(nav.isSetup(previousPath))
 			return this.setupView.hide();
@@ -266,16 +268,14 @@ class App extends Component {
 		if(nav.isSccWatchedSeries(path))
 			return await this.loadCatalogue(null,
 				async () => await this.api.loadIds(WatchedUtil.series, data.title));
-		if(nav.isSccMovie(path) || nav.isSccEpisode(path))
-			return this.detailView.update(state);
+		if(isDetail(path))
+			return this.detailView.update({detail:state, list:this.discoveryView.data.catalogue});
 		if(nav.isSccSeries(path))
 			return await this.loadCatalogue(state.catalogue,
 				async () => await this.api.loadSeasons(state.id, data.title));
 		if(nav.isSccSeason(path))
 			return await this.loadCatalogue(state.catalogue,
 				async () => await this.api.loadEpisodes(state.id, data.title));
-		if(nav.isWebshareVideo(path))
-			return this.detailView.update(state);
 		if(nav.isSccBrowse(path))
 			return await this.loadCatalogue(state.catalogue,
 				async () => await this.api.loadPath(state.url, data.title));
