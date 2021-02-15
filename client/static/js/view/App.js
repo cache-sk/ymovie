@@ -21,6 +21,7 @@ class App extends Component {
 		this.api = new Api();
 		this.nav = new Nav();
 		this.ga = new GA();
+		const ApiScc = ymovie.shared.ApiScc;
 		this.menu = {home:[
 			CatalogueUtil.createSccLink("movie", "New Movies", ApiScc.PATH_MOVIES_AIRED),
 			CatalogueUtil.createSccLink("series", "New Series", ApiScc.PATH_SERIES_AIRED),

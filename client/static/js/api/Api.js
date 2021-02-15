@@ -5,8 +5,8 @@ class Api {
 	
 	constructor(){
 		Util.enhanceDispatcher(this);
-		this.scc = new ApiScc(this.uuid);
-		this.webshare = new ApiWebshare(this.uuid);
+		this.scc = new ymovie.shared.ApiScc(this.uuid);
+		this.webshare = new ymovie.shared.ApiWebshare(this.uuid);
 		this.kodi = new ApiKodi();
 		this.cast = new ApiCast(this.onCastStatus.bind(this));
 	}
