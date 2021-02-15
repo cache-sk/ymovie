@@ -10,10 +10,23 @@
 		},
 		{
 			"label": "Start debug",
-			"type": "shell",
-			"command": "node",
-			"args": ["--inspect", "server/index.js", "debug"],
+			"type": "npm",
+			"script": "start-debug",
 			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Client:Build",
+			"type": "npm",
+			"script": "client-build",
+			"problemMatcher": ["$tsc"],
+			"group": "build"
+		},
+		{
+			"label": "Build",
+			"type": "npm",
+			"script": "build",
+			"problemMatcher": ["$tsc"],
 			"group": "build"
 		}
 	]
