@@ -2,7 +2,7 @@ class DiscoveryView extends ymovie.view.base.DataComponent {
 	constructor(){
 		super("div");
 		
-		this.catalogue = new Catalogue();
+		this.catalogue = new ymovie.view.catalogue.Catalogue();
 		this.catalogue.element.addEventListener("touchstart", this.onCatalogueTouchStart.bind(this));
 		this.header = new DiscoveryHeader();
 		this.append([this.catalogue.render(), this.header.render()]);

@@ -1,8 +1,8 @@
 namespace ymovie.view.base {
-	export class DataComponent<TData> extends Component {
+	export class DataComponent<TElement extends HTMLElement, TData> extends Component<TElement> {
 		data:TData | undefined;
 
-		update(data:TData):HTMLElement {
+		update(data?:TData):HTMLElement {
 			this.data = data;
 			return this.render();
 		}

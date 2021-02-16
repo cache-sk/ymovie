@@ -18,9 +18,9 @@ class App extends ymovie.view.base.Component {
 			return location.protocol = "https:";
 		
 		this.initPWA();
-		this.api = new Api();
-		this.nav = new Nav();
-		this.ga = new GA();
+		this.api = new ymovie.api.Api();
+		this.nav = new ymovie.util.Nav();
+		this.ga = new ymovie.util.GA();
 		const ApiScc = ymovie.api.ApiScc;
 		const CatalogueUtil = ymovie.util.CatalogueUtil;
 		this.menu = {home:[
@@ -40,31 +40,31 @@ class App extends ymovie.view.base.Component {
 			CatalogueUtil.createCallback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))
 		]};
 		
-		this.setupView = new SetupView(this.api);
-		this.aboutView = new AboutView();
+		this.setupView = new ymovie.view.setup.SetupView(this.api);
+		this.aboutView = new ymovie.view.AboutView();
 		this.discoveryView = new DiscoveryView();
-		this.detailView = new DetailView(this.api);
+		this.detailView = new ymovie.view.detail.DetailView(this.api);
 		this.notificationView = new NotificationView();
 
-		this.listen(Action.BACK, this.nav.goBack.bind(this.nav));
-		this.listen(Action.SEARCH, this.search.bind(this));
-		this.listen(Action.SELECT_CATALOGUE_ITEM, this.selectCatalogueItem.bind(this));
-		this.listen(Action.RESOLVE_STREAMS, this.resolveStreams.bind(this));
-		this.listen(Action.RESOLVE_STREAM_URL, this.resolveStreamUrl.bind(this));
-		this.listen(Action.HOME, this.nav.goHome.bind(this.nav));
-		this.listen(Action.SETUP, this.nav.goSetup.bind(this.nav));
-		this.listen(Action.ABOUT, this.nav.goAbout.bind(this.nav));
-		this.listen(Action.PLAY, this.play.bind(this));
+		this.listen(ymovie.enums.Action.BACK, this.nav.goBack.bind(this.nav));
+		this.listen(ymovie.enums.Action.SEARCH, this.search.bind(this));
+		this.listen(ymovie.enums.Action.SELECT_CATALOGUE_ITEM, this.selectCatalogueItem.bind(this));
+		this.listen(ymovie.enums.Action.RESOLVE_STREAMS, this.resolveStreams.bind(this));
+		this.listen(ymovie.enums.Action.RESOLVE_STREAM_URL, this.resolveStreamUrl.bind(this));
+		this.listen(ymovie.enums.Action.HOME, this.nav.goHome.bind(this.nav));
+		this.listen(ymovie.enums.Action.SETUP, this.nav.goSetup.bind(this.nav));
+		this.listen(ymovie.enums.Action.ABOUT, this.nav.goAbout.bind(this.nav));
+		this.listen(ymovie.enums.Action.PLAY, this.play.bind(this));
 		
 		this.ga.init();
 		
-		this.nav.listen(Action.CHANGE, this.onNavChange.bind(this));
+		this.nav.listen(ymovie.enums.Action.CHANGE, this.onNavChange.bind(this));
 		this.nav.init();
 		
-		this.api.listen(Action.CAST_STATUS_UPDATED, this.onApiCastStatus.bind(this));
+		this.api.listen(ymovie.enums.Action.CAST_STATUS_UPDATED, this.onApiCastStatus.bind(this));
 		this.api.listen(this.api.getKodiStatusKey(1), this.onApiKodiStatus.bind(this));
 		this.api.listen(this.api.getKodiStatusKey(2), this.onApiKodiStatus2.bind(this));
-		this.api.listen(Action.WEBSHARE_STATUS_UPDATED, this.onApiWebshareStatus.bind(this));
+		this.api.listen(ymovie.enums.Action.WEBSHARE_STATUS_UPDATED, this.onApiWebshareStatus.bind(this));
 		await this.api.init();
 		
 		this.render();
@@ -125,9 +125,9 @@ class App extends ymovie.view.base.Component {
 	}
 	
 	toggleApiClass(key, status){
-		this.toggleClass(`${key}-${PlayerStatus.OK}`, status === PlayerStatus.OK);
-		this.toggleClass(`${key}-${PlayerStatus.NOT_AVAILABLE}`, status === PlayerStatus.NOT_AVAILABLE);
-		this.toggleClass(`${key}-${PlayerStatus.DEFINED}`, status === PlayerStatus.DEFINED);
+		this.toggleClass(`${key}-${ymovie.enums.PlayerStatus.OK}`, status === ymovie.enums.PlayerStatus.OK);
+		this.toggleClass(`${key}-${ymovie.enums.PlayerStatus.NOT_AVAILABLE}`, status === ymovie.enums.PlayerStatus.NOT_AVAILABLE);
+		this.toggleClass(`${key}-${ymovie.enums.PlayerStatus.DEFINED}`, status === ymovie.enums.PlayerStatus.DEFINED);
 	}
 	
 	set loading(toggle){
@@ -215,11 +215,11 @@ class App extends ymovie.view.base.Component {
 	
 	async play(payload){
 		const {player, position, data} = payload;
-		const notificationTitle = player === Player.CAST ? "Cast" : "Kodi";
+		const notificationTitle = player === ymovie.enums.Player.CAST ? "Cast" : "Kodi";
 		try {
-			if(player === Player.CAST)
+			if(player === ymovie.enums.Player.CAST)
 				await this.api.playOnCast(data);
-			else if(player === Player.KODI)
+			else if(player === ymovie.enums.Player.KODI)
 				await this.api.playOnKodi(position, data);
 			const title = ymovie.util.ItemDecorator.create(data.source).title;
 			this.showNotification(`${notificationTitle} Success`, `Playing ${title}`);
@@ -266,10 +266,10 @@ class App extends ymovie.view.base.Component {
 			return this.aboutView.show();
 		if(nav.isSccWatchedMovies(path))
 			return await this.loadCatalogue(null,
-				async () => await this.api.loadIds(WatchedUtil.movies, data.title));
+				async () => await this.api.loadIds(ymovie.util.WatchedUtil.movies, data.title));
 		if(nav.isSccWatchedSeries(path))
 			return await this.loadCatalogue(null,
-				async () => await this.api.loadIds(WatchedUtil.series, data.title));
+				async () => await this.api.loadIds(ymovie.util.WatchedUtil.series, data.title));
 		if(isDetail(path))
 			return this.detailView.update({detail:state, list:this.discoveryView.data.catalogue});
 		if(nav.isSccSeries(path))

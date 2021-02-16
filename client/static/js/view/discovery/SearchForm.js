@@ -1,4 +1,4 @@
-class SearchForm extends Form {
+class SearchForm extends ymovie.view.base.Form {
 	constructor(){
 		super();
 		this.input = ymovie.util.DOM.input(null, "query", null, "search");
@@ -27,7 +27,7 @@ class SearchForm extends Form {
 		if(!timeout)
 			this.input.blur();
 		const query = this.getField("query").value;
-		this.trigger(Action.SEARCH, query ? {query} : null);
+		this.trigger(ymovie.enums.Action.SEARCH, query ? {query} : null);
 	}
 	
 	onChange(){

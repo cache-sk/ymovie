@@ -25,16 +25,14 @@ namespace ymovie.util {
 			return match ? match[1] : null;
 		}
 		
-		static enhanceDispatcher(object:any, dispatcher:EventTarget){
-			if(!dispatcher)
-				dispatcher = object.dispatcher = document.createDocumentFragment();
-			
+		static enhanceDispatcher(object:Dispatcher, dispatcher?:EventTarget):void {
+			const target:EventTarget = dispatcher || (object.dispatcher = document.createDocumentFragment());
 			object.trigger = (type:string, detail:any) =>
-				dispatcher.dispatchEvent(new CustomEvent(`__${type}`, {bubbles:true, detail}));
+				target.dispatchEvent(new CustomEvent(`__${type}`, {bubbles:true, detail}));
 			
 			object.listen = (type:string, callback:(detail:any, event:CustomEvent) => void) => {
 				const listener = (event:CustomEvent) => callback(event.detail, event);
-				dispatcher.addEventListener(`__${type}`, <EventListener>listener);
+				target.addEventListener(`__${type}`, <EventListener>listener);
 				return listener;
 			}
 		}
@@ -67,5 +65,11 @@ namespace ymovie.util {
 			}
 			
 		}
+	}
+
+	type Dispatcher = {
+		dispatcher:EventTarget | undefined;
+		trigger:((type:any, detail?:any) => void) | undefined;
+		listen:((type:any, callback:(detail:any, event:CustomEvent) => void) => void) | undefined;
 	}
 }

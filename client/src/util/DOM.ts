@@ -46,8 +46,8 @@ namespace ymovie.util {
 			return result;
 		}
 		
-		static p(className?:string, content?:DOMContent){
-			return this.create("p", className, content);
+		static p(className?:string, content?:DOMContent):HTMLParagraphElement {
+			return <HTMLParagraphElement>this.create("p", className, content);
 		}
 		
 		static password(className:string | undefined, name:string, value?:string, placeholder?:string):HTMLInputElement {
@@ -116,5 +116,5 @@ namespace ymovie.util {
 		}
 	}
 
-	export type DOMContent = HTMLElement | string | Array<DOMContent>;
+	export type DOMContent = HTMLElement | string | number | undefined | null | Array<DOMContent>;
 }

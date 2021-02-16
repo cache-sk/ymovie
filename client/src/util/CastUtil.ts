@@ -1,6 +1,6 @@
 namespace ymovie.util {
 	export class CastUtil {
-		static toCastInfo(data:CastSource) {
+		static toCastInfo(data:type.Type.CastSource):chrome.cast.media.IMetadata {
 			const decorator = ItemDecorator.create(data.source);
 			const poster = decorator.posterThumbnail;
 			const result = new chrome.cast.media.MediaInfo(data.url, 'video/mp4');
@@ -29,37 +29,5 @@ namespace ymovie.util {
 			result.releaseDate = decorator.year;
 			return result;
 		}
-	}
-
-	type CastSource = {
-		source:type.Type.Item;
-		url:string;
-	}
-}
-
-declare namespace chrome.cast.media {
-	interface IMetadata {
-		images:Array<{url:string}> | undefined;
-	}
-
-	class MovieMediaMetadata implements IMetadata {
-		title:string | undefined;
-		studio:string | undefined;
-		releaseDate:string | undefined;
-		images:Array<{url:string}> | undefined;
-	}
-
-	class TvShowMediaMetadata implements IMetadata {
-		episode:number | undefined;
-		originalAirdate:string;
-		season:number | undefined;
-		seriesTitle:string | undefined;
-		title:string | undefined;
-		images:Array<{url:string}> | undefined;
-	}
-
-	class MediaInfo {
-		metadata:IMetadata;
-		constructor(url:string, type:string)
 	}
 }

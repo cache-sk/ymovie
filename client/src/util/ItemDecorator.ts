@@ -14,7 +14,7 @@ namespace ymovie.util {
 			return this.source.id;
 		}
 		
-		get title():string | undefined {
+		get title():string {
 			return this.source.title;
 		}
 		
@@ -30,7 +30,7 @@ namespace ymovie.util {
 			return (<type.Type.Season>this.source).seriesTitle;
 		}
 		
-		get longTitle():string | undefined {
+		get longTitle():string {
 			if(this.isSccEpisode)
 				return `${this.seriesTitle} - Season ${this.seasonNumber} - Episode ${this.episodeNumber}`;
 			if(this.isSccSeason)
@@ -43,10 +43,9 @@ namespace ymovie.util {
 		}
 		
 		get rating():string {
-			if(this.source?.hasOwnProperty("ratingPositive") && this.source?.hasOwnProperty("ratingNegative"))
-				return ((this.source.ratingPositive || 0) + (this.source.ratingNegative || 0)) 
-					? `${this.source.ratingPositive}:${this.source.ratingNegative}`
-					: "";
+			const webshare = <type.Type.WebshareItem>this.source;
+			if(webshare.ratingPositive || webshare.ratingNegative)
+				return `${webshare.ratingPositive || 0}:${webshare.ratingNegative || 0}`;
 			return this.source?.rating?.toFixed(1) || "";
 		}
 		

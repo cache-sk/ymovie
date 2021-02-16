@@ -1,4 +1,4 @@
-class NotificationView extends Dialogue {
+class NotificationView extends ymovie.view.base.Dialogue {
 	constructor(){
 		super();
 		this.title = ymovie.util.DOM.h1();

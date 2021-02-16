@@ -5,7 +5,7 @@ class DiscoveryHeader extends ymovie.view.base.Component {
 		this.searchForm = new SearchForm();
 		
 		const home = ymovie.util.DOM.span("home", "home");
-		home.addEventListener("click", () => this.trigger(Action.HOME));
+		home.addEventListener("click", () => this.trigger(ymovie.enums.Action.HOME));
 		
 		const menuButton = ymovie.util.DOM.button("menuButton", "menu");
 		menuButton.addEventListener("click", this.toggleMenu.bind(this));
@@ -30,11 +30,11 @@ class DiscoveryHeader extends ymovie.view.base.Component {
 	
 	onSetupClick(){
 		this.toggleMenu();
-		this.trigger(Action.SETUP);
+		this.trigger(ymovie.enums.Action.SETUP);
 	}
 	
 	onAboutClick(){
 		this.toggleMenu();
-		this.trigger(Action.ABOUT);
+		this.trigger(ymovie.enums.Action.ABOUT);
 	}
 }

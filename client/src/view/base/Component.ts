@@ -1,12 +1,16 @@
 namespace ymovie.view.base {
-	export class Component {
-		element:HTMLElement;
+	export class Component<TElement extends HTMLElement> {
+		element:TElement;
+
+		dispatcher:EventTarget | undefined;
+		trigger:((type:any, detail?:any) => void) | undefined;
+		listen:((type:any, callback:(detail:any, event:CustomEvent) => void) => void) | undefined;
 
 		constructor(element:ComponentElement) {
-			this.element = util.Util.isString(element) ? util.DOM.create(<string>element) : <HTMLElement>element;
+			this.element = util.Util.isString(element) ? <TElement>util.DOM.create(<string>element) : <TElement>element;
 			// @ts-ignore
 			this.element.classList.add(this.constructor.name);
-			ymovie.util.Util.enhanceDispatcher(this, this.element);
+			util.Util.enhanceDispatcher(this, this.element);
 		}
 		
 		append(content:util.DOMContent) {

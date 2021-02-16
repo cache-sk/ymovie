@@ -136,8 +136,9 @@ namespace ymovie.util {
 			return source?.root_parent;
 		}
 		
-		static normalizeStreams(source:StreamsResponse) {
-			return source.map(item => this.normalizeStream(item)).filter(item => item != null);
+		static normalizeStreams(source:StreamsResponse):Array<type.Type.Stream> {
+			const streams:Array<type.Type.Stream | undefined> = source.map(item => this.normalizeStream(item));
+			return <Array<type.Type.Stream>>streams.filter(item => item != undefined);
 		}
 		
 		static normalizeStream(source:Stream):type.Type.Stream | undefined {

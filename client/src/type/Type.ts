@@ -3,14 +3,17 @@ namespace ymovie.type.Type {
 		id:string; // = "ae15"
 		poster:string; // = "http://xyz..."
 		type:CatalogueItemType; // = CatalogueItemType.SCC_MOVIE
-		title?:string; // = "Avatar";
+		title:string; // = "Avatar";
 		year?:number; // = 2020
 		rating?:number; // = 7.1
 		isCZSK?:boolean;
 
+		size?:number;
+	}
+
+	export type WebshareItem = Item & {
 		ratingPositive?:number;
 		ratingNegative?:number;
-		size?:number;
 	}
 
 	export type Season = Item & {
@@ -72,7 +75,7 @@ namespace ymovie.type.Type {
 		subtitle?:string;
 		page?:number;
 		callback?:() => void;
-		action?:string;
+		action?:enums.Action;
 		payload?:any;
 	}
 
@@ -88,4 +91,20 @@ namespace ymovie.type.Type {
 	}
 
 	export type AnyCatalogueItem = CatalogueItem | Item;
+
+	export type CastSource = {
+		source:Item;
+		url:string;
+	}
+
+	export type ActionResolveStreamsData = {
+		data:Item;
+		callback:any;
+	}
+
+	export type ActionPlayPayload = {
+		player:enums.Player;
+		position?:number;
+		data:CatalogueItem;
+	}
 }

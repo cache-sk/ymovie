@@ -35,19 +35,19 @@ namespace ymovie.util {
 				.map(this.normalizeItem.bind(this));
 			const pageCount = Math.ceil(total / 100);
 			if(page)
-				result.unshift(util.CatalogueUtil.createTrigger("folder", title, `${page}/${pageCount}`, "search", {query, page:page - 1}));
+				result.unshift(CatalogueUtil.createTrigger("folder", title, `${page}/${pageCount}`, enums.Action.SEARCH, {query, page:page - 1}));
 			if(page + 1 < pageCount)
-				result.push(CatalogueUtil.createTrigger("folder", title, `${page + 2}/${pageCount}`, "search", {query, page:page + 1}));
+				result.push(CatalogueUtil.createTrigger("folder", title, `${page + 2}/${pageCount}`, enums.Action.SEARCH, {query, page:page + 1}));
 			return result;
 		}
 		
-		static normalizeItemResponse(data:Element, ident:string):type.Type.Item {
+		static normalizeItemResponse(data:Element, ident:string):type.Type.WebshareItem {
 			const result = this.normalizeItem(data);
 			result.id = ident;
 			return result;
 		}
 		
-		static normalizeItem(item:Element):type.Type.Item {
+		static normalizeItem(item:Element):type.Type.WebshareItem {
 			const ratingPositive = this.getInt(item, "positive_votes");
 			const ratingNegative = this.getInt(item, "negative_votes");
 			return {
