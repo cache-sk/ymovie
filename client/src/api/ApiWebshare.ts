@@ -1,4 +1,4 @@
-namespace ymovie.shared {
+namespace ymovie.api {
 	export class ApiWebshare {
 		static ENDPOINT = "https://webshare.cz";
 		static PATH_SALT = "/api/salt/";
@@ -21,13 +21,13 @@ namespace ymovie.shared {
 			return await this.getLogin(username, password, salt);
 		}
 		
-		async load(path:string, body:string){
+		async load(path:string, body:string):Promise<Element> {
 			const url = `${ApiWebshare.ENDPOINT}${path}`
 			const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
 			const response = await (await fetch(url, {method:"POST", body, headers})).text();
 			const xml = new DOMParser().parseFromString(response, "application/xml");
 			try {
-				const response = xml.getElementsByTagName("response")[0];
+				const response:Element = xml.getElementsByTagName("response")[0];
 				if(response.getElementsByTagName("status")[0].textContent !== "OK")
 					throw new Error(response.getElementsByTagName("message")[0].textContent || undefined);
 				return response;
@@ -68,7 +68,7 @@ namespace ymovie.shared {
 			return await this.load(ApiWebshare.PATH_SEARCH, body);
 		}
 		
-		async fileInfo(ident:string){
+		async fileInfo(ident:string):Promise<Element> {
 			const body = `ident=${encodeURIComponent(ident)}`;
 			return await this.load(ApiWebshare.PATH_FILE_INFO, body);
 		}

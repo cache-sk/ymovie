@@ -30,7 +30,7 @@ class WatchedUtil {
 	
 	static add(key, id){
 		const max = this.MAX_WATCHED_LENGTH;
-		MyStorage.set(key, Util.unshiftAndLimit(this.get(key), id, max).join(","));
+		MyStorage.set(key, ymovie.util.Util.unshiftAndLimit(this.get(key), id, max).join(","));
 	}
 	
 	static get(key){

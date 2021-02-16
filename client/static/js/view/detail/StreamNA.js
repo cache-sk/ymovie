@@ -8,7 +8,7 @@ class StreamNA extends StreamOption {
 	}
 	
 	renderInfo(){
-		return DOM.span("info", DOM.span("name", "No streams available."));
+		return ymovie.util.DOM.span("info", ymovie.util.DOM.span("name", "No streams available."));
 	}
 	
 	onClick(){

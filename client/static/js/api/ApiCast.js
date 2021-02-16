@@ -38,7 +38,7 @@ class ApiCast {
 	}
 	
 	loadMedia(data, resolve, reject){
-		const mediaInfo = CastUtil.toCastInfo(data);
+		const mediaInfo = ymovie.util.CastUtil.toCastInfo(data);
 		const request = new chrome.cast.media.LoadRequest(mediaInfo);
 		const onError = error => {
 			let detail = "";

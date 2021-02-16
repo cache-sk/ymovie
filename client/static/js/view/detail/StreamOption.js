@@ -1,4 +1,4 @@
-class StreamOption extends Component {
+class StreamOption extends ymovie.view.base.DataComponent {
 	constructor(data){
 		super("div");
 		this.data = data;
@@ -25,36 +25,36 @@ class StreamOption extends Component {
 		if(!url)
 			return null;
 		
-		const textarea = DOM.textarea(null, url);
+		const textarea = ymovie.util.DOM.textarea(null, url);
 		textarea.addEventListener("click", this.onClipboard);
 		textarea.setAttribute('readonly', '');
 		
 		const isYoutube = url.indexOf("youtube.com") > -1;
-		const download = DOM.a("download", "Download", url, "_blank");
+		const download = ymovie.util.DOM.a("download", "Download", url, "_blank");
 		
-		const android = Util.getAndroidVersion()
-			? DOM.a("android", "Play on Android", `intent:${url}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
+		const android = ymovie.util.Util.getAndroidVersion()
+			? ymovie.util.DOM.a("android", "Play on Android", `intent:${url}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
 			: null;
 		
-		const url2 = WebshareUtil.containsExtension(url) ? null : `${url}.mkv`;
-		const android2 = url2 && Util.getAndroidVersion()
-			? DOM.a("android fix", "Play on Android", `intent:${url2}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
+		const url2 = ymovie.util.WebshareUtil.containsExtension(url) ? null : `${url}.mkv`;
+		const android2 = url2 && ymovie.util.Util.getAndroidVersion()
+			? ymovie.util.DOM.a("android fix", "Play on Android", `intent:${url2}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
 			: null;
 		
-		const play = DOM.a("play", "Play in new window", isYoutube ? url : `play.html#${encodeURIComponent(url)}`, "_blank");
+		const play = ymovie.util.DOM.a("play", "Play in new window", isYoutube ? url : `play.html#${encodeURIComponent(url)}`, "_blank");
 		
-		const cast = DOM.span("cast", "Cast");
+		const cast = ymovie.util.DOM.span("cast", "Cast");
 		cast.addEventListener("click", () => this.triggerPlay(Player.CAST));
 		
-		const kodi = DOM.span("kodi", "Play in Kodi");
+		const kodi = ymovie.util.DOM.span("kodi", "Play in Kodi");
 		kodi.addEventListener("click", () => this.triggerPlay(Player.KODI, 1));
 		
-		const kodi2 = DOM.span("kodi2", "Play in Kodi");
+		const kodi2 = ymovie.util.DOM.span("kodi2", "Play in Kodi");
 		kodi2.addEventListener("click", () => this.triggerPlay(Player.KODI, 2));
 		
-		const vlc = DOM.a("vlc", "Play on VLC", `vlc://${url}`, "_blank");
+		const vlc = ymovie.util.DOM.a("vlc", "Play on VLC", `vlc://${url}`, "_blank");
 		
-		return DOM.div("options", [textarea, 
+		return ymovie.util.DOM.div("options", [textarea, 
 			isYoutube ? null : download, 
 			isYoutube ? null : android, 
 			isYoutube ? null : android2, 

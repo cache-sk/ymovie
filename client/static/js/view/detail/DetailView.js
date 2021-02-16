@@ -18,11 +18,11 @@ class DetailView extends Dialogue {
 		if(!this.detail)
 			return null;
 		
-		const decorator = ItemDecorator.create(this.detail);
-		return [DOM.h1(decorator.title),
-			DOM.h2(decorator.subtitle),
+		const decorator = ymovie.util.ItemDecorator.create(this.detail);
+		return [ymovie.util.DOM.h1(decorator.title),
+			ymovie.util.DOM.h2(decorator.subtitle),
 			this.renderMetadata(),
-			DOM.p("plot", decorator.plot),
+			ymovie.util.DOM.p("plot", decorator.plot),
 			this.webshareSetup.render(),
 			this.streamsView.update()];
 	}
@@ -36,8 +36,8 @@ class DetailView extends Dialogue {
 	}
 	
 	renderMetadata(){
-		const decorator = ItemDecorator.create(this.detail);
-		return DOM.div("metadata", [
+		const decorator = ymovie.util.ItemDecorator.create(this.detail);
+		return ymovie.util.DOM.div("metadata", [
 			this.renderProperty("series", "Series", decorator.seriesTitle),
 			this.renderProperty("original", "Original Title", decorator.originalTitle),
 			this.renderProperty("year", "Year", decorator.year),
@@ -52,20 +52,20 @@ class DetailView extends Dialogue {
 	}
 	
 	renderProperty(className, label, value){
-		return value ? DOM.div(className, [DOM.span("label", label), DOM.span("value", value)]) : null;
+		return value ? ymovie.util.DOM.div(className, [ymovie.util.DOM.span("label", label), ymovie.util.DOM.span("value", value)]) : null;
 	}
 	
 	renderServices(decorator){
 		const services = decorator.services;
 		if(!services || (!services.csfd && !services.imdb && !services.trakt))
 			return null;
-		return DOM.div("services", [DOM.span("label", "Services"), 
-			services.csfd ? DOM.a(null, "csfd", `https://www.csfd.cz/film/${services.csfd}`, "_blank") : null,
-			services.imdb ? DOM.a(null, "imdb", `https://www.imdb.com/title/${services.imdb}`, "_blank") : null,
-			services.trakt ? DOM.a(null, "trakt", decorator.isSccEpisode
+		return ymovie.util.DOM.div("services", [ymovie.util.DOM.span("label", "Services"), 
+			services.csfd ? ymovie.util.DOM.a(null, "csfd", `https://www.csfd.cz/film/${services.csfd}`, "_blank") : null,
+			services.imdb ? ymovie.util.DOM.a(null, "imdb", `https://www.imdb.com/title/${services.imdb}`, "_blank") : null,
+			services.trakt ? ymovie.util.DOM.a(null, "trakt", decorator.isSccEpisode
 				? `https://trakt.tv/search/trakt/${services.trakt}?id_type=episode`
 				: `https://trakt.tv/movies/${services.trakt}`, "_blank") : null,
-			services.tmdb && decorator.isSccMovie ? DOM.a(null, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
+			services.tmdb && decorator.isSccMovie ? ymovie.util.DOM.a(null, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
 	}
 
 	getTouchX(event){

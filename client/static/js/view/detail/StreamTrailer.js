@@ -5,7 +5,7 @@ class StreamTrailer extends StreamOption {
 	
 	renderInfo(){
 		const domain = new URL(this.data.trailer).hostname.split(".").splice(-2, 1);
-		return DOM.span("info", [DOM.span("name", "Trailer"), DOM.span("domain", domain)]);
+		return ymovie.util.DOM.span("info", [ymovie.util.DOM.span("name", "Trailer"), ymovie.util.DOM.span("domain", domain)]);
 	}
 	
 	onClick(){

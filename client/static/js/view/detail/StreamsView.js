@@ -1,4 +1,4 @@
-class StreamsView extends Component {
+class StreamsView extends ymovie.view.base.DataComponent {
 	constructor(){
 		super("div");
 	}
@@ -9,7 +9,7 @@ class StreamsView extends Component {
 		const loaded = !!this.data;
 		this.element.classList.toggle("loading", !this.data);
 		if(this.data){
-			const decorator = ItemDecorator.create(this.data.data);
+			const decorator = ymovie.util.ItemDecorator.create(this.data.data);
 			if(decorator.trailers)
 				for(const trailer of decorator.trailers)
 					this.append(StreamTrailer.create({trailer, source:this.data}).render());

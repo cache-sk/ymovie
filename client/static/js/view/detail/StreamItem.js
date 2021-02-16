@@ -4,8 +4,8 @@ class StreamItem extends StreamOption {
 	}
 
 	renderInfo(){
-		const decorator = StreamDecorator.create(this.data.stream);
-		return DOM.span("info", [
+		const decorator = ymovie.util.StreamDecorator.create(this.data.stream);
+		return ymovie.util.DOM.span("info", [
 			this.add("size", decorator.formatSize),
 			this.add("language", decorator.language),
 			this.add("subtitles", decorator.subtitles),
@@ -18,13 +18,13 @@ class StreamItem extends StreamOption {
 	
 	add(className, value){
 		if(value)
-			return DOM.span(className, value);
+			return ymovie.util.DOM.span(className, value);
 	}
 	
 	onClick(){
 		this.element.classList.add("loading");
 		this.trigger(Action.RESOLVE_STREAM_URL, {stream:this.data.stream, callback:this.onUrl.bind(this)});
-		const decorator = ItemDecorator.create(this.data.source);
+		const decorator = ymovie.util.ItemDecorator.create(this.data.source);
 		if(decorator.isSccMovie)
 			WatchedUtil.addMovie(decorator.id);
 		if(decorator.isSccEpisode) {

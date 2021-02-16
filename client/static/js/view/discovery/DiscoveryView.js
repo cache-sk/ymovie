@@ -1,4 +1,4 @@
-class DiscoveryView extends Component {
+class DiscoveryView extends ymovie.view.base.DataComponent {
 	constructor(){
 		super("div");
 		

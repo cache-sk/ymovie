@@ -1,4 +1,4 @@
-class Form extends Component{
+class Form extends ymovie.view.base.DataComponent {
 	constructor(){
 		super("form");
 		this.element.addEventListener("submit", this.onSubmit.bind(this));

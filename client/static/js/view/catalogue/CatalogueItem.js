@@ -1,4 +1,4 @@
-class CatalogueItem extends Component {
+class CatalogueItem extends ymovie.view.base.Component {
 	constructor(data){
 		super("div");
 		this.element.classList.add("CatalogueItem");

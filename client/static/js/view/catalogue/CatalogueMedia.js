@@ -7,7 +7,7 @@ class CatalogueMedia extends CatalogueItem {
 	
 	constructor(data, watched){
 		super(data);
-		this.decorator = ItemDecorator.create(data);
+		this.decorator = ymovie.util.ItemDecorator.create(data);
 		this.element.classList.add("CatalogueMedia");
 		this.element.classList.toggle('watched', this.isWatched(watched));
 	}
@@ -26,12 +26,12 @@ class CatalogueMedia extends CatalogueItem {
 	
 	render(){
 		const decorator = this.decorator;
-		const name = DOM.span("name", decorator.title);
-		const language = decorator.isCZSK ? DOM.span("language", "CZ/SK") : null;
-		const size = decorator.size ? DOM.span("size", decorator.formatSize) : null;
-		const year = decorator.year ? DOM.span("year", decorator.year) : null;
-		const title = DOM.span("title", [name, language, size || year]);
-		const rating = decorator.rating ? DOM.span("rating", decorator.rating) : null;
+		const name = ymovie.util.DOM.span("name", decorator.title);
+		const language = decorator.isCZSK ? ymovie.util.DOM.span("language", "CZ/SK") : null;
+		const size = decorator.size ? ymovie.util.DOM.span("size", decorator.formatSize) : null;
+		const year = decorator.year ? ymovie.util.DOM.span("year", decorator.year) : null;
+		const title = ymovie.util.DOM.span("title", [name, language, size || year]);
+		const rating = decorator.rating ? ymovie.util.DOM.span("rating", decorator.rating) : null;
 		const img = this.renderPoster();
 		this.append([img, title, rating]);
 		this.element.classList.toggle('playable', decorator.isPlayable);
@@ -41,7 +41,7 @@ class CatalogueMedia extends CatalogueItem {
 	renderPoster(){
 		const poster = this.decorator.posterThumbnail;
 		const url = poster || this.constructor.DEFAULT_POSTER_URL;
-		const result = DOM.img(null, url);
+		const result = ymovie.util.DOM.img(null, url);
 		result.width = 100; // mute consoloe warning
 		result.loading = "lazy";
 		result.onload = this.onImageLoad.bind(this);

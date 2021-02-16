@@ -1,7 +1,7 @@
 class SearchForm extends Form {
 	constructor(){
 		super();
-		this.input = DOM.input(null, "query", null, "search");
+		this.input = ymovie.util.DOM.input(null, "query", null, "search");
 		this.input.addEventListener("keyup", this.onChange.bind(this));
 	}
 	

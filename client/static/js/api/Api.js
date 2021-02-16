@@ -4,9 +4,9 @@ class Api {
 	static KEY_WEBSHARE_TOKEN = "WEBSHARE_TOKEN";
 	
 	constructor(){
-		Util.enhanceDispatcher(this);
-		this.scc = new ymovie.shared.ApiScc(this.uuid);
-		this.webshare = new ymovie.shared.ApiWebshare(this.uuid);
+		ymovie.util.Util.enhanceDispatcher(this);
+		this.scc = new ymovie.api.ApiScc(this.uuid);
+		this.webshare = new ymovie.api.ApiWebshare(this.uuid);
 		this.kodi = new ApiKodi();
 		this.cast = new ApiCast(this.onCastStatus.bind(this));
 	}
@@ -24,7 +24,7 @@ class Api {
 		if(result)
 			return result;
 		
-		const uuid = Util.uuidv4();
+		const uuid = ymovie.util.Util.uuidv4();
 		this.uuid = uuid;
 		return uuid;
 	}
@@ -65,45 +65,45 @@ class Api {
 	}
 	
 	async searchScc(query, title){
-		return SccUtil.normalizeResponse(await this.scc.search(query.trim()), title);
+		return ymovie.util.SccUtil.normalizeResponse(await this.scc.search(query.trim()), title);
 	}
 	
 	async searchWebshare(query, title, page){
-		const normalizedQuery = WebshareUtil.normalizeSearchQuery(query);
-		return WebshareUtil.normalizeSearchResponse(await this.webshare.search(normalizedQuery, page), query, title, page);
+		const normalizedQuery = ymovie.util.WebshareUtil.normalizeSearchQuery(query);
+		return ymovie.util.WebshareUtil.normalizeSearchResponse(await this.webshare.search(normalizedQuery, page), query, title, page);
 	}
 	
 	async loadMedia(id){
-		return SccUtil.normalizeItem({_id:id, _source:await this.scc.loadMedia(id)});
+		return ymovie.util.SccUtil.normalizeItem({_id:id, _source:await this.scc.loadMedia(id)});
 	}
 	
 	async loadPath(url, title){
-		return SccUtil.normalizeResponse(await this.scc.loadPath(url), title);
+		return ymovie.util.SccUtil.normalizeResponse(await this.scc.loadPath(url), title);
 	}
 	
 	async loadIds(ids, title){
-		return SccUtil.normalizeIdsResponse(await this.scc.loadIds(ids), ids, title);
+		return ymovie.util.SccUtil.normalizeIdsResponse(await this.scc.loadIds(ids), ids, title);
 	}
 	
 	async loadSeasons(id, title){
-		return SccUtil.normalizeResponse(await this.scc.loadSeasons(id), title);
+		return ymovie.util.SccUtil.normalizeResponse(await this.scc.loadSeasons(id), title);
 	}
 	
 	async loadEpisodes(id, title){
-		return SccUtil.normalizeResponse(await this.scc.loadEpisodes(id), title);
+		return ymovie.util.SccUtil.normalizeResponse(await this.scc.loadEpisodes(id), title);
 	}
 	
 	async loadStreams(data){
-		return SccUtil.normalizeStreams(await this.scc.loadStreams(data.id));
+		return ymovie.util.SccUtil.normalizeStreams(await this.scc.loadStreams(data.id));
 	}
 	
 	async loadWebshareMedia(ident){
-		return WebshareUtil.normalizeItemResponse(await this.webshare.fileInfo(ident), ident);
+		return ymovie.util.WebshareUtil.normalizeItemResponse(await this.webshare.fileInfo(ident), ident);
 	}
 	
 	async loadWebshareStrams(data){
 		const ident = data.id;
-		return WebshareUtil.normalizeStreams(ident, await this.webshare.fileInfo(ident));
+		return ymovie.util.WebshareUtil.normalizeStreams(ident, await this.webshare.fileInfo(ident));
 	}
 	
 	async resolveStreamUrl(stream){

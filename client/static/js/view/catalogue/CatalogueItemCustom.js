@@ -11,9 +11,9 @@ class CatalogueItemCustom extends CatalogueItem {
 	render(){
 		const data = this.data;
 		this.element.classList.add(data.group);
-		const name = DOM.span("name", data.label);
-		const subtitle = data.subtitle ? DOM.span("subtitle", data.subtitle) : null;
-		this.append(DOM.span("title", [name, subtitle]));
+		const name = ymovie.util.DOM.span("name", data.label);
+		const subtitle = data.subtitle ? ymovie.util.DOM.span("subtitle", data.subtitle) : null;
+		this.append(ymovie.util.DOM.span("title", [name, subtitle]));
 		return super.render();
 	}
 }

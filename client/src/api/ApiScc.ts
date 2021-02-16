@@ -1,4 +1,4 @@
-namespace ymovie.shared {
+namespace ymovie.api {
 	export class ApiScc {
 		static ENDPOINT = "https://plugin.sc2.zone";
 		static PATH_SEARCH = "/api/media/filter/search?order=desc&sort=score&type=*";

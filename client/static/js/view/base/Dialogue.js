@@ -1,4 +1,4 @@
-class Dialogue extends Component {
+class Dialogue extends ymovie.view.base.DataComponent {
 	constructor(scrollable){
 		super("div");
 
@@ -8,8 +8,8 @@ class Dialogue extends Component {
 		this.element.classList.toggle("scrollable", !!scrollable);
 		this.element.addEventListener("transitionend", this.onTransitionEnd.bind(this));
 		
-		this.content = DOM.div("content");
-		this.closeButton = DOM.button("close", "close");
+		this.content = ymovie.util.DOM.div("content");
+		this.closeButton = ymovie.util.DOM.button("close", "close");
 		this.closeButton.addEventListener("click", this.onCloseClick.bind(this));
 	}
 	
@@ -36,8 +36,8 @@ class Dialogue extends Component {
 	
 	defaultRender(){
 		this.clean();
-		DOM.clean(this.content);
-		DOM.append(this.content, this.renderContent());
+		ymovie.util.DOM.clean(this.content);
+		ymovie.util.DOM.append(this.content, this.renderContent());
 		this.append([this.content, this.closeButton]);
 	}
 	

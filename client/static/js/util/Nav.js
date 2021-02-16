@@ -15,7 +15,7 @@ class Nav {
 	static PATH_WEBSHARE_VIDEO = "/webshare/video";
 	
 	constructor(){
-		Util.enhanceDispatcher(this);
+		ymovie.util.Util.enhanceDispatcher(this);
 	}
 	
 	init(){
@@ -51,7 +51,7 @@ class Nav {
 	}
 	
 	safePath(source){
-		return source ? Util.removeDiacritics(source).replace(/[^a-z0-9]+/gi, '-') : "";
+		return source ? ymovie.util.Util.removeDiacritics(source).replace(/[^a-z0-9]+/gi, '-') : "";
 	}
 	
 	go(data, path, title){
@@ -60,7 +60,7 @@ class Nav {
 	}
 	
 	goReplaceMedia(data){
-		this.pushState(data, ItemDecorator.create(data).longTitle, location.hash, true);
+		this.pushState(data, ymovie.util.ItemDecorator.create(data).longTitle, location.hash, true);
 	}
 	
 	goBack(){
@@ -124,7 +124,7 @@ class Nav {
 	}
 	
 	goSccMovie(data){
-		const decorator = ItemDecorator.create(data);
+		const decorator = ymovie.util.ItemDecorator.create(data);
 		this.go(data, `${this.constructor.PATH_SCC_MOVIE}/${decorator.id}`, decorator.longTitle);
 	}
 	
@@ -133,7 +133,7 @@ class Nav {
 	}
 	
 	goSccSeries(data){
-		const decorator = ItemDecorator.create(data);
+		const decorator = ymovie.util.ItemDecorator.create(data);
 		this.go(data, `${this.constructor.PATH_SCC_SERIES}/${decorator.id}`, decorator.longTitle);
 	}
 	
@@ -142,7 +142,7 @@ class Nav {
 	}
 	
 	goSccSeason(data){
-		const decorator = ItemDecorator.create(data);
+		const decorator = ymovie.util.ItemDecorator.create(data);
 		this.go(data, `${this.constructor.PATH_SCC_SEASON}/${decorator.id}`, decorator.longTitle);
 	}
 	
@@ -151,7 +151,7 @@ class Nav {
 	}
 	
 	goSccEpisode(data){
-		const decorator = ItemDecorator.create(data);
+		const decorator = ymovie.util.ItemDecorator.create(data);
 		this.go(data, `${this.constructor.PATH_SCC_EPISODE}/${decorator.id}`, decorator.longTitle);
 	}
 	
@@ -184,7 +184,7 @@ class Nav {
 	}
 	
 	goWebshareVideo(data){
-		const decorator = ItemDecorator.create(data);
+		const decorator = ymovie.util.ItemDecorator.create(data);
 		this.go(data, `${this.constructor.PATH_WEBSHARE_VIDEO}/${decorator.id}`, decorator.title);
 	}
 	

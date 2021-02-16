@@ -1,4 +1,4 @@
-class App extends Component {
+class App extends ymovie.view.base.Component {
 	static async init(){
 		const result = new App();
 		await result.init();
@@ -21,7 +21,8 @@ class App extends Component {
 		this.api = new Api();
 		this.nav = new Nav();
 		this.ga = new GA();
-		const ApiScc = ymovie.shared.ApiScc;
+		const ApiScc = ymovie.api.ApiScc;
+		const CatalogueUtil = ymovie.util.CatalogueUtil;
 		this.menu = {home:[
 			CatalogueUtil.createSccLink("movie", "New Movies", ApiScc.PATH_MOVIES_AIRED),
 			CatalogueUtil.createSccLink("series", "New Series", ApiScc.PATH_SERIES_AIRED),
@@ -102,11 +103,11 @@ class App extends Component {
 	}
 	
 	initCast(){
-		DOM.append(document.body, DOM.script("https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"));
+		ymovie.util.DOM.append(document.body, ymovie.util.DOM.script("https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"));
 	}
 	
 	initAnalytics(){
-		DOM.append(document.body, DOM.script("https://www.google-analytics.com/analytics.js"));
+		ymovie.util.DOM.append(document.body, ymovie.util.DOM.script("https://www.google-analytics.com/analytics.js"));
 	}
 	
 	render(){
@@ -164,41 +165,41 @@ class App extends Component {
 	search(data){
 		if(!data)
 			return this.nav.goHome();
-		if(WebshareUtil.isSearchQuery(data.query))
+		if(ymovie.util.WebshareUtil.isSearchQuery(data.query))
 			return this.nav.goWebshareSearch(data.query, data.page || 0);
 		this.nav.goSccSearch(data.query);
 	}
 	
 	selectCatalogueItem(data){
 		switch(data.type){
-			case CatalogueItemType.SCC_LINK:
+			case ymovie.type.Type.CatalogueItemType.SCC_LINK:
 				this.nav.goSccBrowse(data);
 				break;
-			case CatalogueItemType.SCC_EPISODE:
+			case ymovie.type.Type.CatalogueItemType.SCC_EPISODE:
 				this.nav.goSccEpisode(data);
 				break;
-			case CatalogueItemType.SCC_MOVIE:
+			case ymovie.type.Type.CatalogueItemType.SCC_MOVIE:
 				this.nav.goSccMovie(data);
 				break;
-			case CatalogueItemType.SCC_SEASON:
+			case ymovie.type.Type.CatalogueItemType.SCC_SEASON:
 				this.nav.goSccSeason(data);
 				this.scrollTop();
 				break;
-			case CatalogueItemType.SCC_SERIES:
+			case ymovie.type.Type.CatalogueItemType.SCC_SERIES:
 				this.nav.goSccSeries(data);
 				this.scrollTop();
 				break;
-			case CatalogueItemType.WEBSHARE_VIDEO:
+			case ymovie.type.Type.CatalogueItemType.WEBSHARE_VIDEO:
 				this.nav.goWebshareVideo(data);
 				break;
-			case CatalogueItemType.CALLBACK:
+			case ymovie.type.Type.CatalogueItemType.CALLBACK:
 				data.callback();
 				break;
 		}
 	}
 	
 	async resolveStreams(data){
-		if(ItemDecorator.create(data.data).isWebshareVideo)
+		if(ymovie.util.ItemDecorator.create(data.data).isWebshareVideo)
 			data.callback(await this.api.loadWebshareStrams(data.data));
 		else
 			data.callback(await this.api.loadStreams(data.data));
@@ -220,7 +221,7 @@ class App extends Component {
 				await this.api.playOnCast(data);
 			else if(player === Player.KODI)
 				await this.api.playOnKodi(position, data);
-			const title = ItemDecorator.create(data.source).title;
+			const title = ymovie.util.ItemDecorator.create(data.source).title;
 			this.showNotification(`${notificationTitle} Success`, `Playing ${title}`);
 		} catch(error) {
 			this.showNotification(`${notificationTitle} Error`, error);

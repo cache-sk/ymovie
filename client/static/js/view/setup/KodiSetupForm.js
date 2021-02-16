@@ -16,10 +16,10 @@ class KodiSetupForm extends Form {
 		
 		const endpoint = this.api.getKodiEndpoint(this.position);
 		this.append([
-			DOM.input(null, "endpoint", endpoint, `Endpoint #${this.position}`),
-			DOM.submit(null, "Submit")]);
+			ymovie.util.DOM.input(null, "endpoint", endpoint, `Endpoint #${this.position}`),
+			ymovie.util.DOM.submit(null, "Submit")]);
 		if(this.data && this.data.error)
-			this.append(DOM.span("error", this.data.error));
+			this.append(ymovie.util.DOM.span("error", this.data.error));
 		return super.render();
 	}
 	
