@@ -53,7 +53,7 @@ namespace ymovie.util {
 			this.normalizeRating(source, result);
 			this.normalizeLanguage(source, result);
 			if(info.mediatype === "movie") this.normalizeMovie(source, <type.Type.Playable>result);
-			if(info.mediatype === "tvshow") this.normalizeSeries(source, result);
+			if(info.mediatype === "tvshow") this.normalizeSeries(result);
 			if(info.mediatype === "season") this.normalizeSeason(source, result);
 			if(info.mediatype === "episode") this.normalizeEpisode(source, <type.Type.Episode>result);
 			return result;
@@ -105,7 +105,7 @@ namespace ymovie.util {
 			this.normalizePlayable(source, result);
 		}
 		
-		static normalizeSeries(source:Source, result:type.Type.Series):void {
+		static normalizeSeries(result:type.Type.Series):void {
 			result.type = type.Type.CatalogueItemType.SCC_SERIES;
 		}
 		
@@ -144,7 +144,7 @@ namespace ymovie.util {
 		static normalizeStream(source:Stream):type.Type.Stream | undefined {
 			if(!source.video || !source.video.length)
 				return undefined;
-			const video = source.video[0];
+			const video = <VideoStream>source.video[0];
 			const result:type.Type.Stream = {
 				size: source.size,
 				language: source.audio

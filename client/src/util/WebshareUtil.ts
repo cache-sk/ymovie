@@ -1,15 +1,15 @@
 namespace ymovie.util {
 	export class WebshareUtil {
-		static getFirst(source:Element, param:string):Element {
-			return source.getElementsByTagName(param)[0];
+		static getFirst(source:Element | undefined, param:string):Element | undefined {
+			return source && source.getElementsByTagName(param)?.[0];
 		}
 		
-		static getText(source:Element, param:string):string | null {
-			return this.getFirst(source, param)?.textContent;
+		static getText(source:Element, param:string):string | undefined {
+			return this.getFirst(source, param)?.textContent || undefined;
 		}
 		
-		static getInt(source:Element, param:string):number {
-			return parseInt(this.getText(source, param) || "");
+		static getInt(source:Element | undefined, param:string):number {
+			return parseInt((source && this.getText(source, param)) || "");
 		}
 		
 		static isSearchQuery(query:string):boolean {
@@ -21,11 +21,13 @@ namespace ymovie.util {
 		}
 		
 		// ES5 complains Type 'HTMLCollectionOf<Element>' is not an array type.
-		static getElementsByTagNameArray(data:Element, qualifiedName:string):Array<Element> {
-			const list = data.getElementsByTagName("file");
+		static getElementsByTagNameArray(data:Element | undefined, qualifiedName:string):Array<Element> {
+			if(!data)
+				return [];
+			const list = data.getElementsByTagName(qualifiedName);
 			const result:Array<Element> = [];
 			for(let i = 0; i < list.length; i++)
-				result.push(list[i]);
+				result.push(<Element>list[i]);
 			return result;
 		}
 
@@ -82,7 +84,7 @@ namespace ymovie.util {
 		static containsExtension(url:string):boolean {
 			var chunks = url.split(".");
 			var extension = chunks[chunks.length - 1];
-			return extension.length < 5;
+			return extension ? extension.length < 5 : false;
 		}
 	}
 }

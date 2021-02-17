@@ -1,3 +1,5 @@
+/// <reference path="base/Dialogue.ts"/>
+
 namespace ymovie.view {
 	export class AboutView extends base.Dialogue<any> {
 		constructor(){
@@ -59,7 +61,7 @@ namespace ymovie.view {
 			`;
 		}
 		
-		onCloseClick(event:Event){
+		onCloseClick(){
 			this.trigger?.(enums.Action.BACK);
 		}
 	}

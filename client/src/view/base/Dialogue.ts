@@ -1,5 +1,7 @@
+/// <reference path="DataComponent.ts"/>
+
 namespace ymovie.view.base {
-	export class Dialogue<TData> extends ymovie.view.base.DataComponent<HTMLDivElement, TData> {
+	export class Dialogue<TData> extends DataComponent<HTMLDivElement, TData> {
 		scrollable:boolean;
 		content:HTMLDivElement;
 		closeButton:HTMLButtonElement;
@@ -50,11 +52,11 @@ namespace ymovie.view.base {
 			return undefined;
 		}
 		
-		onTransitionEnd(event:Event){
+		onTransitionEnd(){
 			this.element.classList.toggle("transition", false);
 		}
 		
-		onCloseClick(event:Event){
+		onCloseClick(){
 			this.hide();
 		}
 	}

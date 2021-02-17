@@ -19,7 +19,7 @@ namespace ymovie.view.discovery {
 		render(){
 			const list = this.element.classList;
 			for(let i = 0; i < list.length; i++)
-				this.validateClassName(list[i]);
+				this.validateClassName(<string>list[i]);
 
 			if(this.data?.type)
 				this.element.classList.toggle(`type-${this.data.type}`, true);

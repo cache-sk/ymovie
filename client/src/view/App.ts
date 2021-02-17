@@ -1,3 +1,5 @@
+/// <reference path="base/Component.ts"/>
+
 namespace ymovie.view {
 	export class App extends base.Component<HTMLBodyElement> {
 		api:api.Api | undefined;
@@ -19,7 +21,7 @@ namespace ymovie.view {
 			await result.init();
 		}
 		
-		async init(){
+		async init():Promise<any> {
 			// cast only works on filesystem, localhost or https (for real domains)
 			// also do not redirect on IP, as there is no https alternative
 			if(location.protocol === "http:" 
@@ -150,7 +152,7 @@ namespace ymovie.view {
 			this.notificationView?.update({title, message});
 		}
 
-		async loadCatalogue(data:Array<type.Type.AnyCatalogueItem> | undefined, command:() => Promise<Array<type.Type.AnyCatalogueItem> | undefined>, type?:string){
+		async loadCatalogue(data:Array<type.Type.AnyCatalogueItem> | undefined, command:() => Promise<Array<type.Type.AnyCatalogueItem> | undefined>, type?:string):Promise<any> {
 			if(data)
 				return this.updateCatalogue(data, type);
 			

@@ -34,7 +34,7 @@ namespace ymovie.api {
 					this.loadMedia(data, resolve, reject);
 				}
 
-				const onError = (error:any) => reject("Requesting session cancelled or failed.");
+				const onError = () => reject("Requesting session cancelled or failed.");
 
 				// requestSession() must be invoked by user action!
 				chrome.cast.requestSession(onSuccess, onError, this.createSessionRequest());
@@ -82,6 +82,6 @@ namespace ymovie.api {
 		}
 		
 		onInitSuccess(){}
-		onInitError(data:any){}
+		onInitError(){}
 	}
 }

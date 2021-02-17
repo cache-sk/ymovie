@@ -78,7 +78,7 @@ namespace ymovie.view.detail {
 			document.execCommand('copy');
 		}
 
-		onClick(event:Event) {
+		onClick() {
 		}
 	}
 }

@@ -1,3 +1,5 @@
+/// <reference path="StreamOption.ts"/>
+
 namespace ymovie.view.detail {
 	export class StreamItem extends StreamOption<Data> {
 		static create(data:Data){
@@ -17,9 +19,8 @@ namespace ymovie.view.detail {
 				this.add("duration", decorator.formatDuration)]);
 		}
 		
-		add(className:string, value:string | undefined | null){
-			if(value)
-				return util.DOM.span(className, value);
+		add(className:string, value:string | undefined | null):util.DOMContent {
+			return value ? util.DOM.span(className, value) : undefined;
 		}
 		
 		onClick(){

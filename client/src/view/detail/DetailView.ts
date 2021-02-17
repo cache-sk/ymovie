@@ -76,7 +76,7 @@ namespace ymovie.view.detail {
 		}
 
 		getTouchX(event:TouchEvent):number | undefined {
-			return (this.isVisible && event.touches.length == 1) ? event.touches[0].clientX : undefined;
+			return (this.isVisible && event.touches.length == 1) ? event.touches[0]?.clientX : undefined;
 		}
 		
 		showPrevious(){
@@ -126,7 +126,7 @@ namespace ymovie.view.detail {
 			this.touchLastX = this.getTouchX(event);
 		}
 
-		onDocumentTouchEnd(event:TouchEvent){
+		onDocumentTouchEnd(){
 			if(this.touchLastX === undefined || this.touchStartX === undefined)
 				return;
 			const diff = (this.touchLastX - this.touchStartX) / this.element.clientWidth;

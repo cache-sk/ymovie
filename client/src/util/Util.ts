@@ -20,9 +20,9 @@ namespace ymovie.util {
 			return value instanceof Error;
 		}
 		
-		static getAndroidVersion():string | null {
+		static getAndroidVersion():string | undefined {
 			const match = navigator.userAgent.match(/Android\s([0-9\.]+)/);
-			return match ? match[1] : null;
+			return match ? match[1] : undefined;
 		}
 		
 		static enhanceDispatcher(object:Dispatcher, dispatcher?:EventTarget):void {

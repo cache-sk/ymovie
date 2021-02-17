@@ -1,3 +1,5 @@
+/// <reference path="StreamOption.ts"/>
+
 namespace ymovie.view.detail {
 	export class StreamNA extends StreamOption<any> {
 		static create(){

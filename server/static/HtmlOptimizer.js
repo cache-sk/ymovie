@@ -62,7 +62,7 @@ module.exports = class HtmlOptimizer {
 			const {code} = minify(content, {
 				plugins: ["transform-class-properties"],
 				comments: false,
-				presets: [["minify", {mangle: true, keepFnName: false, keepClassName:false}]]
+				presets: [["minify", {mangle:true, keepFnName:false, keepClassName:true}]]
 			});
 			return `<script>${code}</script>`;
 		});

@@ -8,7 +8,7 @@
 	"main": "server/index.js",
 	"scripts": {
 		"client-build": "node client/build/prepare.js && npm run client-compile",
-		"client-compile": "tsc --project client/tsconfig.json",
+		"client-compile": "tsc --project client/tsconfig-web.json",
 		"server-build": "node server/build/prepare.js",
 		"build": "node build/prepare.js && npm run client-build && npm run server-build",
 		"start": "npm run build && node dist/server/index.js",

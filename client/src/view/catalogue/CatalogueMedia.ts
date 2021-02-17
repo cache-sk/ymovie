@@ -17,7 +17,6 @@ namespace ymovie.view.catalogue {
 		
 		isWatched(map:util.WatchedMap){
 			const decorator = this.decorator;
-			const id = decorator.id;
 			if(decorator.isSccMovie)
 				return map.movies.has(decorator.id);
 			if(decorator.isSccSeries)

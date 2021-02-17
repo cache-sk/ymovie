@@ -1,0 +1,9 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"target": "ES6",
+		"lib": ["ES6", "DOM"],
+		"outFile": "../dist/client/js/web.js"
+	},
+	"exclude": ["src/hbbtv"]
+}

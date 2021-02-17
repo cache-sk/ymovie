@@ -5,7 +5,7 @@ namespace ymovie.view.catalogue {
 			this.element.classList.add("CatalogueItem");
 			this.data = data;
 			this.element.addEventListener("click", 
-				event => this.trigger?.(this.selectAction, this.selectData));
+				() => this.trigger?.(this.selectAction, this.selectData));
 		}
 		
 		get selectAction():enums.Action | undefined {

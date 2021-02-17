@@ -27,14 +27,15 @@ namespace ymovie.api {
 			const response = await (await fetch(url, {method:"POST", body, headers})).text();
 			const xml = new DOMParser().parseFromString(response, "application/xml");
 			try {
-				const response:Element = xml.getElementsByTagName("response")[0];
-				if(response.getElementsByTagName("status")[0].textContent !== "OK")
-					throw new Error(response.getElementsByTagName("message")[0].textContent || undefined);
+				const response = xml.getElementsByTagName("response")[0];
+				if(!response)
+					throw new Error("Unexpected response");
+				if(response.getElementsByTagName("status")?.[0]?.textContent !== "OK")
+					throw new Error(response.getElementsByTagName("message")?.[0]?.textContent || undefined);
 				return response;
 			} catch (error) {
 				throw error;
 			}
-			throw new Error("Unknown error");
 		}
 		
 		async loadValue(path:string, body:string, param:any){
