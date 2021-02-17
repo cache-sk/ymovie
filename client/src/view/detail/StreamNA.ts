@@ -1,11 +1,11 @@
 namespace ymovie.view.detail {
-	export class StreamNA extends StreamOption {
+	export class StreamNA extends StreamOption<any> {
 		static create(){
 			return new this(null);
 		}
 		
 		get url(){
-			return null;
+			return undefined;
 		}
 		
 		renderInfo(){

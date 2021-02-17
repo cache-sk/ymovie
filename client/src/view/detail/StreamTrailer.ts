@@ -1,16 +1,22 @@
 namespace ymovie.view.detail {
-	export class StreamTrailer extends StreamOption {
-		static create(data:any){
+	export class StreamTrailer extends StreamOption<Data> {
+		static create(data:Data){
 			return new this(data);
 		}
 		
 		renderInfo(){
-			const domain = new URL(this.data.trailer).hostname.split(".").splice(-2, 1);
-			return ymovie.util.DOM.span("info", [ymovie.util.DOM.span("name", "Trailer"), ymovie.util.DOM.span("domain", domain)]);
+			const domain = new URL(<string>this.data?.trailer).hostname.split(".").splice(-2, 1);
+			return util.DOM.span("info", [util.DOM.span("name", "Trailer"), util.DOM.span("domain", domain)]);
 		}
 		
 		onClick(){
-			this.update({...this.data, url:this.data.trailer});
+			if(this.data)
+				this.update({...this.data, url:this.data?.trailer});
 		}
+	}
+
+	type Data = {
+		trailer:string;
+		url?:string;
 	}
 }

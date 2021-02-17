@@ -17,8 +17,8 @@ namespace ymovie.view.detail {
 			document.addEventListener("touchend", this.onDocumentTouchEnd.bind(this));
 		}
 		
-		get detail():type.Type.Item {
-			return <type.Type.Item>this.data?.detail;
+		get detail():type.Type.Playable {
+			return <type.Type.Playable>this.data?.detail;
 		}
 
 		renderContent():util.DOMContent {
@@ -138,7 +138,7 @@ namespace ymovie.view.detail {
 	}
 
 	type Data = {
-		detail:type.Type.Item;
+		detail:type.Type.Playable;
 		list:Array<type.Type.AnyCatalogueItem>;
 	}
 }

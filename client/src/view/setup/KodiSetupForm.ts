@@ -1,7 +1,9 @@
 namespace ymovie.view.setup {
-	export class KodiSetupForm extends base.Form<any> {
+	export class KodiSetupForm extends base.Form {
 		api:api.Api;
 		position:number;
+		data:Data | undefined;
+		endpointInput:HTMLInputElement;
 
 		constructor(api:api.Api, position:number){
 			super();
@@ -9,18 +11,23 @@ namespace ymovie.view.setup {
 			this.api.listen?.(this.api.getKodiStatusKey(position), this.render.bind(this));
 			this.position = position;
 			this.element.classList.add(`position${position}`);
+			const endpoint = this.api.getKodiEndpoint(this.position);
+			this.endpointInput = util.DOM.input(undefined, "endpoint", endpoint || undefined, `Endpoint #${this.position}`)
 		}
 
 		static create(api:api.Api, position:number){
 			return new this(api, position);
 		}
+
+		update(data?:Data):HTMLElement {
+			this.data = data;
+			return this.render();
+		}
 		
 		render(){
 			this.clean();
-			
-			const endpoint = this.api.getKodiEndpoint(this.position);
 			this.append([
-				util.DOM.input(undefined, "endpoint", endpoint || undefined, `Endpoint #${this.position}`),
+				this.endpointInput,
 				util.DOM.submit(undefined, "Submit")]);
 			if(this.data && this.data.error)
 				this.append(util.DOM.span("error", this.data.error));
@@ -28,7 +35,7 @@ namespace ymovie.view.setup {
 		}
 		
 		async process(){
-			const endpoint = this.getField("endpoint").value;
+			const endpoint = this.endpointInput.value;
 			try {
 				await this.api.connectKodi(this.position, endpoint);
 				this.update();
@@ -36,5 +43,9 @@ namespace ymovie.view.setup {
 				this.update({error});
 			}
 		}
+	}
+
+	type Data = {
+		error?:string;
 	}
 }

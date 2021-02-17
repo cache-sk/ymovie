@@ -1,11 +1,11 @@
 namespace ymovie.view.detail {
-	export class StreamItem extends StreamOption {
-		static create(data:any){
+	export class StreamItem extends StreamOption<Data> {
+		static create(data:Data){
 			return new this(data);
 		}
 
 		renderInfo(){
-			const decorator = util.StreamDecorator.create(this.data.stream);
+			const decorator = util.StreamDecorator.create(<type.Type.Stream>this.data?.stream);
 			return util.DOM.span("info", [
 				this.add("size", decorator.formatSize),
 				this.add("language", decorator.language),
@@ -24,8 +24,8 @@ namespace ymovie.view.detail {
 		
 		onClick(){
 			this.element.classList.add("loading");
-			this.trigger?.(enums.Action.RESOLVE_STREAM_URL, {stream:this.data.stream, callback:this.onUrl.bind(this)});
-			const decorator = util.ItemDecorator.create(this.data.source);
+			this.trigger?.(enums.Action.RESOLVE_STREAM_URL, {stream:this.data?.stream, callback:this.onUrl.bind(this)});
+			const decorator = util.ItemDecorator.create(<type.Type.Playable>this.data?.source);
 			if(decorator.isSccMovie)
 				util.WatchedUtil.addMovie(decorator.id);
 			if(decorator.isSccEpisode) {
@@ -37,7 +37,14 @@ namespace ymovie.view.detail {
 		
 		onUrl(url:string){
 			this.element.classList.remove("loading");
-			this.update({...this.data, url});
+			if(this.data)
+				this.update({...this.data, url});
 		}
+	}
+
+	type Data = {
+		stream:type.Type.Stream;
+		source:type.Type.Playable;
+		url?:string;
 	}
 }

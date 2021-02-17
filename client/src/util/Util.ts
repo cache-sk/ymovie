@@ -70,6 +70,6 @@ namespace ymovie.util {
 	type Dispatcher = {
 		dispatcher:EventTarget | undefined;
 		trigger:((type:any, detail?:any) => void) | undefined;
-		listen:((type:any, callback:(detail:any, event:CustomEvent) => void) => void) | undefined;
+		listen:((type:any, callback:(detail:any, event?:CustomEvent) => void) => void) | undefined;
 	}
 }

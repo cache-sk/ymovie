@@ -24,7 +24,7 @@ namespace ymovie.api {
 			chrome.cast.initialize(config, this.onInitSuccess, this.onInitError);
 		}
 		
-		play(data:type.Type.CastSource){
+		play(data:type.Type.PlayableStream){
 			return new Promise((resolve, reject) => {
 				if(this.session)
 					return this.loadMedia(data, resolve, reject);
@@ -41,7 +41,7 @@ namespace ymovie.api {
 			})
 		}
 		
-		loadMedia(data:type.Type.CastSource, resolve:(value:unknown) => void, reject:(reason?:any) => void){
+		loadMedia(data:type.Type.PlayableStream, resolve:(value:unknown) => void, reject:(reason?:any) => void){
 			const mediaInfo = util.CastUtil.toCastInfo(data);
 			const request = new chrome.cast.media.LoadRequest(mediaInfo);
 			const onError = (error:any) => {

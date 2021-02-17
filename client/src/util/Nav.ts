@@ -16,7 +16,7 @@ namespace ymovie.util {
 		static PATH_WEBSHARE_VIDEO = "/webshare/video";
 		
 		initialHistoryLength = 0;
-		currentState:State | undefined;
+		currentState:type.Type.NavState | undefined;
 
 		dispatcher:EventTarget | undefined;
 		trigger:((type:any, detail:any) => void) | undefined;
@@ -35,7 +35,7 @@ namespace ymovie.util {
 			document.title = value ? `${value} | YMovie` : "YMovie";
 		}
 		
-		get locationData():LocationData {
+		get locationData():type.Type.LocationData {
 			const path = location.hash.substr(1);
 			const regexp = /^\/[a-z]+\/[a-z]+\/([^\/]+)(\/|$)/;
 			const sccMediaId = (this.isSccSeries(path) 
@@ -50,7 +50,7 @@ namespace ymovie.util {
 			return {path, sccMediaId, webshareMediaId, sccLinkLabel};
 		}
 		
-		pushState(state:any, title:string, url:string, replace?:boolean):void {
+		pushState(state:type.Type.NavStateSource, title:string, url:string, replace?:boolean):void {
 			const enhancedState = {state, title, url};
 			history[replace ? "replaceState" : "pushState"](enhancedState, title, url);
 			this.title = title;
@@ -62,8 +62,9 @@ namespace ymovie.util {
 			return source ? Util.removeDiacritics(source).replace(/[^a-z0-9]+/gi, '-') : "";
 		}
 		
-		go(data:any, path:string, title:string):void {
-			const page = (data.page && data.page > 1) ? `/${data.page}` : '';
+		go(data:type.Type.NavStateSource, path:string, title:string):void {
+			const dataPage = (<type.Type.CatalogueItem>data).page;
+			const page = (dataPage && dataPage > 1) ? `/${dataPage}` : '';
 			this.pushState(data, title, `#${path}/${this.safePath(title)}${page}`);
 		}
 		
@@ -78,25 +79,26 @@ namespace ymovie.util {
 				history.back();
 		}
 		
-		mergeState(key:string, value:string):void {
-			const enhancedState = history.state;
-			enhancedState.state[key] = value;
+		assignCatalogue(value:Array<type.Type.AnyCatalogueItem> | undefined):void {
+			const enhancedState = <type.Type.NavState>history.state;
+			if(enhancedState.state)
+				enhancedState.state.catalogue = value;
 			history.replaceState(enhancedState, enhancedState.title, enhancedState.url);
 		}
 		
-		triggerChange(enhancedState:State):void {
+		triggerChange(enhancedState:type.Type.NavState):void {
 			const path = enhancedState.url.substr(1);
 			const current = this.currentState;
 			const previous = {...current, path:current?.url.substr(1)};
-			this.trigger?.(enums.Action.CHANGE, {...enhancedState, path, previous});
+			this.trigger?.(enums.Action.CHANGE, <type.Type.NavChange>{...enhancedState, path, previous});
 		}
 		
 		goHome(replace?:boolean):void {
-			this.pushState(null, "", "/", replace);
+			this.pushState(undefined, "", "/", replace);
 		}
 		
 		goSetup(relpace?:boolean):void {
-			this.pushState(null, "Setup", `#${Nav.PATH_SETUP}`, relpace);
+			this.pushState(undefined, "Setup", `#${Nav.PATH_SETUP}`, relpace);
 		}
 		
 		isSetup(path:string):boolean {
@@ -104,7 +106,7 @@ namespace ymovie.util {
 		}
 		
 		goAbout(replace?:boolean):void {
-			this.pushState(null, "About", `#${Nav.PATH_ABOUT}`, replace);
+			this.pushState(undefined, "About", `#${Nav.PATH_ABOUT}`, replace);
 		}
 		
 		isAbout(path:string):boolean {
@@ -163,16 +165,16 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_EPISODE);
 		}
 		
-		goSccWatchedMovies(relpace:boolean){
-			this.pushState({}, "Watched Movies", `#${Nav.PATH_SCC_WATCHED_MOVIES}`, relpace);
+		goSccWatchedMovies(relpace?:boolean){
+			this.pushState(undefined, "Watched Movies", `#${Nav.PATH_SCC_WATCHED_MOVIES}`, relpace);
 		}
 		
 		isSccWatchedMovies(path:string):boolean {
 			return path?.startsWith(Nav.PATH_SCC_WATCHED_MOVIES);
 		}
 		
-		goSccWatchedSeries(relpace:boolean):void {
-			this.pushState({}, "Watched Series", `#${Nav.PATH_SCC_WATCHED_SERIES}`, relpace);
+		goSccWatchedSeries(relpace?:boolean):void {
+			this.pushState(undefined, "Watched Series", `#${Nav.PATH_SCC_WATCHED_SERIES}`, relpace);
 		}
 		
 		isSccWatchedSeries(path:string):boolean {
@@ -207,18 +209,5 @@ namespace ymovie.util {
 			this.triggerChange(enhancedState);
 			this.currentState = enhancedState;
 		}
-	}
-
-	type State = {
-		state:string;
-		title:string;
-		url:string;
-	}
-
-	type LocationData = {
-		path:string;
-		sccMediaId?:string;
-		webshareMediaId?:string;
-		sccLinkLabel?:string;
 	}
 }

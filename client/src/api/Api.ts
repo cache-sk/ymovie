@@ -83,7 +83,7 @@ namespace ymovie.api {
 			return util.WebshareUtil.normalizeSearchResponse(await this.webshare.search(normalizedQuery, page), query, title, page);
 		}
 		
-		async loadMedia(id:string){
+		async loadMedia(id:string):Promise<type.Type.Item> {
 			return util.SccUtil.normalizeItem({_id:id, _source:await this.scc.loadMedia(id)});
 		}
 		
@@ -91,7 +91,7 @@ namespace ymovie.api {
 			return util.SccUtil.normalizeResponse(await this.scc.loadPath(url), title);
 		}
 		
-		async loadIds(ids:Array<string>, title:string) {
+		async loadIds(ids:Array<string>, title:string):Promise<Array<type.Type.AnyCatalogueItem>> {
 			return util.SccUtil.normalizeIdsResponse(await this.scc.loadIds(ids), ids, title);
 		}
 		
@@ -111,7 +111,7 @@ namespace ymovie.api {
 			return util.WebshareUtil.normalizeItemResponse(await this.webshare.fileInfo(ident), ident);
 		}
 		
-		async loadWebshareStrams(data:type.Type.WebshareItem):Promise<Array<type.Type.Stream>> {
+		async loadWebshareStreams(data:type.Type.WebshareItem):Promise<Array<type.Type.Stream>> {
 			const ident = data.id;
 			return util.WebshareUtil.normalizeStreams(ident, await this.webshare.fileInfo(ident));
 		}
@@ -120,11 +120,11 @@ namespace ymovie.api {
 			return await this.webshare.getLink(stream.ident, <string>this.webshareToken);
 		}
 		
-		async playOnCast(data:type.Type.CastSource){
+		async playOnCast(data:type.Type.PlayableStream){
 			await this.cast.play(data);
 		}
 		
-		async playOnKodi(position:number, data:type.Type.CatalogueItem){
+		async playOnKodi(position:number, data:type.Type.PlayableStream){
 			await this.kodi.play(<string>this.getKodiEndpoint(position), <string>data.url);
 		}
 		

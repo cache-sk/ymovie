@@ -4,7 +4,7 @@ namespace ymovie.view.base {
 
 		dispatcher:EventTarget | undefined;
 		trigger:((type:any, detail?:any) => void) | undefined;
-		listen:((type:any, callback:(detail:any, event:CustomEvent) => void) => void) | undefined;
+		listen:((type:any, callback:(detail:any, event?:CustomEvent) => void) => void) | undefined;
 
 		constructor(element:ComponentElement) {
 			this.element = util.Util.isString(element) ? <TElement>util.DOM.create(<string>element) : <TElement>element;

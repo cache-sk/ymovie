@@ -74,7 +74,7 @@ namespace ymovie.type.Type {
 		url?:string;
 		subtitle?:string;
 		page?:number;
-		callback?:() => void;
+		callback?:(replace?:boolean) => void;
 		action?:enums.Action;
 		payload?:any;
 	}
@@ -92,11 +92,6 @@ namespace ymovie.type.Type {
 
 	export type AnyCatalogueItem = CatalogueItem | Item;
 
-	export type CastSource = {
-		source:Item;
-		url:string;
-	}
-
 	export type ActionResolveStreamsData = {
 		data:Item;
 		callback:any;
@@ -105,6 +100,46 @@ namespace ymovie.type.Type {
 	export type ActionPlayPayload = {
 		player:enums.Player;
 		position?:number;
-		data:CatalogueItem;
+		data:{url:string};
+	}
+
+	export type LocationData = {
+		path:string;
+		sccMediaId?:string;
+		webshareMediaId?:string;
+		sccLinkLabel?:string;
+	}
+
+	export type PlayableStreams = {
+		data:type.Type.Playable;
+		streams:Array<type.Type.Stream>;
+	}
+
+	export type PlayableStream = {
+		source:type.Type.Playable;
+		//streams:Array<type.Type.Stream>;
+		trailer?:string;
+		url?:string;
+	}
+
+	export type NavState = {
+		state:NavStateSource;
+		title:string;
+		url:string;
+	}
+
+	export type NavStateSource = CatalogueItem & NavStateCatalogue | Item & NavStateCatalogue | NavStateSearch & NavStateCatalogue | undefined;
+
+	export type NavStateCatalogue = {
+		catalogue?:Array<type.Type.AnyCatalogueItem>;
+	}
+
+	export type NavStateSearch = {
+		query:string;
+	}
+
+	export type NavChange = NavState & {
+		path:string;
+		previous:NavChange;
 	}
 }

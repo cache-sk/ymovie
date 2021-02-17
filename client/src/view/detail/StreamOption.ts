@@ -1,13 +1,13 @@
 namespace ymovie.view.detail {
-	export class StreamOption extends base.DataComponent<HTMLDivElement, any> {
-		constructor(data:any){
+	export class StreamOption<TData extends {url?:string}> extends base.DataComponent<HTMLDivElement, TData> {
+		constructor(data:TData){
 			super("div");
 			this.data = data;
 			this.element.classList.add("StreamOption");
 		}
 		
 		get url(){
-			return this.data.url;
+			return this.data?.url;
 		}
 		
 		render(){

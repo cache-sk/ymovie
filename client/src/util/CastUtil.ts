@@ -1,9 +1,9 @@
 namespace ymovie.util {
 	export class CastUtil {
-		static toCastInfo(data:type.Type.CastSource):chrome.cast.media.IMetadata {
+		static toCastInfo(data:type.Type.PlayableStream):chrome.cast.media.IMetadata {
 			const decorator = ItemDecorator.create(data.source);
 			const poster = decorator.posterThumbnail;
-			const result = new chrome.cast.media.MediaInfo(data.url, 'video/mp4');
+			const result = new chrome.cast.media.MediaInfo(<string>data.url, 'video/mp4');
 			result.metadata = decorator.isSccEpisode
 				? this.toCastSeriesMetadata(decorator) 
 				: this.toCastMovieMetadata(decorator);
