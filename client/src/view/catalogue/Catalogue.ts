@@ -24,15 +24,15 @@ namespace ymovie.view.catalogue {
 		}
 		
 		renderItem(data:type.Type.AnyCatalogueItem, watched:util.WatchedMap){
-			switch(data.type){
-				case type.Type.CatalogueItemType.CALLBACK:
-				case type.Type.CatalogueItemType.SCC_LINK:
-					return CatalogueItemCustom.create(<type.Type.CatalogueItem>data).render();
-				case type.Type.CatalogueItemType.TRIGGER:
-					return CatalogueTrigger.create(<type.Type.CatalogueItem>data).render();
-				default:
-					return CatalogueMedia.create(<type.Type.Item>data, watched).render();
-			}
+			if(data instanceof type.Type.CatalogueItemCallback)
+				return CatalogueItemCustom.create(data).render();
+			if(data instanceof type.Type.CatalogueItemSccLink)
+				return CatalogueItemCustom.create(data).render();
+			if(data instanceof type.Type.CatalogueItemTrigger)
+				return CatalogueTrigger.create(data).render();
+			if(data instanceof type.Type.Item)
+				return CatalogueMedia.create(data, watched).render();
+			return undefined;
 		}
 	}
 }

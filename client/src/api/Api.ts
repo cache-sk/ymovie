@@ -79,7 +79,7 @@ namespace ymovie.api {
 			return util.WebshareUtil.normalizeSearchResponse(await this.webshare.search(normalizedQuery, page), query, title, page);
 		}
 		
-		async loadMedia(id:string):Promise<type.Type.Item> {
+		async loadMedia(id:string):Promise<type.Type.Item | undefined> {
 			return util.SccUtil.normalizeItem({_id:id, _source:await this.scc.loadMedia(id)});
 		}
 		

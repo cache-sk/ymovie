@@ -10,16 +10,8 @@ namespace ymovie.util {
 			this.source = source;
 		}
 		
-		get id():string {
-			return this.source.id;
-		}
-		
-		get title():string {
-			return this.source.title;
-		}
-		
 		get subtitle():string | undefined {
-			return this.isSccEpisode ? `Season ${this.seasonNumber}, Episode ${this.episodeNumber}` : undefined;
+			return this.source instanceof type.Type.Episode ? `Season ${this.seasonNumber}, Episode ${this.episodeNumber}` : undefined;
 		}
 		
 		get seriesId():string | undefined {
@@ -31,11 +23,11 @@ namespace ymovie.util {
 		}
 		
 		get longTitle():string {
-			if(this.isSccEpisode)
+			if(this.source instanceof type.Type.Episode)
 				return `${this.seriesTitle} - Season ${this.seasonNumber} - Episode ${this.episodeNumber}`;
-			if(this.isSccSeason)
+			if(this.source instanceof type.Type.Season)
 				return `${this.seriesTitle} - Season ${this.seasonNumber}`;
-			return this.title;
+			return <string>this.source.title;
 		}
 		
 		get year():string {
@@ -48,21 +40,17 @@ namespace ymovie.util {
 				return `${webshare.ratingPositive || 0}:${webshare.ratingNegative || 0}`;
 			return this.source?.rating?.toFixed(1) || "";
 		}
-		
-		get type():number {
-			return this.source.type;
-		}
-		
+
 		get streamCount():number | undefined {
 			return (<type.Type.Playable>this.source).streamCount;
 		}
 		
 		get isPlayable():boolean {
-			if(this.isWebshareVideo)
+			if(this.source instanceof type.Type.WebshareItem)
 				return true;
 			if(!this.streamCount)
 				return false;
-			return this.isSccMovie || this.isSccEpisode;
+			return this.source instanceof type.Type.Movie || this.source instanceof type.Type.Episode;
 		}
 		
 		get plot():string {
@@ -109,16 +97,8 @@ namespace ymovie.util {
 			return (<type.Type.Episode>this.source).seasonNumber;
 		}
 		
-		get poster():string {
-			return this.source.poster;
-		}
-		
-		get size():number | undefined {
-			return this.source.size;
-		}
-		
 		get posterThumbnail():string | undefined {
-			const original = this.poster;
+			const original = this.source.poster;
 			if(!original)
 				return undefined;
 				
@@ -142,37 +122,6 @@ namespace ymovie.util {
 			if(url.indexOf("assets.fanart.tv") > -1)
 				return url.replace("assets.fanart.tv", "fanart.tv/detailpreview");
 			return url;
-		}
-		
-		get formatSize():string | undefined {
-			if(!this.size)
-				return undefined;
-			const mb = this.size / 1024 / 1024;
-			return mb > 100 ? (mb / 1024).toFixed(1) + "G" : mb.toFixed(1) + "M";
-		}
-		
-		get isCZSK():boolean {
-			return this.source.isCZSK || false;
-		}
-		
-		get isSccMovie():boolean {
-			return this.source.type === type.Type.CatalogueItemType.SCC_MOVIE;
-		}
-		
-		get isSccSeries():boolean {
-			return this.source.type === type.Type.CatalogueItemType.SCC_SERIES;
-		}
-
-		get isSccSeason():boolean {
-			return this.source.type === type.Type.CatalogueItemType.SCC_SEASON;
-		}
-		
-		get isSccEpisode():boolean {
-			return this.source.type === type.Type.CatalogueItemType.SCC_EPISODE;
-		}
-		
-		get isWebshareVideo():boolean {
-			return this.source.type === type.Type.CatalogueItemType.WEBSHARE_VIDEO;
 		}
 	}
 }

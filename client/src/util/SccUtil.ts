@@ -1,7 +1,9 @@
 namespace ymovie.util {
 	export class SccUtil {
 		static normalizeResponse(data:Response, title:string):Array<type.Type.AnyCatalogueItem> {
-			const result:Array<type.Type.AnyCatalogueItem> = data.data.map(item => this.normalizeItem(item));
+			const result:Array<type.Type.AnyCatalogueItem> = <Array<type.Type.AnyCatalogueItem>>data.data
+				.map(item => this.normalizeItem(item))
+				.filter(item => item != undefined);
 			const page = data?.pagination;
 			if(page?.prev)
 				result.unshift(CatalogueUtil.createSccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
@@ -43,19 +45,28 @@ namespace ymovie.util {
 			return undefined;
 		}
 		
-		static normalizeItem(item:Item):type.Type.Item {
+		static normalizeItem(item:Item):type.Type.Item | undefined {
+			const id = item._id;
 			const source = item._source;
 			const info = source.info_labels;
+			let result:type.Type.Item;
+			if(info.mediatype === "movie")
+				result = this.normalizeMovie(id, source);
+			else if(info.mediatype === "tvshow")
+				result = this.normalizeSeries(id);
+			else if(info.mediatype === "season")
+				result = this.normalizeSeason(id, source);
+			else if(info.mediatype === "episode")
+				result = this.normalizeEpisode(id, source);
+			else
+				return undefined;
+
 			const info2 = source.info2 = this.mergeI18n(source.i18n_info_labels);
-			const result:type.Type.Item = <type.Type.Item>{id:item._id, poster:this.resolvePoster(source.i18n_info_labels)};
+			result.poster = this.resolvePoster(source.i18n_info_labels);
 			if(info2.title) result.title = info2.title;
 			if(info.year) result.year = info.year;
 			this.normalizeRating(source, result);
 			this.normalizeLanguage(source, result);
-			if(info.mediatype === "movie") this.normalizeMovie(source, <type.Type.Playable>result);
-			if(info.mediatype === "tvshow") this.normalizeSeries(result);
-			if(info.mediatype === "season") this.normalizeSeason(source, result);
-			if(info.mediatype === "episode") this.normalizeEpisode(source, <type.Type.Episode>result);
 			return result;
 		}
 		
@@ -100,29 +111,32 @@ namespace ymovie.util {
 				result.isCZSK = true;
 		}
 		
-		static normalizeMovie(source:Source, result:type.Type.Movie):void {
-			result.type = type.Type.CatalogueItemType.SCC_MOVIE;
+		static normalizeMovie(id:string, source:Source):type.Type.Movie {
+			const result = new type.Type.Movie(id);
 			this.normalizePlayable(source, result);
+			return result;
 		}
 		
-		static normalizeSeries(result:type.Type.Series):void {
-			result.type = type.Type.CatalogueItemType.SCC_SERIES;
+		static normalizeSeries(id:string):type.Type.Series {
+			return new type.Type.Series(id);
 		}
 		
-		static normalizeSeason(source:Source, result:type.Type.Season):void {
-			result.type = type.Type.CatalogueItemType.SCC_SEASON;
+		static normalizeSeason(id:string, source:Source):type.Type.Season {
+			const result = new type.Type.Season(id);
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
 			result.seasonNumber = source.info_labels.season;
+			return result;
 		}
 		
-		static normalizeEpisode(source:Source, result:type.Type.Episode):void {
-			result.type = type.Type.CatalogueItemType.SCC_EPISODE;
+		static normalizeEpisode(id:string, source:Source):type.Type.Episode {
+			const result = new type.Type.Episode(id);
 			this.normalizePlayable(source, result);
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
 			result.seasonNumber = source.info_labels.season;
 			result.episodeNumber = source.info_labels.episode;
+			return result;
 		}
 		
 		static normalizeRootTitle(source:Source):string {

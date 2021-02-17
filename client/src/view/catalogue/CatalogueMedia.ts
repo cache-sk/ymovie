@@ -16,21 +16,20 @@ namespace ymovie.view.catalogue {
 		}
 		
 		isWatched(map:util.WatchedMap){
-			const decorator = this.decorator;
-			if(decorator.isSccMovie)
-				return map.movies.has(decorator.id);
-			if(decorator.isSccSeries)
-				return map.series.has(decorator.id);
-			if(decorator.isSccEpisode)
-				return map.episodes.has(decorator.id);
+			if(this.data instanceof type.Type.Movie)
+				return map.movies.has(this.data.id);
+			if(this.data instanceof type.Type.Series)
+				return map.series.has(this.data.id);
+			if(this.data instanceof type.Type.Episode)
+				return map.episodes.has(this.data.id);
 			return false;
 		}
 		
 		render(){
 			const decorator = this.decorator;
-			const name = ymovie.util.DOM.span("name", decorator.title);
-			const language = decorator.isCZSK ? ymovie.util.DOM.span("language", "CZ/SK") : null;
-			const size = decorator.size ? ymovie.util.DOM.span("size", decorator.formatSize) : null;
+			const name = ymovie.util.DOM.span("name", this.data?.title);
+			const language = this.data?.isCZSK ? ymovie.util.DOM.span("language", "CZ/SK") : null;
+			const size = this.data instanceof type.Type.WebshareItem ? util.DOM.span("size", this.data.formatSize) : null;
 			const year = decorator.year ? ymovie.util.DOM.span("year", decorator.year) : null;
 			const title = ymovie.util.DOM.span("title", [name, language, size || year]);
 			const rating = decorator.rating ? ymovie.util.DOM.span("rating", decorator.rating) : null;

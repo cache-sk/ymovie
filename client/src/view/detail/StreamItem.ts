@@ -27,12 +27,12 @@ namespace ymovie.view.detail {
 			this.element.classList.add("loading");
 			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<type.Type.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
 			const decorator = util.ItemDecorator.create(<type.Type.Playable>this.data?.source);
-			if(decorator.isSccMovie)
-				util.WatchedUtil.addMovie(decorator.id);
-			if(decorator.isSccEpisode) {
+			if(this.data?.source instanceof type.Type.Movie)
+				util.WatchedUtil.addMovie(this.data.source.id);
+			if(this.data?.source instanceof type.Type.Episode) {
 				if(decorator.seriesId)
 					util.WatchedUtil.addSeries(decorator.seriesId);
-				util.WatchedUtil.addEpisode(decorator.id);
+				util.WatchedUtil.addEpisode(this.data.source.id);
 			}
 		}
 		

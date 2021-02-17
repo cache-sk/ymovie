@@ -9,11 +9,16 @@ namespace ymovie.type.Action {
 	export class WebshareStatusUpdated extends util.TriggerAction<enums.PlayerStatus> {}
 	export class CastStatusUpdates extends util.TriggerAction<enums.PlayerStatus> {}
 	export class Search extends util.TriggerAction<SearchData> {}
-	export class NavChanged extends util.TriggerAction<type.Type.NavChange> {}
+	export class NavChanged extends util.TriggerAction<NavChangeData> {}
 	export class CatalogueItemSelected extends util.TriggerAction<Type.AnyCatalogueItem> {}
 	export class ResolveStreams extends util.TriggerAction<ResolveStreamsData> {}
 	export class ResolveStreamUrl extends util.TriggerAction<ResolveStreamUrlData> {}
 	export class Play extends util.TriggerAction<PlayData> {}
+
+	export type NavChangeData = type.Type.NavState & {
+		path:string;
+		previous:NavChangeData;
+	}
 
 	export type PlayData = {
 		player:enums.Player;

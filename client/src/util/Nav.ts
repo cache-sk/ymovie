@@ -62,7 +62,7 @@ namespace ymovie.util {
 		}
 		
 		go(data:type.Type.NavStateSource, path:string, title:string):void {
-			const dataPage = (<type.Type.CatalogueItem>data).page;
+			const dataPage = data instanceof type.Type.CatalogueItemSccLink ? data.page : null;
 			const page = (dataPage && dataPage > 1) ? `/${dataPage}` : '';
 			this.pushState(data, title, `#${path}/${this.safePath(title)}${page}`);
 		}
@@ -89,7 +89,7 @@ namespace ymovie.util {
 			const path = enhancedState.url.substr(1);
 			const current = this.currentState;
 			const previous = {...current, path:current?.url.substr(1)};
-			this.trigger?.(new type.Action.NavChanged(<type.Type.NavChange>{...enhancedState, path, previous}));
+			this.trigger?.(new type.Action.NavChanged(<type.Action.NavChangeData>{...enhancedState, path, previous}));
 		}
 		
 		goHome(replace?:boolean):void {
@@ -113,6 +113,7 @@ namespace ymovie.util {
 		}
 		
 		goSccSearch(query:string):void {
+
 			this.pushState({query}, `Search ${query}`, `#${Nav.PATH_SCC_SEARCH}/${this.safePath(query)}`);
 		}
 		
@@ -120,7 +121,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_SEARCH);
 		}
 		
-		goSccBrowse(data:type.Type.CatalogueItem):void {
+		goSccBrowse(data:type.Type.CatalogueItemSccLink):void {
 			this.go(data, Nav.PATH_SCC_BROWSE, data.label);
 		}
 		
@@ -130,7 +131,7 @@ namespace ymovie.util {
 		
 		goSccMovie(data:type.Type.Item):void {
 			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_MOVIE}/${decorator.id}`, decorator.longTitle);
+			this.go(data, `${Nav.PATH_SCC_MOVIE}/${data.id}`, decorator.longTitle);
 		}
 		
 		isSccMovie(path:string):boolean {
@@ -139,7 +140,7 @@ namespace ymovie.util {
 		
 		goSccSeries(data:type.Type.Series):void {
 			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_SERIES}/${decorator.id}`, decorator.longTitle);
+			this.go(data, `${Nav.PATH_SCC_SERIES}/${data.id}`, decorator.longTitle);
 		}
 		
 		isSccSeries(path:string):boolean {
@@ -148,7 +149,7 @@ namespace ymovie.util {
 		
 		goSccSeason(data:type.Type.Season):void {
 			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_SEASON}/${decorator.id}`, decorator.longTitle);
+			this.go(data, `${Nav.PATH_SCC_SEASON}/${data.id}`, decorator.longTitle);
 		}
 		
 		isSccSeason(path:string):boolean {
@@ -157,7 +158,7 @@ namespace ymovie.util {
 		
 		goSccEpisode(data:type.Type.Episode):void {
 			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_EPISODE}/${decorator.id}`, decorator.longTitle);
+			this.go(data, `${Nav.PATH_SCC_EPISODE}/${data.id}`, decorator.longTitle);
 		}
 		
 		isSccEpisode(path:string):boolean {
@@ -181,7 +182,8 @@ namespace ymovie.util {
 		}
 		
 		goWebshareSearch(query:string, page:number):void {
-			this.pushState({query, page}, `Search ${query}`, `#${Nav.PATH_WEBSHARE_SEARCH}/${this.safePath(query)}` + (page ? `/${page + 1}` : ""));
+			const state:type.Type.NavStateSearch = {query, page};
+			this.pushState(state, `Search ${query}`, `#${Nav.PATH_WEBSHARE_SEARCH}/${this.safePath(query)}` + (page ? `/${page + 1}` : ""));
 		}
 		
 		isWebshareSearch(path:string):boolean {
@@ -189,8 +191,7 @@ namespace ymovie.util {
 		}
 		
 		goWebshareVideo(data:type.Type.Item):void {
-			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_WEBSHARE_VIDEO}/${decorator.id}`, decorator.title);
+			this.go(data, `${Nav.PATH_WEBSHARE_VIDEO}/${data.id}`, <string>data.title);
 		}
 		
 		isWebshareVideo(path:string):boolean {

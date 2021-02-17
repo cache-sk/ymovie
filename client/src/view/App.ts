@@ -98,10 +98,10 @@ namespace ymovie.view {
 			const {path, sccMediaId, webshareMediaId, sccLinkLabel} = <type.Type.LocationData>this.nav.locationData;
 			const sccLink = sccLinkLabel && this.menu.home.find(item => sccLinkLabel == this.nav?.safePath(item.label));
 			if(sccMediaId)
-				return this.nav.goReplaceMedia(await this.api.loadMedia(sccMediaId));
+				return this.nav.goReplaceMedia(<type.Type.Item>await this.api.loadMedia(sccMediaId));
 			if(webshareMediaId)
 				return this.nav.goReplaceMedia(await this.api.loadWebshareMedia(webshareMediaId));
-			if(sccLink)
+			if(sccLink && sccLink instanceof type.Type.CatalogueItemSccLink)
 				return this.nav.goSccBrowse(sccLink);
 			
 			if(this.nav.isAbout(path))
@@ -184,37 +184,29 @@ namespace ymovie.view {
 		}
 		
 		selectCatalogueItem(data:type.Type.AnyCatalogueItem){
-			switch(data.type){
-				case type.Type.CatalogueItemType.SCC_LINK:
-					this.nav?.goSccBrowse(<type.Type.CatalogueItem>data);
-					break;
-				case type.Type.CatalogueItemType.SCC_EPISODE:
-					this.nav?.goSccEpisode(<type.Type.Episode>data);
-					break;
-				case type.Type.CatalogueItemType.SCC_MOVIE:
-					this.nav?.goSccMovie(<type.Type.Movie>data);
-					break;
-				case type.Type.CatalogueItemType.SCC_SEASON:
-					this.nav?.goSccSeason(<type.Type.Season>data);
-					this.scrollTop();
-					break;
-				case type.Type.CatalogueItemType.SCC_SERIES:
-					this.nav?.goSccSeries(<type.Type.Series>data);
-					this.scrollTop();
-					break;
-				case type.Type.CatalogueItemType.WEBSHARE_VIDEO:
-					this.nav?.goWebshareVideo(<type.Type.Item>data);
-					break;
-				case type.Type.CatalogueItemType.CALLBACK:
-					(<type.Type.CatalogueItem>data).callback?.();
-					break;
+			if(data instanceof type.Type.CatalogueItemSccLink) {
+				this.nav?.goSccBrowse(data);
+			} else if(data instanceof type.Type.Episode) {
+				this.nav?.goSccEpisode(data);
+			} else if(data instanceof type.Type.Movie) {
+				this.nav?.goSccMovie(data);
+			} else if(data instanceof type.Type.Season) {
+				this.nav?.goSccSeason(data);
+				this.scrollTop();
+			} else if(data instanceof type.Type.Series) {
+				this.nav?.goSccSeries(data);
+				this.scrollTop();
+			} else if(data instanceof type.Type.WebshareItem) {
+				this.nav?.goWebshareVideo(data);
+			} else if(data instanceof type.Type.CatalogueItemCallback) {
+				data.callback();
 			}
 		}
 		
 		async resolveStreams(data:type.Action.ResolveStreamsData){
 			if(!this.api)
 				return;
-			if(ymovie.util.ItemDecorator.create(data.data).isWebshareVideo)
+			if(data.data instanceof type.Type.WebshareItem)
 				data.callback(await this.api.loadWebshareStreams(data.data));
 			else
 				data.callback(await this.api.loadStreams(data.data));
@@ -237,8 +229,7 @@ namespace ymovie.view {
 					await this.api.playOnCast(data);
 				else if(this.api && player === enums.Player.KODI)
 					await this.api.playOnKodi(<number>position, data);
-				const title = util.ItemDecorator.create(data.source).title;
-				this.showNotification(`${notificationTitle} Success`, `Playing ${title}`);
+				this.showNotification(`${notificationTitle} Success`, `Playing ${data.source.title}`);
 			} catch(error) {
 				this.showNotification(`${notificationTitle} Error`, error);
 			}
@@ -257,7 +248,7 @@ namespace ymovie.view {
 			this.toggleApiClass("webshare", status);
 		}
 		
-		async onNavChange(data:type.Type.NavChange){
+		async onNavChange(data:type.Action.NavChangeData){
 			if(!this.api || !this.nav || !this.detailView || !this.setupView || !this.aboutView || !this.discoveryView || !this.menu)
 				return;
 
@@ -296,7 +287,7 @@ namespace ymovie.view {
 					async () => await this.api?.loadEpisodes((<type.Type.Episode>state).id, data.title));
 			if(nav.isSccBrowse(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadPath(<string>(<type.Type.CatalogueItem>state).url, data.title));
+					async () => await this.api?.loadPath(<string>(<type.Type.CatalogueItemSccLink>state).url, data.title));
 			
 			this.discoveryView.searchQuery = (<type.Type.NavStateSearch>state)?.query || "";
 			if(nav.isSccSearch(path))
@@ -304,7 +295,7 @@ namespace ymovie.view {
 					async () => await this.api?.searchScc((<type.Type.NavStateSearch>state).query, data.title));
 			if(nav.isWebshareSearch(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.searchWebshare((<type.Type.NavStateSearch>state).query, data.title, <number>(<type.Type.CatalogueItem>state).page), "webshare");
+					async () => await this.api?.searchWebshare((<type.Type.NavStateSearch>state).query, data.title, <number>(<type.Type.NavStateSearch>state).page), "webshare");
 			
 			this.updateCatalogue(this.menu.home, "home");
 		}

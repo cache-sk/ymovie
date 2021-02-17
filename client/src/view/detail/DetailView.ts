@@ -26,7 +26,7 @@ namespace ymovie.view.detail {
 				return undefined;
 			
 			const decorator = util.ItemDecorator.create(this.detail);
-			return [util.DOM.h1(decorator.title),
+			return [util.DOM.h1(this.detail.title),
 				util.DOM.h2(decorator.subtitle),
 				this.renderMetadata(),
 				util.DOM.p("plot", decorator.plot),
@@ -69,10 +69,11 @@ namespace ymovie.view.detail {
 			return util.DOM.div("services", [util.DOM.span("label", "Services"), 
 				services.csfd ? util.DOM.a(undefined, "csfd", `https://www.csfd.cz/film/${services.csfd}`, "_blank") : null,
 				services.imdb ? util.DOM.a(undefined, "imdb", `https://www.imdb.com/title/${services.imdb}`, "_blank") : null,
-				services.trakt ? util.DOM.a(undefined, "trakt", decorator.isSccEpisode
+				services.trakt ? util.DOM.a(undefined, "trakt", decorator.source instanceof type.Type.Episode
 					? `https://trakt.tv/search/trakt/${services.trakt}?id_type=episode`
 					: `https://trakt.tv/movies/${services.trakt}`, "_blank") : null,
-				services.tmdb && decorator.isSccMovie ? util.DOM.a(undefined, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
+				services.tmdb && decorator.source instanceof type.Type.Movie 
+					? util.DOM.a(undefined, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
 		}
 
 		getTouchX(event:TouchEvent):number | undefined {

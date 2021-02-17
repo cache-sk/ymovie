@@ -34,7 +34,7 @@ namespace ymovie.util {
 		static normalizeSearchResponse(data:Element, query:string, title:string, page:number):Array<type.Type.AnyCatalogueItem> {
 			const total = this.getInt(data, "total");
 			const result:Array<type.Type.AnyCatalogueItem> = this.getElementsByTagNameArray(data, "file")
-				.map(this.normalizeItem.bind(this));
+				.map(item => this.normalizeItem(item));
 			const pageCount = Math.ceil(total / 100);
 			if(page)
 				result.unshift(CatalogueUtil.createTrigger("folder", title, `${page}/${pageCount}`, new type.Action.Search({query, page:page - 1})));
@@ -44,22 +44,18 @@ namespace ymovie.util {
 		}
 		
 		static normalizeItemResponse(data:Element, ident:string):type.Type.WebshareItem {
-			const result = this.normalizeItem(data);
-			result.id = ident;
-			return result;
+			return this.normalizeItem(data, ident);
 		}
 		
-		static normalizeItem(item:Element):type.Type.WebshareItem {
-			const ratingPositive = this.getInt(item, "positive_votes");
-			const ratingNegative = this.getInt(item, "negative_votes");
-			return {
-				type: ymovie.type.Type.CatalogueItemType.WEBSHARE_VIDEO,
-				id: <string>this.getText(item, "ident"),
-				poster: <string>this.getText(item, "img"),
-				title: <string>this.getText(item, "name"),
-				ratingPositive, ratingNegative,
-				size: this.getInt(item, "size")
-			}
+		static normalizeItem(item:Element, id?:string):type.Type.WebshareItem {
+			const result = new type.Type.WebshareItem(id || <string>this.getText(item, "ident"));
+			result.poster = this.getText(item, "img");
+			result.title = this.getText(item, "name");
+			result.ratingPositive = this.getInt(item, "positive_votes");
+			result.ratingNegative = this.getInt(item, "negative_votes");
+			result.size = this.getInt(item, "size");
+			result.formatSize = Util.formatSize(result.size);
+			return result;
 		}
 		
 		static normalizeStreams(ident:string, data:Element):Array<type.Type.Stream> {

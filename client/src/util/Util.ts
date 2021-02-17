@@ -53,5 +53,10 @@ namespace ymovie.util {
 			}
 			
 		}
+
+		static formatSize(value:number):string {
+			const mb = value / 1024 / 1024;
+			return mb > 100 ? (mb / 1024).toFixed(1) + "G" : mb.toFixed(1) + "M";
+		}
 	}
 }

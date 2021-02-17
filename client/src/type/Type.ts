@@ -1,30 +1,35 @@
 namespace ymovie.type.Type {
-	export type Item = {
-		id:string; // = "ae15"
-		poster:string; // = "http://xyz..."
-		type:CatalogueItemType; // = CatalogueItemType.SCC_MOVIE
-		title:string; // = "Avatar";
+	export abstract class Item {
+		readonly id:string; // = "ae15"
+
+		title?:string; // = "Avatar";
+		poster?:string; // = "http://xyz..."
 		year?:number; // = 2020
 		rating?:number; // = 7.1
 		isCZSK?:boolean;
 
-		size?:number;
+		constructor(id:string) {
+			this.id = id;
+		}
 	}
 
-	export type WebshareItem = Item & {
+	export class WebshareItem extends Item {
+		size?:number;
+		formatSize?:string;
 		ratingPositive?:number;
 		ratingNegative?:number;
 	}
 
-	export type Season = Item & {
+	export class Season extends Item {
 		seriesId?:string;
 		seriesTitle?:string; // = "Simsons"
 		seasonNumber?:number; // = 2
 	}
 
-	export type Series = Item;
+	export class Series extends Item {
+	}
 
-	export type Playable = Item & {
+	export abstract class Playable extends Item {
 		plot?:string; // = "Abc. Def."
 		trailers?:Array<string>; // = ["http://xyz..."]
 		mpaa?:number; // = 12
@@ -33,13 +38,15 @@ namespace ymovie.type.Type {
 		streamCount?:number; // = 12
 		originalTitle?:string; // = "Abc"
 		genres?:string; // = "Comedy, Drama"
-		directors:string; // = "A, B, C";
+		directors?:string; // = "A, B, C";
 		cast?:string; // = "A, B, C";
 	}
 
-	export type Movie = Playable;
+	export class Movie extends Playable {
 
-	export type Episode = Playable & {
+	}
+
+	export class Episode extends Playable {
 		seriesId?:string;
 		seriesTitle?:string; // = "Simsons"
 		seasonNumber?:number; // = 4
@@ -67,26 +74,49 @@ namespace ymovie.type.Type {
 		is3d?:boolean;
 	}
 
-	export type CatalogueItem = {
-		type:CatalogueItemType;
-		label:string;
-		group:string;
-		url?:string;
-		subtitle?:string;
-		page?:number;
-		callback?:(replace?:boolean) => void;
+	export abstract class CatalogueItem {
+		readonly label:string;
+		readonly group:string;
+
+		constructor(label:string, group:string) {
+			this.label = label;
+			this.group = group;
+		}
+		
 		action?:util.TriggerActionAny;
 	}
 
-	export enum CatalogueItemType {
-		CALLBACK = 1,
-		SCC_EPISODE = 2,
-		SCC_LINK = 3,
-		SCC_MOVIE = 4,
-		SCC_SEASON = 5,
-		SCC_SERIES = 6,
-		TRIGGER = 7,
-		WEBSHARE_VIDEO = 8
+	export class CatalogueItemSccLink extends CatalogueItem {
+		readonly url:string;
+		readonly subtitle?:string;
+		readonly page?:number;
+
+		constructor(label:string, group:string, url:string, subtitle?:string, page?:number) {
+			super(label, group);
+			this.url = url;
+			this.subtitle = subtitle;
+			this.page = page;
+		}
+	}
+
+	export class CatalogueItemCallback extends CatalogueItem {
+		readonly callback:(replace?:boolean) => void;
+
+		constructor(label:string, group:string, callback:(replace?:boolean) => void) {
+			super(label, group);
+			this.callback = callback;
+		}
+	}
+
+	export class CatalogueItemTrigger extends CatalogueItem {
+		readonly subtitle:string;
+		readonly action:util.TriggerActionAny;
+
+		constructor(label:string, group:string, subtitle:string, action:util.TriggerActionAny) {
+			super(label, group);
+			this.subtitle = subtitle;
+			this.action = action;
+		}
 	}
 
 	export type AnyCatalogueItem = CatalogueItem | Item;
@@ -119,7 +149,10 @@ namespace ymovie.type.Type {
 		url:string;
 	}
 
-	export type NavStateSource = CatalogueItem & NavStateCatalogue | Item & NavStateCatalogue | NavStateSearch & NavStateCatalogue | undefined;
+	export type NavStateSource = CatalogueItem & NavStateCatalogue 
+		| Item & NavStateCatalogue 
+		| NavStateSearch & NavStateCatalogue 
+		| undefined;
 
 	export type NavStateCatalogue = {
 		catalogue?:Array<type.Type.AnyCatalogueItem>;
@@ -127,10 +160,6 @@ namespace ymovie.type.Type {
 
 	export type NavStateSearch = {
 		query:string;
-	}
-
-	export type NavChange = NavState & {
-		path:string;
-		previous:NavChange;
+		page?:number;
 	}
 }
