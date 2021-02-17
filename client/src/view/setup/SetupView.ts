@@ -14,7 +14,7 @@ namespace ymovie.view.setup {
 		}
 		
 		onCloseClick(){
-			this.trigger?.(ymovie.enums.Action.BACK);
+			this.trigger?.(new type.Action.GoHome(false));
 		}
 	}
 }

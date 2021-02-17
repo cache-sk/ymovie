@@ -62,7 +62,7 @@ namespace ymovie.view {
 		}
 		
 		onCloseClick(){
-			this.trigger?.(enums.Action.BACK);
+			this.trigger?.(new type.Action.GoBack(undefined));
 		}
 	}
 }

@@ -25,18 +25,6 @@ namespace ymovie.util {
 			return match ? match[1] : undefined;
 		}
 		
-		static enhanceDispatcher(object:Dispatcher, dispatcher?:EventTarget):void {
-			const target:EventTarget = dispatcher || (object.dispatcher = document.createDocumentFragment());
-			object.trigger = (type:string, detail:any) =>
-				target.dispatchEvent(new CustomEvent(`__${type}`, {bubbles:true, detail}));
-			
-			object.listen = (type:string, callback:(detail:any, event:CustomEvent) => void) => {
-				const listener = (event:CustomEvent) => callback(event.detail, event);
-				target.addEventListener(`__${type}`, <EventListener>listener);
-				return listener;
-			}
-		}
-		
 		static removeDiacritics(source:string):string {
 			// @ts-ignore
 			return source.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -65,11 +53,5 @@ namespace ymovie.util {
 			}
 			
 		}
-	}
-
-	type Dispatcher = {
-		dispatcher:EventTarget | undefined;
-		trigger:((type:any, detail?:any) => void) | undefined;
-		listen:((type:any, callback:(detail:any, event?:CustomEvent) => void) => void) | undefined;
 	}
 }

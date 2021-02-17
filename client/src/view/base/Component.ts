@@ -2,15 +2,14 @@ namespace ymovie.view.base {
 	export class Component<TElement extends HTMLElement> {
 		element:TElement;
 
-		dispatcher:EventTarget | undefined;
-		trigger:((type:any, detail?:any) => void) | undefined;
-		listen:((type:any, callback:(detail:any, event?:CustomEvent) => void) => void) | undefined;
+		trigger:util.Triggerer;
+		listen:util.TriggerListener;
 
 		constructor(element:ComponentElement) {
 			this.element = util.Util.isString(element) ? <TElement>util.DOM.create(<string>element) : <TElement>element;
 			// @ts-ignore
 			this.element.classList.add(this.constructor.name);
-			util.Util.enhanceDispatcher(this, this.element);
+			util.Trigger.enhance(this, this.element);
 		}
 		
 		append(content:util.DOMContent) {

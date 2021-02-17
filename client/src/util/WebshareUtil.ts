@@ -37,9 +37,9 @@ namespace ymovie.util {
 				.map(this.normalizeItem.bind(this));
 			const pageCount = Math.ceil(total / 100);
 			if(page)
-				result.unshift(CatalogueUtil.createTrigger("folder", title, `${page}/${pageCount}`, enums.Action.SEARCH, {query, page:page - 1}));
+				result.unshift(CatalogueUtil.createTrigger("folder", title, `${page}/${pageCount}`, new type.Action.Search({query, page:page - 1})));
 			if(page + 1 < pageCount)
-				result.push(CatalogueUtil.createTrigger("folder", title, `${page + 2}/${pageCount}`, enums.Action.SEARCH, {query, page:page + 1}));
+				result.push(CatalogueUtil.createTrigger("folder", title, `${page + 2}/${pageCount}`, new type.Action.Search({query, page:page + 1})));
 			return result;
 		}
 		

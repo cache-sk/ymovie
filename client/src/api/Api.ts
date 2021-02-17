@@ -9,12 +9,11 @@ namespace ymovie.api {
 		kodi:ApiKodi;
 		cast:ApiCast;
 
-		dispatcher:EventTarget | undefined;
-		trigger:((type:any, detail:any) => void) | undefined;
-		listen:((type:any, callback:(detail:any, event:CustomEvent) => void) => void) | undefined;
+		trigger:util.Triggerer;
+		listen:util.TriggerListener;
 
 		constructor(){
-			util.Util.enhanceDispatcher(this);
+			util.Trigger.enhance(this);
 			this.scc = new ApiScc(this.uuid);
 			this.webshare = new ApiWebshare(this.uuid);
 			this.kodi = new ApiKodi();
@@ -23,9 +22,10 @@ namespace ymovie.api {
 		
 		async init(){
 			this.cast.init();
-			for (let position = 1; position <= 2; position++)
-				this.trigger?.(this.getKodiStatusKey(position), this.getKodiEndpoint(position)
-					? enums.PlayerStatus.DEFINED: enums.PlayerStatus.NOT_AVAILABLE);
+			for (let position = 1; position <= 2; position++) {
+				const status = this.getKodiEndpoint(position) ? enums.PlayerStatus.DEFINED: enums.PlayerStatus.NOT_AVAILABLE;
+				this.trigger?.(new type.Action.KodiStatusUpdated({position, status}));
+			}
 			await this.checkWebshareStatus();
 		}
 		
@@ -68,10 +68,6 @@ namespace ymovie.api {
 				util.MyStorage.remove(key);
 			else
 				util.MyStorage.set(key, value);
-		}
-		
-		getKodiStatusKey(position:number):string {
-			return "kodiStatus" + (position === 1 ? "" : position);
 		}
 		
 		async searchScc(query:string, title:string) {
@@ -132,9 +128,9 @@ namespace ymovie.api {
 			try {
 				this.setKodiEndpoint(position, endpoint);
 				await this.kodi.isAvailable(endpoint);
-				this.trigger?.(this.getKodiStatusKey(position), enums.PlayerStatus.OK);
+				this.trigger?.(new type.Action.KodiStatusUpdated({position, status:enums.PlayerStatus.OK}));
 			} catch(error) {
-				this.trigger?.(this.getKodiStatusKey(position), enums.PlayerStatus.NOT_AVAILABLE);
+				this.trigger?.(new type.Action.KodiStatusUpdated({position, status:enums.PlayerStatus.NOT_AVAILABLE}));
 				throw error;
 			}
 		}
@@ -146,13 +142,13 @@ namespace ymovie.api {
 			} catch(error) {
 				success = false;
 			}
-			this.trigger?.(enums.Action.WEBSHARE_STATUS_UPDATED, success ? enums.PlayerStatus.OK : enums.PlayerStatus.NOT_AVAILABLE);
+			this.trigger?.(new type.Action.WebshareStatusUpdated(success ? enums.PlayerStatus.OK : enums.PlayerStatus.NOT_AVAILABLE));
 			return success;
 		}
 		
 		logoutWebshare(){
 			this.webshareToken = null;
-			this.trigger?.(enums.Action.WEBSHARE_STATUS_UPDATED, enums.PlayerStatus.NOT_AVAILABLE);
+			this.trigger?.(new type.Action.WebshareStatusUpdated(enums.PlayerStatus.NOT_AVAILABLE));
 		}
 		
 		async checkWebshareStatus(){
@@ -163,12 +159,12 @@ namespace ymovie.api {
 				success = false;
 				this.webshareToken = null;
 			}
-			this.trigger?.(enums.Action.WEBSHARE_STATUS_UPDATED, success ? enums.PlayerStatus.OK : enums.PlayerStatus.NOT_AVAILABLE);
+			this.trigger?.(new type.Action.WebshareStatusUpdated(success ? enums.PlayerStatus.OK : enums.PlayerStatus.NOT_AVAILABLE));
 			return success;
 		}
 		
 		onCastStatus(available:boolean){
-			this.trigger?.(enums.Action.CAST_STATUS_UPDATED, available ? enums.PlayerStatus.OK : enums.PlayerStatus.NOT_AVAILABLE);
+			this.trigger?.(new type.Action.CastStatusUpdates(available ? enums.PlayerStatus.OK : enums.PlayerStatus.NOT_AVAILABLE));
 		}
 	}
 }

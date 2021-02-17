@@ -25,7 +25,7 @@ namespace ymovie.view.detail {
 		
 		onClick(){
 			this.element.classList.add("loading");
-			this.trigger?.(enums.Action.RESOLVE_STREAM_URL, {stream:this.data?.stream, callback:this.onUrl.bind(this)});
+			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<type.Type.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
 			const decorator = util.ItemDecorator.create(<type.Type.Playable>this.data?.source);
 			if(decorator.isSccMovie)
 				util.WatchedUtil.addMovie(decorator.id);

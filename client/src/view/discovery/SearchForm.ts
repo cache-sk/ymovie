@@ -29,7 +29,7 @@ namespace ymovie.view.discovery {
 		async process() {
 			this.clearTimeout();
 			const query = this.input.value;
-			this.trigger?.(enums.Action.SEARCH, query ? {query} : null);
+			this.trigger?.(new type.Action.Search({query}));
 		}
 		
 		onChange(){

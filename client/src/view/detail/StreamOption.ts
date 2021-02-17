@@ -1,5 +1,5 @@
 namespace ymovie.view.detail {
-	export class StreamOption<TData extends {url?:string}> extends base.DataComponent<HTMLDivElement, TData> {
+	export class StreamOption<TData extends {source?:type.Type.Playable, url?:string}> extends base.DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
 			super("div");
 			this.data = data;
@@ -68,7 +68,8 @@ namespace ymovie.view.detail {
 		}
 
 		triggerPlay(player:enums.Player, position?:number){
-			this.trigger?.(enums.Action.PLAY, <type.Type.ActionPlayPayload>{player, position, data:this.data});
+			const data:type.Type.PlayableStream = {source:<type.Type.Playable>this.data?.source, url:<string>this.url};
+			this.trigger?.(new type.Action.Play({player, position, data}));
 		}
 
 		onClipboard(event:MouseEvent){

@@ -37,7 +37,7 @@ namespace ymovie.view.detail {
 		update(data:Data) {
 			if(data) {
 				this.show();
-				this.trigger?.(enums.Action.RESOLVE_STREAMS, {data:data.detail, callback:this.onStreams.bind(this)});
+				this.trigger?.(new type.Action.ResolveStreams({data:data.detail, callback:this.onStreams.bind(this)}));
 			}
 			return super.update(data);
 		}
@@ -85,8 +85,9 @@ namespace ymovie.view.detail {
 
 			const list = this.data.list;
 			const index = list.indexOf(this.detail);
-			if(index != -1 && index > 0)
-				this.trigger?.(enums.Action.SELECT_CATALOGUE_ITEM, list[index - 1]);
+			const item = index != -1 && index > 0 ? list[index - 1] : null;
+			if(item)
+				this.trigger?.(new type.Action.CatalogueItemSelected(item));
 		}
 
 		showNext(){
@@ -95,16 +96,13 @@ namespace ymovie.view.detail {
 
 			const list = this.data.list;
 			const index = list.indexOf(this.detail);
-			if(index != -1 && index < list.length - 1)
-				this.trigger?.(enums.Action.SELECT_CATALOGUE_ITEM, list[index + 1]);
-		}
-
-		onPlay(){
-			this.trigger?.(enums.Action.PLAY, this.detail);
+			const item = index != -1 && index < list.length - 1 ? list[index + 1] : null;
+			if(item)
+				this.trigger?.(new type.Action.CatalogueItemSelected(item));
 		}
 		
 		onCloseClick(){
-			this.trigger?.(enums.Action.BACK);
+			this.trigger?.(new type.Action.GoBack(undefined));
 		}
 		
 		onStreams(data:Array<type.Type.Stream>){

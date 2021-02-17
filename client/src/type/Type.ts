@@ -75,8 +75,7 @@ namespace ymovie.type.Type {
 		subtitle?:string;
 		page?:number;
 		callback?:(replace?:boolean) => void;
-		action?:enums.Action;
-		payload?:any;
+		action?:util.TriggerActionAny;
 	}
 
 	export enum CatalogueItemType {
@@ -97,12 +96,6 @@ namespace ymovie.type.Type {
 		callback:any;
 	}
 
-	export type ActionPlayPayload = {
-		player:enums.Player;
-		position?:number;
-		data:{url:string};
-	}
-
 	export type LocationData = {
 		path:string;
 		sccMediaId?:string;
@@ -117,9 +110,7 @@ namespace ymovie.type.Type {
 
 	export type PlayableStream = {
 		source:type.Type.Playable;
-		//streams:Array<type.Type.Stream>;
-		trailer?:string;
-		url?:string;
+		url:string;
 	}
 
 	export type NavState = {

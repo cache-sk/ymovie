@@ -1,19 +1,15 @@
 namespace ymovie.view.catalogue {
-	export class CatalogueItem<TData> extends base.DataComponent<HTMLDivElement, TData> {
+	export class CatalogueItem<TData extends type.Type.AnyCatalogueItem> extends base.DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
 			super("div");
 			this.element.classList.add("CatalogueItem");
 			this.data = data;
 			this.element.addEventListener("click", 
-				() => this.trigger?.(this.selectAction, this.selectData));
+				() => this.trigger?.(this.selectAction));
 		}
 		
-		get selectAction():enums.Action | undefined {
-			return enums.Action.SELECT_CATALOGUE_ITEM;
-		}
-		
-		get selectData(){
-			return this.data;
+		get selectAction():util.TriggerActionAny {
+			return new type.Action.CatalogueItemSelected(<type.Type.AnyCatalogueItem>this.data);
 		}
 	}
 }

@@ -57,25 +57,24 @@ namespace ymovie.view {
 			this.detailView = new detail.DetailView(this.api);
 			this.notificationView = new NotificationView();
 
-			this.listen?.(enums.Action.BACK, this.nav.goBack.bind(this.nav));
-			this.listen?.(enums.Action.SEARCH, this.search.bind(this));
-			this.listen?.(enums.Action.SELECT_CATALOGUE_ITEM, this.selectCatalogueItem.bind(this));
-			this.listen?.(enums.Action.RESOLVE_STREAMS, this.resolveStreams.bind(this));
-			this.listen?.(enums.Action.RESOLVE_STREAM_URL, this.resolveStreamUrl.bind(this));
-			this.listen?.(enums.Action.HOME, this.nav.goHome.bind(this.nav));
-			this.listen?.(enums.Action.SETUP, this.nav.goSetup.bind(this.nav));
-			this.listen?.(enums.Action.ABOUT, this.nav.goAbout.bind(this.nav));
-			this.listen?.(enums.Action.PLAY, this.play.bind(this));
+			this.listen?.(type.Action.GoBack, this.nav.goBack.bind(this.nav));
+			this.listen?.(type.Action.Search, this.search.bind(this));
+			this.listen?.(type.Action.CatalogueItemSelected, this.selectCatalogueItem.bind(this));
+			this.listen?.(type.Action.ResolveStreams, this.resolveStreams.bind(this));
+			this.listen?.(type.Action.ResolveStreamUrl, this.resolveStreamUrl.bind(this));
+			this.listen?.(type.Action.GoHome, this.nav.goHome.bind(this.nav));
+			this.listen?.(type.Action.ShowSetup, this.nav.goSetup.bind(this.nav));
+			this.listen?.(type.Action.ShowAbout, this.nav.goAbout.bind(this.nav));
+			this.listen?.(type.Action.Play, this.play.bind(this));
 			
 			this.ga.init();
 			
-			this.nav.listen?.(ymovie.enums.Action.CHANGE, this.onNavChange.bind(this));
+			this.nav.listen?.(type.Action.NavChanged, this.onNavChange.bind(this));
 			this.nav.init();
 			
-			this.api.listen?.(ymovie.enums.Action.CAST_STATUS_UPDATED, this.onApiCastStatus.bind(this));
-			this.api.listen?.(this.api.getKodiStatusKey(1), this.onApiKodiStatus.bind(this));
-			this.api.listen?.(this.api.getKodiStatusKey(2), this.onApiKodiStatus2.bind(this));
-			this.api.listen?.(ymovie.enums.Action.WEBSHARE_STATUS_UPDATED, this.onApiWebshareStatus.bind(this));
+			this.api.listen?.(type.Action.CastStatusUpdates, this.onApiCastStatus.bind(this));
+			this.api.listen?.(type.Action.KodiStatusUpdated, this.onApiKodiStatus.bind(this));
+			this.api.listen?.(type.Action.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
 			await this.api.init();
 			
 			this.render();
@@ -176,15 +175,15 @@ namespace ymovie.view {
 			return this.discoveryView?.update({type, catalogue});
 		}
 		
-		search(data:SearchData){
-			if(!data)
+		search(data:type.Action.SearchData){
+			if(!data.query)
 				return this.nav?.goHome();
 			if(ymovie.util.WebshareUtil.isSearchQuery(data.query))
 				return this.nav?.goWebshareSearch(data.query, data.page || 0);
 			this.nav?.goSccSearch(data.query);
 		}
 		
-		selectCatalogueItem(data:type.Type.CatalogueItem | type.Type.Item){
+		selectCatalogueItem(data:type.Type.AnyCatalogueItem){
 			switch(data.type){
 				case type.Type.CatalogueItemType.SCC_LINK:
 					this.nav?.goSccBrowse(<type.Type.CatalogueItem>data);
@@ -212,7 +211,7 @@ namespace ymovie.view {
 			}
 		}
 		
-		async resolveStreams(data:ResolveStreamsData){
+		async resolveStreams(data:type.Action.ResolveStreamsData){
 			if(!this.api)
 				return;
 			if(ymovie.util.ItemDecorator.create(data.data).isWebshareVideo)
@@ -221,7 +220,7 @@ namespace ymovie.view {
 				data.callback(await this.api.loadStreams(data.data));
 		}
 		
-		async resolveStreamUrl(data:ResolveStreamUrlData){
+		async resolveStreamUrl(data:type.Action.ResolveStreamUrlData){
 			try {
 				if(this.api)
 					data.callback(await this.api.resolveStreamUrl(data.stream));
@@ -230,7 +229,7 @@ namespace ymovie.view {
 			}
 		}
 		
-		async play(payload:PlayPayload){
+		async play(payload:type.Action.PlayData){
 			const {player, position, data} = payload;
 			const notificationTitle = player === enums.Player.CAST ? "Cast" : "Kodi";
 			try {
@@ -249,12 +248,9 @@ namespace ymovie.view {
 			this.toggleApiClass("cast", status);
 		}
 		
-		onApiKodiStatus(status:enums.PlayerStatus){
-			this.toggleApiClass("kodi", status);
-		}
-		
-		onApiKodiStatus2(status:enums.PlayerStatus){
-			this.toggleApiClass("kodi2", status);
+		onApiKodiStatus(data:type.Action.KodiStatusUpdatedData){
+			const key = "kodi" + (data.position === 1 ? "" : "2");
+			this.toggleApiClass(key, data.status);
 		}
 		
 		onApiWebshareStatus(status:enums.PlayerStatus){
@@ -316,26 +312,5 @@ namespace ymovie.view {
 
 	type Menu = {
 		home:Array<type.Type.CatalogueItem>;
-	}
-
-	type SearchData = {
-		query:string;
-		page:number;
-	}
-
-	type ResolveStreamsData = {
-		data:type.Type.Playable;
-		callback:(list:Array<type.Type.Stream>) => void;
-	}
-
-	type ResolveStreamUrlData = {
-		stream:type.Type.Stream; 
-		callback:(url:string) => void;
-	}
-
-	type PlayPayload = {
-		player:enums.Player;
-		position?:number;
-		data:type.Type.PlayableStream;
 	}
 }

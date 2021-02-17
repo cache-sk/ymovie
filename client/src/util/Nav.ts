@@ -18,12 +18,11 @@ namespace ymovie.util {
 		initialHistoryLength = 0;
 		currentState:type.Type.NavState | undefined;
 
-		dispatcher:EventTarget | undefined;
-		trigger:((type:any, detail:any) => void) | undefined;
-		listen:((type:any, callback:(detail:any, event:CustomEvent) => void) => void) | undefined;
+		trigger:util.Triggerer;
+		listen:util.TriggerListener;
 
 		constructor() {
-			Util.enhanceDispatcher(this);
+			Trigger.enhance(this);
 		}
 		
 		init(){
@@ -90,15 +89,15 @@ namespace ymovie.util {
 			const path = enhancedState.url.substr(1);
 			const current = this.currentState;
 			const previous = {...current, path:current?.url.substr(1)};
-			this.trigger?.(enums.Action.CHANGE, <type.Type.NavChange>{...enhancedState, path, previous});
+			this.trigger?.(new type.Action.NavChanged(<type.Type.NavChange>{...enhancedState, path, previous}));
 		}
 		
 		goHome(replace?:boolean):void {
 			this.pushState(undefined, "", "/", replace);
 		}
 		
-		goSetup(relpace?:boolean):void {
-			this.pushState(undefined, "Setup", `#${Nav.PATH_SETUP}`, relpace);
+		goSetup(replace?:boolean):void {
+			this.pushState(undefined, "Setup", `#${Nav.PATH_SETUP}`, replace);
 		}
 		
 		isSetup(path:string):boolean {

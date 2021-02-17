@@ -8,8 +8,8 @@ namespace ymovie.util {
 			return {type:type.Type.CatalogueItemType.CALLBACK, group, label, callback};
 		}
 		
-		static createTrigger(group:string, label:string, subtitle:string, action:enums.Action, payload:any):type.Type.CatalogueItem {
-			return {type:type.Type.CatalogueItemType.TRIGGER, group, label, subtitle, action, payload};
+		static createTrigger(group:string, label:string, subtitle:string, action:util.TriggerActionAny):type.Type.CatalogueItem {
+			return {type:type.Type.CatalogueItemType.TRIGGER, group, label, subtitle, action};
 		}
 	}
 }

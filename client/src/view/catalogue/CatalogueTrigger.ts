@@ -4,12 +4,8 @@ namespace ymovie.view.catalogue {
 			return new this(data);
 		}
 		
-		get selectAction() {
-			return this.data?.action;
-		}
-		
-		get selectData():any {
-			return this.data?.payload;
+		get selectAction():util.TriggerActionAny {
+			return <util.TriggerActionAny>this.data?.action;
 		}
 	}
 }
