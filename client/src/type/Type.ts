@@ -76,11 +76,11 @@ namespace ymovie.type.Type {
 
 	export abstract class CatalogueItem {
 		readonly label:string;
-		readonly group:string;
+		readonly group:enums.ItemGroup;
 
-		constructor(label:string, group:string) {
-			this.label = label;
+		constructor(group:enums.ItemGroup, label:string) {
 			this.group = group;
+			this.label = label;
 		}
 		
 		action?:util.TriggerActionAny;
@@ -91,8 +91,8 @@ namespace ymovie.type.Type {
 		readonly subtitle?:string;
 		readonly page?:number;
 
-		constructor(label:string, group:string, url:string, subtitle?:string, page?:number) {
-			super(label, group);
+		constructor(group:enums.ItemGroup, label:string, url:string, subtitle?:string, page?:number) {
+			super(group, label);
 			this.url = url;
 			this.subtitle = subtitle;
 			this.page = page;
@@ -102,8 +102,8 @@ namespace ymovie.type.Type {
 	export class CatalogueItemCallback extends CatalogueItem {
 		readonly callback:(replace?:boolean) => void;
 
-		constructor(label:string, group:string, callback:(replace?:boolean) => void) {
-			super(label, group);
+		constructor(group:enums.ItemGroup, label:string, callback:(replace?:boolean) => void) {
+			super(group, label);
 			this.callback = callback;
 		}
 	}
@@ -112,8 +112,8 @@ namespace ymovie.type.Type {
 		readonly subtitle:string;
 		readonly action:util.TriggerActionAny;
 
-		constructor(label:string, group:string, subtitle:string, action:util.TriggerActionAny) {
-			super(label, group);
+		constructor(group:enums.ItemGroup, label:string, subtitle:string, action:util.TriggerActionAny) {
+			super(group, label);
 			this.subtitle = subtitle;
 			this.action = action;
 		}

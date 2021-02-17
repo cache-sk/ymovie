@@ -53,7 +53,7 @@ namespace ymovie.view.setup {
 		}
 		
 		async process():Promise<any> {
-			if(this.tokenInput)
+			if(this.tokenInput.parentElement)
 				return this.update(await this.api.checkWebshareStatus() ? undefined : {error:"Invalid token."});
 			
 			const username = this.usernameInput.value;

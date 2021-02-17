@@ -49,6 +49,7 @@ namespace ymovie.util {
 			const id = item._id;
 			const source = item._source;
 			const info = source.info_labels;
+			const info2 = source.info2 = this.mergeI18n(source.i18n_info_labels);
 			let result:type.Type.Item;
 			if(info.mediatype === "movie")
 				result = this.normalizeMovie(id, source);
@@ -61,7 +62,6 @@ namespace ymovie.util {
 			else
 				return undefined;
 
-			const info2 = source.info2 = this.mergeI18n(source.i18n_info_labels);
 			result.poster = this.resolvePoster(source.i18n_info_labels);
 			if(info2.title) result.title = info2.title;
 			if(info.year) result.year = info.year;
