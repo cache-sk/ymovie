@@ -1,13 +1,15 @@
 namespace ymovie.view {
+	const DOM = util.DOM;
+
 	export class NotificationView extends base.Dialogue<Data> {
 		title:HTMLHeadingElement;
 		message:HTMLParagraphElement;
 
 		constructor(){
 			super();
-			this.title = util.DOM.h1();
-			this.message = util.DOM.p();
-			util.DOM.append(this.content, [this.title, this.message, this.closeButton]);
+			this.title = DOM.h1();
+			this.message = DOM.p();
+			DOM.append(this.content, [this.title, this.message, this.closeButton]);
 			this.append(this.content);
 		}
 		
@@ -17,12 +19,12 @@ namespace ymovie.view {
 		}
 		
 		render(){
-			util.DOM.clean(this.title);
-			util.DOM.clean(this.message);
+			DOM.clean(this.title);
+			DOM.clean(this.message);
 			if(this.data?.title)
-				util.DOM.append(this.title, this.data.title);
+				DOM.append(this.title, this.data.title);
 			if(this.data?.message)
-				util.DOM.append(this.message, this.data.message);
+				DOM.append(this.message, this.data.message);
 			return super.render();
 		}
 

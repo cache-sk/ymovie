@@ -1,4 +1,6 @@
 namespace ymovie.view.detail {
+	const DOM = util.DOM;
+
 	export class DetailView extends base.Dialogue<Data> {
 		webshareSetup:setup.WebshareSetup;
 		streamsView:StreamsView;
@@ -22,10 +24,10 @@ namespace ymovie.view.detail {
 			if(!data)
 				return undefined;
 			
-			return [util.DOM.h1(data.title),
-				data instanceof type.Media.Episode ? util.DOM.h2(data.subtitle) : undefined,
+			return [DOM.h1(data.title),
+				data instanceof type.Media.Episode ? DOM.h2(data.subtitle) : undefined,
 				this.renderMetadata(),
-				data instanceof type.Media.PlayableScc ? util.DOM.p("plot", data.plot) : undefined,
+				data instanceof type.Media.PlayableScc ? DOM.p("plot", data.plot) : undefined,
 				this.webshareSetup.render(),
 				this.streamsView.update()];
 		}
@@ -42,7 +44,7 @@ namespace ymovie.view.detail {
 			const data = this.data?.detail;
 			if(!data)
 				return undefined;
-			return util.DOM.div("metadata", [
+			return DOM.div("metadata", [
 				data instanceof type.Media.Season ? this.renderProperty("series", "Series", data.seriesTitle) : undefined,
 				data instanceof type.Media.PlayableScc ? this.renderProperty("original", "Original Title", data.originalTitle) : undefined,
 				data instanceof type.Media.Scc ? this.renderProperty("year", "Year", data.year) : undefined,
@@ -57,21 +59,21 @@ namespace ymovie.view.detail {
 		}
 		
 		renderProperty(className:string, label:string, value:util.DOMContent){
-			return value ? util.DOM.div(className, [util.DOM.span("label", label), util.DOM.span("value", value)]) : null;
+			return value ? DOM.div(className, [DOM.span("label", label), DOM.span("value", value)]) : null;
 		}
 		
 		renderServices(data:type.Media.PlayableScc){
 			const services = data.services;
 			if(!services || (!services.csfd && !services.imdb && !services.trakt))
 				return null;
-			return util.DOM.div("services", [util.DOM.span("label", "Services"), 
-				services.csfd ? util.DOM.a(undefined, "csfd", `https://www.csfd.cz/film/${services.csfd}`, "_blank") : null,
-				services.imdb ? util.DOM.a(undefined, "imdb", `https://www.imdb.com/title/${services.imdb}`, "_blank") : null,
-				services.trakt ? util.DOM.a(undefined, "trakt", data instanceof type.Media.Episode
+			return DOM.div("services", [DOM.span("label", "Services"), 
+				services.csfd ? DOM.a(undefined, "csfd", `https://www.csfd.cz/film/${services.csfd}`, "_blank") : null,
+				services.imdb ? DOM.a(undefined, "imdb", `https://www.imdb.com/title/${services.imdb}`, "_blank") : null,
+				services.trakt ? DOM.a(undefined, "trakt", data instanceof type.Media.Episode
 					? `https://trakt.tv/search/trakt/${services.trakt}?id_type=episode`
 					: `https://trakt.tv/movies/${services.trakt}`, "_blank") : null,
 				services.tmdb && data instanceof type.Media.Movie 
-					? util.DOM.a(undefined, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
+					? DOM.a(undefined, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
 		}
 
 		getTouchX(event:TouchEvent):number | undefined {

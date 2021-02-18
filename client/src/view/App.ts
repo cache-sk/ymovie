@@ -1,6 +1,12 @@
 /// <reference path="base/Component.ts"/>
 
 namespace ymovie.view {
+	const Action = type.Action;
+	const Catalogue = type.Catalogue;
+	const Media = type.Media;
+	const ApiScc = api.ApiScc;
+	const DOM = util.DOM;
+
 	export class App extends base.Component<HTMLBodyElement> {
 		api:api.Api | undefined;
 		nav:util.Nav | undefined;
@@ -35,20 +41,20 @@ namespace ymovie.view {
 			this.nav = new util.Nav();
 			this.ga = new util.GA();
 			this.menu = {home:[
-				new type.Catalogue.SccLink("movie", "New Movies", api.ApiScc.PATH_MOVIES_AIRED),
-				new type.Catalogue.SccLink("series", "New Series", api.ApiScc.PATH_SERIES_AIRED),
-				new type.Catalogue.SccLink("concert", "New Concerts", api.ApiScc.PATH_NEW_CONCERTS),
-				new type.Catalogue.SccLink("fairyTale", "New Fairy Tales", api.ApiScc.PATH_NEW_FAIRY_TALES),
-				new type.Catalogue.SccLink("animated", "Animated Movies", api.ApiScc.PATH_NEW_ANIMATED_MOVIES),
-				new type.Catalogue.SccLink("animated", "Animated Series", api.ApiScc.PATH_NEW_ANIMATED_SERIES),
-				new type.Catalogue.SccLink("movie", "New Movies CZ/SK", api.ApiScc.PATH_DUBBED_MOVIES_AIRED),
-				new type.Catalogue.SccLink("series", "New Series CZ/SK", api.ApiScc.PATH_DUBBED_SERIES_AIRED),
-				new type.Catalogue.SccLink("popular", "Popular Movies", api.ApiScc.PATH_MOVIES_POPULAR),
-				new type.Catalogue.SccLink("popular", "Popular Series", api.ApiScc.PATH_SERIES_POPULAR),
-				new type.Catalogue.SccLink("movie", "Added Movies", api.ApiScc.PATH_MOVIES_ADDED),
-				new type.Catalogue.SccLink("series", "Added Series", api.ApiScc.PATH_SERIES_ADDED),
-				new type.Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
-				new type.Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))
+				new Catalogue.SccLink("movie", "New Movies", ApiScc.PATH_MOVIES_AIRED),
+				new Catalogue.SccLink("series", "New Series", ApiScc.PATH_SERIES_AIRED),
+				new Catalogue.SccLink("concert", "New Concerts", ApiScc.PATH_NEW_CONCERTS),
+				new Catalogue.SccLink("fairyTale", "New Fairy Tales", ApiScc.PATH_NEW_FAIRY_TALES),
+				new Catalogue.SccLink("animated", "Animated Movies", ApiScc.PATH_NEW_ANIMATED_MOVIES),
+				new Catalogue.SccLink("animated", "Animated Series", ApiScc.PATH_NEW_ANIMATED_SERIES),
+				new Catalogue.SccLink("movie", "New Movies CZ/SK", ApiScc.PATH_DUBBED_MOVIES_AIRED),
+				new Catalogue.SccLink("series", "New Series CZ/SK", ApiScc.PATH_DUBBED_SERIES_AIRED),
+				new Catalogue.SccLink("popular", "Popular Movies", ApiScc.PATH_MOVIES_POPULAR),
+				new Catalogue.SccLink("popular", "Popular Series", ApiScc.PATH_SERIES_POPULAR),
+				new Catalogue.SccLink("movie", "Added Movies", ApiScc.PATH_MOVIES_ADDED),
+				new Catalogue.SccLink("series", "Added Series", ApiScc.PATH_SERIES_ADDED),
+				new Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
+				new Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))
 			]};
 			
 			this.setupView = new setup.SetupView(this.api);
@@ -57,24 +63,24 @@ namespace ymovie.view {
 			this.detailView = new detail.DetailView(this.api);
 			this.notificationView = new NotificationView();
 
-			this.listen?.(type.Action.GoBack, this.nav.goBack.bind(this.nav));
-			this.listen?.(type.Action.Search, this.search.bind(this));
-			this.listen?.(type.Action.CatalogueItemSelected, this.selectCatalogueItem.bind(this));
-			this.listen?.(type.Action.ResolveStreams, this.resolveStreams.bind(this));
-			this.listen?.(type.Action.ResolveStreamUrl, this.resolveStreamUrl.bind(this));
-			this.listen?.(type.Action.GoHome, this.nav.goHome.bind(this.nav));
-			this.listen?.(type.Action.ShowSetup, this.nav.goSetup.bind(this.nav));
-			this.listen?.(type.Action.ShowAbout, this.nav.goAbout.bind(this.nav));
-			this.listen?.(type.Action.Play, this.play.bind(this));
+			this.listen?.(Action.GoBack, this.nav.goBack.bind(this.nav));
+			this.listen?.(Action.Search, this.search.bind(this));
+			this.listen?.(Action.CatalogueItemSelected, this.selectCatalogueItem.bind(this));
+			this.listen?.(Action.ResolveStreams, this.resolveStreams.bind(this));
+			this.listen?.(Action.ResolveStreamUrl, this.resolveStreamUrl.bind(this));
+			this.listen?.(Action.GoHome, this.nav.goHome.bind(this.nav));
+			this.listen?.(Action.ShowSetup, this.nav.goSetup.bind(this.nav));
+			this.listen?.(Action.ShowAbout, this.nav.goAbout.bind(this.nav));
+			this.listen?.(Action.Play, this.play.bind(this));
 			
 			this.ga.init();
 			
-			this.nav.listen?.(type.Action.NavChanged, this.onNavChange.bind(this));
+			this.nav.listen?.(Action.NavChanged, this.onNavChange.bind(this));
 			this.nav.init();
 			
-			this.api.listen?.(type.Action.CastStatusUpdates, this.onApiCastStatus.bind(this));
-			this.api.listen?.(type.Action.KodiStatusUpdated, this.onApiKodiStatus.bind(this));
-			this.api.listen?.(type.Action.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
+			this.api.listen?.(Action.CastStatusUpdates, this.onApiCastStatus.bind(this));
+			this.api.listen?.(Action.KodiStatusUpdated, this.onApiKodiStatus.bind(this));
+			this.api.listen?.(Action.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
 			await this.api.init();
 			
 			this.render();
@@ -101,7 +107,7 @@ namespace ymovie.view {
 				return this.nav.goReplaceMedia(<type.Media.Base>await this.api.loadMedia(sccMediaId));
 			if(webshareMediaId)
 				return this.nav.goReplaceMedia(await this.api.loadWebshareMedia(webshareMediaId));
-			if(sccLink && sccLink instanceof type.Catalogue.SccLink)
+			if(sccLink && sccLink instanceof Catalogue.SccLink)
 				return this.nav.goSccBrowse(sccLink);
 			
 			if(this.nav.isAbout(path))
@@ -116,11 +122,11 @@ namespace ymovie.view {
 		}
 		
 		initCast(){
-			util.DOM.append(document.body, util.DOM.script("https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"));
+			DOM.append(document.body, DOM.script("https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"));
 		}
 		
 		initAnalytics(){
-			util.DOM.append(document.body, util.DOM.script("https://www.google-analytics.com/analytics.js"));
+			DOM.append(document.body, DOM.script("https://www.google-analytics.com/analytics.js"));
 		}
 		
 		render(){
@@ -184,21 +190,21 @@ namespace ymovie.view {
 		}
 		
 		selectCatalogueItem(data:type.Catalogue.AnyItem){
-			if(data instanceof type.Catalogue.SccLink) {
+			if(data instanceof Catalogue.SccLink) {
 				this.nav?.goSccBrowse(data);
-			} else if(data instanceof type.Media.Episode) {
+			} else if(data instanceof Media.Episode) {
 				this.nav?.goSccEpisode(data);
-			} else if(data instanceof type.Media.Movie) {
+			} else if(data instanceof Media.Movie) {
 				this.nav?.goSccMovie(data);
-			} else if(data instanceof type.Media.Season) {
+			} else if(data instanceof Media.Season) {
 				this.nav?.goSccSeason(data);
 				this.scrollTop();
-			} else if(data instanceof type.Media.Series) {
+			} else if(data instanceof Media.Series) {
 				this.nav?.goSccSeries(data);
 				this.scrollTop();
-			} else if(data instanceof type.Media.Webshare) {
+			} else if(data instanceof Media.Webshare) {
 				this.nav?.goWebshareVideo(data);
-			} else if(data instanceof type.Catalogue.Callback) {
+			} else if(data instanceof Catalogue.Callback) {
 				data.callback();
 			}
 		}
@@ -206,7 +212,7 @@ namespace ymovie.view {
 		async resolveStreams(data:type.Action.ResolveStreamsData){
 			if(!this.api)
 				return;
-			if(data.data instanceof type.Media.Webshare)
+			if(data.data instanceof Media.Webshare)
 				data.callback(await this.api.loadWebshareStreams(data.data));
 			else
 				data.callback(await this.api.loadStreams(data.data));
