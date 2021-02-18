@@ -1,11 +1,11 @@
 namespace ymovie.type.Media {
 	export abstract class Base {
-		readonly id:string; // = "ae15"
+		readonly id:string;
 
-		title?:string; // = "Avatar";
+		title?:string;
 		longTitle?:string;
-		rating?:string; // = 7.1
-		poster?:string; // = "http://xyz..."
+		rating?:string;
+		poster?:string;
 
 		constructor(id:string) {
 			this.id = id;
@@ -14,29 +14,29 @@ namespace ymovie.type.Media {
 
 	export abstract class Scc extends Base {
 		isCZSK?:boolean;
-		year?:string; // = 2020
+		year?:string;
 		posterThumbnail?:string;
 	}
 
 	export class Season extends Scc {
 		seriesId?:string;
-		seriesTitle?:string; // = "Simsons"
-		seasonNumber?:number; // = 2
+		seriesTitle?:string;
+		seasonNumber?:number;
 	}
 
 	export class Series extends Scc {}
 
 	export abstract class PlayableScc extends Scc {
-		plot?:string; // = "Abc. Def."
-		trailers?:Array<string>; // = ["http://xyz..."]
-		mpaa?:number; // = 12
-		studio?:string; // = "Romulus"
-		services?:Type.Services; //
-		streamCount?:number; // = 12
-		originalTitle?:string; // = "Abc"
-		genres?:string; // = "Comedy, Drama"
-		directors?:string; // = "A, B, C";
-		cast?:string; // = "A, B, C";
+		plot?:string;
+		trailers?:Array<string>;
+		mpaa?:number;
+		studio?:string;
+		services?:Type.Services;
+		streamCount?:number;
+		originalTitle?:string;
+		genres?:string;
+		directors?:string;
+		cast?:string;
 	}
 
 	export class Movie extends PlayableScc {}
@@ -44,9 +44,9 @@ namespace ymovie.type.Media {
 	export class Episode extends PlayableScc {
 		subtitle?:string;
 		seriesId?:string;
-		seriesTitle?:string; // = "Simsons"
-		seasonNumber?:number; // = 4
-		episodeNumber?:number; // = 3
+		seriesTitle?:string;
+		seasonNumber?:number;
+		episodeNumber?:number;
 	}
 
 	export class Webshare extends Base {

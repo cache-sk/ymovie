@@ -1,5 +1,5 @@
 namespace ymovie.view.detail {
-	export class StreamsView extends base.DataComponent<HTMLDivElement, type.Type.PlayableStreams> {
+	export class StreamsView extends base.DataComponent<HTMLDivElement, Data> {
 		constructor(){
 			super("div");
 		}
@@ -23,5 +23,10 @@ namespace ymovie.view.detail {
 			}
 			return super.render();
 		}
+	}
+
+	type Data = {
+		data:type.Media.Playable;
+		streams:Array<type.Type.Stream>;
 	}
 }

@@ -95,7 +95,7 @@ namespace ymovie.view {
 			if(!this.api || !this.nav || !this.menu)
 				return;
 
-			const {path, sccMediaId, webshareMediaId, sccLinkLabel} = <type.Type.LocationData>this.nav.locationData;
+			const {path, sccMediaId, webshareMediaId, sccLinkLabel} = this.nav.locationData;
 			const sccLink = sccLinkLabel && this.menu.home.find(item => sccLinkLabel == this.nav?.safePath(item.label));
 			if(sccMediaId)
 				return this.nav.goReplaceMedia(<type.Media.Base>await this.api.loadMedia(sccMediaId));
@@ -254,8 +254,8 @@ namespace ymovie.view {
 
 			this.ga?.pageview(data.url, data.title);
 			const nav = this.nav;
-			const previousPath = data.previous?.path;
-			const path = data.path;
+			const previousPath = data.previous?.path || "";
+			const path = data.path || "";
 			const state = data.state;
 			const isDetail = (path:string) => nav.isSccMovie(path) || nav.isSccEpisode(path) || nav.isWebshareVideo(path);
 			
@@ -278,24 +278,24 @@ namespace ymovie.view {
 				return await this.loadCatalogue(undefined,
 					async () => await this.api?.loadIds(util.WatchedUtil.series, data.title));
 			if(isDetail(path))
-				return this.detailView.update({detail:<type.Media.Playable>state, list:<Array<type.Catalogue.AnyItem>>this.discoveryView.data?.catalogue});
+				return this.detailView.update({detail:<type.Media.Playable>state.source, list:<Array<type.Catalogue.AnyItem>>this.discoveryView.data?.catalogue});
 			if(nav.isSccSeries(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadSeasons((<type.Media.Series>state).id, data.title));
+					async () => await this.api?.loadSeasons((<type.Media.Series>state.source).id, data.title));
 			if(nav.isSccSeason(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadEpisodes((<type.Media.Episode>state).id, data.title));
+					async () => await this.api?.loadEpisodes((<type.Media.Episode>state.source).id, data.title));
 			if(nav.isSccBrowse(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadPath(<string>(<type.Catalogue.SccLink>state).url, data.title));
+					async () => await this.api?.loadPath(<string>(<type.Catalogue.SccLink>state.source).url, data.title));
 			
-			this.discoveryView.searchQuery = (<type.Type.NavStateSearch>state)?.query || "";
+			this.discoveryView.searchQuery = (<type.Nav.StateSearch>state.source)?.query || "";
 			if(nav.isSccSearch(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.searchScc((<type.Type.NavStateSearch>state).query, data.title));
+					async () => await this.api?.searchScc((<type.Nav.StateSearch>state.source).query, data.title));
 			if(nav.isWebshareSearch(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.searchWebshare((<type.Type.NavStateSearch>state).query, data.title, <number>(<type.Type.NavStateSearch>state).page), "webshare");
+					async () => await this.api?.searchWebshare((<type.Nav.StateSearch>state.source).query, data.title, <number>(<type.Nav.StateSearch>state.source).page), "webshare");
 			
 			this.updateCatalogue(this.menu.home, "home");
 		}

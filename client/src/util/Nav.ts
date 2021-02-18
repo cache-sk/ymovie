@@ -15,12 +15,13 @@ namespace ymovie.util {
 		static PATH_WEBSHARE_SEARCH = "/webshare/search";
 		static PATH_WEBSHARE_VIDEO = "/webshare/video";
 		
-		initialHistoryLength = 0;
-		currentState:type.Type.NavState | undefined;
+		private initialHistoryLength = 0;
+		private currentState:type.Nav.State | undefined;
+		private readonly serializer:Serializer = new Serializer();
 
 		trigger:util.Triggerer;
 		listen:util.TriggerListener;
-
+		
 		constructor() {
 			Trigger.enhance(this);
 		}
@@ -34,7 +35,7 @@ namespace ymovie.util {
 			document.title = value ? `${value} | YMovie` : "YMovie";
 		}
 		
-		get locationData():type.Type.LocationData {
+		get locationData():LocationData {
 			const path = location.hash.substr(1);
 			const regexp = /^\/[a-z]+\/[a-z]+\/([^\/]+)(\/|$)/;
 			const sccMediaId = (this.isSccSeries(path) 
@@ -49,9 +50,9 @@ namespace ymovie.util {
 			return {path, sccMediaId, webshareMediaId, sccLinkLabel};
 		}
 		
-		pushState(state:type.Type.NavStateSource, title:string, url:string, replace?:boolean):void {
-			const enhancedState = {state, title, url};
-			history[replace ? "replaceState" : "pushState"](enhancedState, title, url);
+		private pushState(source:type.Nav.StateSourceData, title:string, url:string, replace?:boolean):void {
+			const enhancedState = new type.Nav.State(new type.Nav.StateSource(source), title, url);
+			history[replace ? "replaceState" : "pushState"](this.serializer.serialize(enhancedState), title, url);
 			this.title = title;
 			this.triggerChange(enhancedState);
 			this.currentState = enhancedState;
@@ -61,7 +62,7 @@ namespace ymovie.util {
 			return source ? Util.removeDiacritics(source).replace(/[^a-z0-9]+/gi, '-') : "";
 		}
 		
-		go(data:type.Type.NavStateSource, path:string, title:string):void {
+		go(data:type.Nav.StateSourceData, path:string, title:string):void {
 			const dataPage = data instanceof type.Catalogue.SccLink ? data.page : null;
 			const page = (dataPage && dataPage > 1) ? `/${dataPage}` : '';
 			this.pushState(data, title, `#${path}/${this.safePath(title)}${page}`);
@@ -79,17 +80,17 @@ namespace ymovie.util {
 		}
 		
 		assignCatalogue(value:Array<type.Catalogue.AnyItem> | undefined):void {
-			const enhancedState = <type.Type.NavState>history.state;
+			const enhancedState:type.Nav.State = this.serializer.deserialize(history.state);
 			if(enhancedState.state)
 				enhancedState.state.catalogue = value;
-			history.replaceState(enhancedState, enhancedState.title, enhancedState.url);
+			history.replaceState(this.serializer.serialize(enhancedState), enhancedState.title, enhancedState.url);
 		}
 		
-		triggerChange(enhancedState:type.Type.NavState):void {
-			const path = enhancedState.url.substr(1);
+		triggerChange(state:type.Nav.State):void {
 			const current = this.currentState;
-			const previous = {...current, path:current?.url.substr(1)};
-			this.trigger?.(new type.Action.NavChanged(<type.Action.NavChangeData>{...enhancedState, path, previous}));
+			const previous = current ? new type.Action.NavChangeData(current.state, current.title, current.url, current?.url.substr(1)) : undefined;
+			const data = new type.Action.NavChangeData(state.state, state.title, state.url, state.url.substr(1), previous);
+			this.trigger?.(new type.Action.NavChanged(data));
 		}
 		
 		goHome(replace?:boolean):void {
@@ -113,8 +114,7 @@ namespace ymovie.util {
 		}
 		
 		goSccSearch(query:string):void {
-
-			this.pushState({query}, `Search ${query}`, `#${Nav.PATH_SCC_SEARCH}/${this.safePath(query)}`);
+			this.pushState(new type.Nav.StateSccSearch(query), `Search ${query}`, `#${Nav.PATH_SCC_SEARCH}/${this.safePath(query)}`);
 		}
 		
 		isSccSearch(path:string):boolean {
@@ -178,8 +178,7 @@ namespace ymovie.util {
 		}
 		
 		goWebshareSearch(query:string, page:number):void {
-			const state:type.Type.NavStateSearch = {query, page};
-			this.pushState(state, `Search ${query}`, `#${Nav.PATH_WEBSHARE_SEARCH}/${this.safePath(query)}` + (page ? `/${page + 1}` : ""));
+			this.pushState(new type.Nav.StateWebshareSearch(query, page), `Search ${query}`, `#${Nav.PATH_WEBSHARE_SEARCH}/${this.safePath(query)}` + (page ? `/${page + 1}` : ""));
 		}
 		
 		isWebshareSearch(path:string):boolean {
@@ -195,15 +194,23 @@ namespace ymovie.util {
 		}
 		
 		onWindowPopState(event:PopStateEvent):void {
-			const enhancedState = event.state;
+			const state = event.state;
 			
 			// ignore url entered by user
-			if(!enhancedState)
+			if(!state)
 				return;
 			
-			this.title = enhancedState?.title;
+			this.title = state?.title;
+			const enhancedState = this.serializer.deserialize(state);
 			this.triggerChange(enhancedState);
 			this.currentState = enhancedState;
 		}
+	}
+
+	type LocationData = {
+		path:string;
+		sccMediaId?:string;
+		webshareMediaId?:string;
+		sccLinkLabel?:string;
 	}
 }

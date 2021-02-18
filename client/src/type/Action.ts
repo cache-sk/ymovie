@@ -1,4 +1,5 @@
 /// <reference path="../util/Trigger.ts"/>
+/// <reference path="Nav.ts"/>
 
 namespace ymovie.type.Action {
 	export class GoBack extends util.TriggerAction<undefined> {}
@@ -15,9 +16,15 @@ namespace ymovie.type.Action {
 	export class ResolveStreamUrl extends util.TriggerAction<ResolveStreamUrlData> {}
 	export class Play extends util.TriggerAction<PlayData> {}
 
-	export type NavChangeData = type.Type.NavState & {
+	export class NavChangeData extends Nav.State {
 		path:string;
-		previous:NavChangeData;
+		previous?:NavChangeData;
+
+		constructor(state:Nav.StateSource, title:string, url:string, path:string, previous?:NavChangeData) {
+			super(state, title, url);
+			this.path = path;
+			this.previous = previous;
+		}
 	}
 
 	export type PlayData = {
