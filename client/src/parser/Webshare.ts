@@ -6,9 +6,9 @@ namespace ymovie.parser {
 				.map(item => this.normalizeItem(item));
 			const pageCount = Math.ceil(total / 100);
 			if(page)
-				result.unshift(util.CatalogueUtil.createTrigger("folder", title, `${page}/${pageCount}`, new type.Action.Search({query, page:page - 1})));
+				result.unshift(new type.Catalogue.Trigger("folder", title, `${page}/${pageCount}`, new type.Action.Search({query, page:page - 1})));
 			if(page + 1 < pageCount)
-				result.push(util.CatalogueUtil.createTrigger("folder", title, `${page + 2}/${pageCount}`, new type.Action.Search({query, page:page + 1})));
+				result.push(new type.Catalogue.Trigger("folder", title, `${page + 2}/${pageCount}`, new type.Action.Search({query, page:page + 1})));
 			return result;
 		}
 		

@@ -35,20 +35,20 @@ namespace ymovie.view {
 			this.nav = new util.Nav();
 			this.ga = new util.GA();
 			this.menu = {home:[
-				util.CatalogueUtil.createSccLink("movie", "New Movies", api.ApiScc.PATH_MOVIES_AIRED),
-				util.CatalogueUtil.createSccLink("series", "New Series", api.ApiScc.PATH_SERIES_AIRED),
-				util.CatalogueUtil.createSccLink("concert", "New Concerts", api.ApiScc.PATH_NEW_CONCERTS),
-				util.CatalogueUtil.createSccLink("fairyTale", "New Fairy Tales", api.ApiScc.PATH_NEW_FAIRY_TALES),
-				util.CatalogueUtil.createSccLink("animated", "Animated Movies", api.ApiScc.PATH_NEW_ANIMATED_MOVIES),
-				util.CatalogueUtil.createSccLink("animated", "Animated Series", api.ApiScc.PATH_NEW_ANIMATED_SERIES),
-				util.CatalogueUtil.createSccLink("movie", "New Movies CZ/SK", api.ApiScc.PATH_DUBBED_MOVIES_AIRED),
-				util.CatalogueUtil.createSccLink("series", "New Series CZ/SK", api.ApiScc.PATH_DUBBED_SERIES_AIRED),
-				util.CatalogueUtil.createSccLink("popular", "Popular Movies", api.ApiScc.PATH_MOVIES_POPULAR),
-				util.CatalogueUtil.createSccLink("popular", "Popular Series", api.ApiScc.PATH_SERIES_POPULAR),
-				util.CatalogueUtil.createSccLink("movie", "Added Movies", api.ApiScc.PATH_MOVIES_ADDED),
-				util.CatalogueUtil.createSccLink("series", "Added Series", api.ApiScc.PATH_SERIES_ADDED),
-				util.CatalogueUtil.createCallback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
-				util.CatalogueUtil.createCallback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))
+				new type.Catalogue.SccLink("movie", "New Movies", api.ApiScc.PATH_MOVIES_AIRED),
+				new type.Catalogue.SccLink("series", "New Series", api.ApiScc.PATH_SERIES_AIRED),
+				new type.Catalogue.SccLink("concert", "New Concerts", api.ApiScc.PATH_NEW_CONCERTS),
+				new type.Catalogue.SccLink("fairyTale", "New Fairy Tales", api.ApiScc.PATH_NEW_FAIRY_TALES),
+				new type.Catalogue.SccLink("animated", "Animated Movies", api.ApiScc.PATH_NEW_ANIMATED_MOVIES),
+				new type.Catalogue.SccLink("animated", "Animated Series", api.ApiScc.PATH_NEW_ANIMATED_SERIES),
+				new type.Catalogue.SccLink("movie", "New Movies CZ/SK", api.ApiScc.PATH_DUBBED_MOVIES_AIRED),
+				new type.Catalogue.SccLink("series", "New Series CZ/SK", api.ApiScc.PATH_DUBBED_SERIES_AIRED),
+				new type.Catalogue.SccLink("popular", "Popular Movies", api.ApiScc.PATH_MOVIES_POPULAR),
+				new type.Catalogue.SccLink("popular", "Popular Series", api.ApiScc.PATH_SERIES_POPULAR),
+				new type.Catalogue.SccLink("movie", "Added Movies", api.ApiScc.PATH_MOVIES_ADDED),
+				new type.Catalogue.SccLink("series", "Added Series", api.ApiScc.PATH_SERIES_ADDED),
+				new type.Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
+				new type.Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))
 			]};
 			
 			this.setupView = new setup.SetupView(this.api);
@@ -116,11 +116,11 @@ namespace ymovie.view {
 		}
 		
 		initCast(){
-			ymovie.util.DOM.append(document.body, ymovie.util.DOM.script("https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"));
+			util.DOM.append(document.body, util.DOM.script("https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"));
 		}
 		
 		initAnalytics(){
-			ymovie.util.DOM.append(document.body, ymovie.util.DOM.script("https://www.google-analytics.com/analytics.js"));
+			util.DOM.append(document.body, util.DOM.script("https://www.google-analytics.com/analytics.js"));
 		}
 		
 		render(){
@@ -222,13 +222,13 @@ namespace ymovie.view {
 		}
 		
 		async play(payload:type.Action.PlayData){
-			const {player, position, media, url} = payload;
-			const notificationTitle = player === enums.Player.CAST ? "Cast" : "Kodi";
+			const {player, media, url} = payload;
+			const notificationTitle = player instanceof type.Player.Cast ? "Cast" : "Kodi";
 			try {
-				if(this.api && player === enums.Player.CAST)
+				if(this.api && player instanceof type.Player.Cast)
 					await this.api.playOnCast(media, url);
-				else if(this.api && player === enums.Player.KODI)
-					await this.api.playOnKodi(<number>position, url);
+				else if(this.api && player instanceof type.Player.Kodi)
+					await this.api.playOnKodi(player.position, url);
 				this.showNotification(`${notificationTitle} Success`, `Playing ${media.title}`);
 			} catch(error) {
 				this.showNotification(`${notificationTitle} Error`, error);
@@ -273,10 +273,10 @@ namespace ymovie.view {
 				return this.aboutView.show();
 			if(nav.isSccWatchedMovies(path))
 				return await this.loadCatalogue(undefined,
-					async () => await this.api?.loadIds(util.WatchedUtil.movies, data.title));
+					async () => await this.api?.loadIds(util.Watched.movies, data.title));
 			if(nav.isSccWatchedSeries(path))
 				return await this.loadCatalogue(undefined,
-					async () => await this.api?.loadIds(util.WatchedUtil.series, data.title));
+					async () => await this.api?.loadIds(util.Watched.series, data.title));
 			if(isDetail(path))
 				return this.detailView.update({detail:<type.Media.Playable>state.source, list:<Array<type.Catalogue.AnyItem>>this.discoveryView.data?.catalogue});
 			if(nav.isSccSeries(path))

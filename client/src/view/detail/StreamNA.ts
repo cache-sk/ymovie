@@ -10,7 +10,6 @@ namespace ymovie.view.detail {
 			return util.DOM.span("info", util.DOM.span("name", "No streams available."));
 		}
 		
-		onClick(){
-		}
+		onClick(){}
 	}
 }

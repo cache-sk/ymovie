@@ -1,7 +1,6 @@
 namespace ymovie.util {
 	export class GA {
-		constructor(){
-		}
+		constructor(){}
 		
 		init():void {
 			// @ts-ignore

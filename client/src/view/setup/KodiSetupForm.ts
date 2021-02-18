@@ -1,11 +1,11 @@
 namespace ymovie.view.setup {
 	export class KodiSetupForm extends base.Form {
 		api:api.Api;
-		position:number;
+		position:type.Player.KodiPosition;
 		data:Data | undefined;
 		endpointInput:HTMLInputElement;
 
-		constructor(api:api.Api, position:number){
+		constructor(api:api.Api, position:type.Player.KodiPosition){
 			super();
 			this.api = api;
 			this.api.listen?.(type.Action.KodiStatusUpdated, this.render.bind(this));

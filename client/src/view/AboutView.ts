@@ -57,7 +57,7 @@ namespace ymovie.view {
 	<p>Icons by <a href="https://iconmonstr.com" target="_blank">iconmonstr.com</a> &amp; <a href="https://www.flaticon.com/" target="_blank">flaticon.com</a>. SVG to PNG conversion by <a href="https://ezgif.com/svg-to-png" target="_blank">ezgif.com</a>.</p>
 
 	<h2>Version</h2>
-	<p>Release date: ${ymovie.util.Util.getCommitDate().toISOString()}</p>
+	<p>Release date: ${util.Util.getCommitDate().toISOString()}</p>
 			`;
 		}
 		

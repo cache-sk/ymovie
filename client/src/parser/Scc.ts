@@ -11,9 +11,9 @@ namespace ymovie.parser {
 				.filter(item => item != undefined);
 			const page = data?.pagination;
 			if(page?.prev)
-				result.unshift(util.CatalogueUtil.createSccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
+				result.unshift(new type.Catalogue.SccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
 			if(page?.next)
-				result.push(util.CatalogueUtil.createSccLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
+				result.push(new type.Catalogue.SccLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
 			return result;
 		}
 		

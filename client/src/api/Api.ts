@@ -22,7 +22,8 @@ namespace ymovie.api {
 		
 		async init(){
 			this.cast.init();
-			for (let position = 1; position <= 2; position++) {
+			const list:Array<type.Player.KodiPosition> = [1, 2];
+			for (let position of list) {
 				const status = this.getKodiEndpoint(position) ? enums.Status.DEFINED: enums.Status.NOT_AVAILABLE;
 				this.trigger?.(new type.Action.KodiStatusUpdated({position, status}));
 			}
@@ -30,7 +31,7 @@ namespace ymovie.api {
 		}
 		
 		get uuid(){
-			const result = util.MyStorage.get(Api.KEY_UUID);
+			const result = util.Storage.get(Api.KEY_UUID);
 			if(result)
 				return result;
 			
@@ -41,33 +42,33 @@ namespace ymovie.api {
 		
 		set uuid(value){
 			if(value === null)
-				util.MyStorage.remove(Api.KEY_UUID);
+				util.Storage.remove(Api.KEY_UUID);
 			else
-				util.MyStorage.set(Api.KEY_UUID, value);
+				util.Storage.set(Api.KEY_UUID, value);
 		}
 		
 		get webshareToken(){
-			return util.MyStorage.get(Api.KEY_WEBSHARE_TOKEN);
+			return util.Storage.get(Api.KEY_WEBSHARE_TOKEN);
 		}
 		
 		set webshareToken(value){
 			if(value === null)
-				util.MyStorage.remove(Api.KEY_WEBSHARE_TOKEN);
+				util.Storage.remove(Api.KEY_WEBSHARE_TOKEN);
 			else
-				util.MyStorage.set(Api.KEY_WEBSHARE_TOKEN, value);
+				util.Storage.set(Api.KEY_WEBSHARE_TOKEN, value);
 		}
 		
-		getKodiEndpoint(position:number):string | null {
+		getKodiEndpoint(position:type.Player.KodiPosition):string | null {
 			const key = Api.KEY_KODI_ENDPOINT + (position === 1 ? "" : position);
-			return util.MyStorage.get(key);
+			return util.Storage.get(key);
 		}
 		
-		setKodiEndpoint(position:number, value:string) {
+		setKodiEndpoint(position:type.Player.KodiPosition, value:string) {
 			const key = Api.KEY_KODI_ENDPOINT + (position === 1 ? "" : position);
 			if(value === null)
-				util.MyStorage.remove(key);
+				util.Storage.remove(key);
 			else
-				util.MyStorage.set(key, value);
+				util.Storage.set(key, value);
 		}
 		
 		async searchScc(query:string, title:string) {
@@ -128,11 +129,11 @@ namespace ymovie.api {
 			await this.cast.play(media, url);
 		}
 		
-		async playOnKodi(position:number, url:string){
+		async playOnKodi(position:type.Player.KodiPosition, url:string){
 			await this.kodi.play(<string>this.getKodiEndpoint(position), url);
 		}
 		
-		async connectKodi(position:number, endpoint:string) {
+		async connectKodi(position:type.Player.KodiPosition, endpoint:string) {
 			try {
 				this.setKodiEndpoint(position, endpoint);
 				await this.kodi.isAvailable(endpoint);

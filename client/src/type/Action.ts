@@ -28,9 +28,8 @@ namespace ymovie.type.Action {
 	}
 
 	export type PlayData = {
-		player:enums.Player;
-		position?:number;
-		media:type.Media.Playable;
+		player:Player.Base;
+		media:Media.Playable;
 		url:string;
 	}
 

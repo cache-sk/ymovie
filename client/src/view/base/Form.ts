@@ -9,8 +9,7 @@ namespace ymovie.view.base {
 			this.element.classList.toggle("loading", value);
 		}
 		
-		async process() {
-		}
+		async process() {}
 		
 		async onSubmit(event:Event) {
 			event.preventDefault();

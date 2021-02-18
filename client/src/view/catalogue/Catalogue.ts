@@ -8,7 +8,7 @@ namespace ymovie.view.catalogue {
 			this.clean();
 			this.element.classList.toggle("error", false);
 			this.element.classList.toggle("empty", false);
-			const watched = ymovie.util.WatchedUtil.getMap();
+			const watched = util.Watched.getMap();
 			const items = <Array<type.Catalogue.AnyItem> | undefined>this.data;
 			const error = <Error | undefined>this.data;
 			if(util.Util.isArray(this.data) && items?.length){

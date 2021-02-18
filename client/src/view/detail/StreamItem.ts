@@ -25,11 +25,11 @@ namespace ymovie.view.detail {
 			this.element.classList.add("loading");
 			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<type.Media.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
 			if(this.data?.source instanceof type.Media.Movie)
-				util.WatchedUtil.addMovie(this.data.source.id);
+				util.Watched.addMovie(this.data.source.id);
 			if(this.data?.source instanceof type.Media.Episode) {
 				if(this.data.source.seriesId)
-					util.WatchedUtil.addSeries(this.data.source.seriesId);
-				util.WatchedUtil.addEpisode(this.data.source.id);
+					util.Watched.addSeries(this.data.source.seriesId);
+				util.Watched.addEpisode(this.data.source.id);
 			}
 		}
 		

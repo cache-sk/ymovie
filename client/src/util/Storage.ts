@@ -1,5 +1,5 @@
 namespace ymovie.util {
-	export class MyStorage {
+	export class Storage {
 		static get storage() {
 			return window.localStorage;
 		}

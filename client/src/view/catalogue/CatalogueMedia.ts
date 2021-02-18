@@ -19,11 +19,11 @@ namespace ymovie.view.catalogue {
 		}
 		
 		render() {
-			const name = ymovie.util.DOM.span("name", this.data?.title);
-			const language = this.data instanceof type.Media.Scc && this.data.isCZSK ? ymovie.util.DOM.span("language", "CZ/SK") : null;
+			const name = util.DOM.span("name", this.data?.title);
+			const language = this.data instanceof type.Media.Scc && this.data.isCZSK ? util.DOM.span("language", "CZ/SK") : null;
 			const size = this.data instanceof type.Media.Webshare ? util.DOM.span("size", util.Util.formatSize(this.data.size)) : null;
 			const year = this.data instanceof type.Media.Scc ? util.DOM.span("year", this.data.year) : null;
-			const title = ymovie.util.DOM.span("title", [name, language, size || year]);
+			const title = util.DOM.span("title", [name, language, size || year]);
 			const rating = this.data?.rating ? util.DOM.span("rating", this.data.rating) : null;
 			const img = this.renderPoster();
 			const playable = (this.data instanceof type.Media.PlayableScc && this.data.streamCount && this.data.streamCount > 0) 

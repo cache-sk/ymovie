@@ -46,13 +46,13 @@ namespace ymovie.view.detail {
 			const play = util.DOM.a("play", "Play in new window", isYoutube ? url : `play.html#${encodeURIComponent(url)}`, "_blank");
 			
 			const cast = util.DOM.span("cast", "Cast");
-			cast.addEventListener("click", () => this.triggerPlay(enums.Player.CAST));
+			cast.addEventListener("click", () => this.triggerPlay(new type.Player.Cast()));
 			
 			const kodi = util.DOM.span("kodi", "Play in Kodi");
-			kodi.addEventListener("click", () => this.triggerPlay(enums.Player.KODI, 1));
+			kodi.addEventListener("click", () => this.triggerPlay(new type.Player.Kodi(1)));
 			
 			const kodi2 = util.DOM.span("kodi2", "Play in Kodi");
-			kodi2.addEventListener("click", () => this.triggerPlay(enums.Player.KODI, 2));
+			kodi2.addEventListener("click", () => this.triggerPlay(new type.Player.Kodi(2)));
 			
 			const vlc = util.DOM.a("vlc", "Play on VLC", `vlc://${url}`, "_blank");
 			
@@ -67,8 +67,8 @@ namespace ymovie.view.detail {
 				isYoutube ? null : vlc]);
 		}
 
-		triggerPlay(player:enums.Player, position?:number){
-			this.trigger?.(new type.Action.Play({player, position, media:<type.Media.Playable>this.data?.source, url:<string>this.url}));
+		triggerPlay(player:type.Player.Base){
+			this.trigger?.(new type.Action.Play({player, media:<type.Media.Playable>this.data?.source, url:<string>this.url}));
 		}
 
 		onClipboard(event:MouseEvent){
@@ -78,7 +78,6 @@ namespace ymovie.view.detail {
 			document.execCommand('copy');
 		}
 
-		onClick() {
-		}
+		onClick() {}
 	}
 }

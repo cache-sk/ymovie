@@ -1,9 +1,9 @@
 namespace ymovie.util {
-	export class WatchedUtil {
-		static KEY_WATCHED_MOVIES = "KEY_WATCHED_MOVIES";
-		static KEY_WATCHED_SERIES = "KEY_WATCHED_SERIES";
-		static KEY_WATCHED_EPISODES = "KEY_WATCHED_EPISODES";
-		static MAX_WATCHED_LENGTH = 100;
+	export class Watched {
+		private static KEY_WATCHED_MOVIES = "KEY_WATCHED_MOVIES";
+		private static KEY_WATCHED_SERIES = "KEY_WATCHED_SERIES";
+		private static KEY_WATCHED_EPISODES = "KEY_WATCHED_EPISODES";
+		private static MAX_WATCHED_LENGTH = 100;
 		
 		static addMovie(id:string):void {
 			this.add(this.KEY_WATCHED_MOVIES, id);
@@ -29,13 +29,13 @@ namespace ymovie.util {
 			return this.get(this.KEY_WATCHED_EPISODES);
 		}
 		
-		static add(key:string, id:string):void {
+		private static add(key:string, id:string):void {
 			const max = this.MAX_WATCHED_LENGTH;
-			MyStorage.set(key, Util.unshiftAndLimit(this.get(key), id, max).join(","));
+			Storage.set(key, Util.unshiftAndLimit(this.get(key), id, max).join(","));
 		}
 		
-		static get(key:string):Array<string> {
-			const data = MyStorage.get(key);
+		private static get(key:string):Array<string> {
+			const data = Storage.get(key);
 			return data ? data.split(",") : [];
 		}
 		
