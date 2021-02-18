@@ -1,5 +1,5 @@
 namespace ymovie.view.catalogue {
-	export class Catalogue extends base.DataComponent<HTMLDivElement, Array<type.Type.AnyCatalogueItem> | Error | undefined> {
+	export class Catalogue extends base.DataComponent<HTMLDivElement, Array<type.Catalogue.AnyItem> | Error | undefined> {
 		constructor(){
 			super("div");
 		}
@@ -9,7 +9,7 @@ namespace ymovie.view.catalogue {
 			this.element.classList.toggle("error", false);
 			this.element.classList.toggle("empty", false);
 			const watched = ymovie.util.WatchedUtil.getMap();
-			const items = <Array<type.Type.AnyCatalogueItem> | undefined>this.data;
+			const items = <Array<type.Catalogue.AnyItem> | undefined>this.data;
 			const error = <Error | undefined>this.data;
 			if(util.Util.isArray(this.data) && items?.length){
 				this.append(items.map(data => this.renderItem(data, watched)));
@@ -23,15 +23,15 @@ namespace ymovie.view.catalogue {
 			return super.render();
 		}
 		
-		renderItem(data:type.Type.AnyCatalogueItem, watched:util.WatchedMap){
-			if(data instanceof type.Type.CatalogueItemCallback)
-				return CatalogueItemCustom.create(data).render();
-			if(data instanceof type.Type.CatalogueItemSccLink)
-				return CatalogueItemCustom.create(data).render();
-			if(data instanceof type.Type.CatalogueItemTrigger)
-				return CatalogueTrigger.create(data).render();
-			if(data instanceof type.Type.Item)
-				return CatalogueMedia.create(data, watched).render();
+		renderItem(data:type.Catalogue.AnyItem, watched:util.WatchedMap){
+			if(data instanceof type.Catalogue.Callback)
+				return new CatalogueItemCustom(data).render();
+			if(data instanceof type.Catalogue.SccLink)
+				return new CatalogueItemCustom(data).render();
+			if(data instanceof type.Catalogue.Trigger)
+				return new CatalogueTrigger(data).render();
+			if(data instanceof type.Media.Base)
+				return new CatalogueMedia(data, watched).render();
 			return undefined;
 		}
 	}

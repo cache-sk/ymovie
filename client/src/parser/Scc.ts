@@ -1,30 +1,62 @@
-namespace ymovie.util {
-	export class SccUtil {
-		static normalizeResponse(data:Response, title:string):Array<type.Type.AnyCatalogueItem> {
-			const result:Array<type.Type.AnyCatalogueItem> = <Array<type.Type.AnyCatalogueItem>>data.data
-				.map(item => this.normalizeItem(item))
+namespace ymovie.parser {
+	export class Scc {
+		static toStreams(source:StreamsResponse):Array<type.Type.Stream> {
+			const streams:Array<type.Type.Stream | undefined> = source.map(item => this.normalizeStream(item));
+			return <Array<type.Type.Stream>>streams.filter(item => item != undefined);
+		}
+
+		static toCatalogue(data:Response, title:string):Array<type.Catalogue.AnyItem> {
+			const result:Array<type.Catalogue.AnyItem> = <Array<type.Catalogue.AnyItem>>data.data
+				.map(item => this.toItem(item))
 				.filter(item => item != undefined);
 			const page = data?.pagination;
 			if(page?.prev)
-				result.unshift(CatalogueUtil.createSccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
+				result.unshift(util.CatalogueUtil.createSccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
 			if(page?.next)
-				result.push(CatalogueUtil.createSccLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
+				result.push(util.CatalogueUtil.createSccLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
 			return result;
 		}
 		
-		static normalizeIdsResponse(data:Response, ids:Array<string>, title:string):Array<type.Type.AnyCatalogueItem> {
-			const normalized = this.normalizeResponse(data, title);
+		static idsToCatalogue(data:Response, ids:Array<string>, title:string):Array<type.Catalogue.AnyItem> {
+			const normalized = this.toCatalogue(data, title);
 			const result = [];
 			for(const id of ids){
-				const item = normalized.find((item:type.Type.AnyCatalogueItem) => (<type.Type.Item>item).id === id);
+				const item = normalized.find((item:type.Catalogue.AnyItem) => (<type.Media.Base>item).id === id);
 				if(item)
 					result.push(item);
 			}
 				
 			return result;
 		}
+
+		static toItem(item:Item):type.Media.Scc | undefined {
+			const id = item._id;
+			const source = item._source;
+			const info = source.info_labels;
+			const info2 = source.info2 = this.mergeI18n(source.i18n_info_labels);
+			let result:type.Media.Scc;
+			if(info.mediatype === "movie")
+				result = this.normalizeMovie(id, source);
+			else if(info.mediatype === "tvshow")
+				result = this.normalizeSeries(id);
+			else if(info.mediatype === "season")
+				result = this.normalizeSeason(id, source);
+			else if(info.mediatype === "episode")
+				result = this.normalizeEpisode(id, source);
+			else
+				return undefined;
+			
+			result.poster = this.resolvePoster(source.i18n_info_labels);
+			result.posterThumbnail = this.resolvePorterThumbnail(result.poster);
+			if(info2.title) result.title = info2.title;
+			if(!result.longTitle) result.longTitle = result.title;
+			if(info.year) result.year = (info.year + "") || undefined;
+			this.normalizeRating(source, result);
+			this.normalizeLanguage(source, result);
+			return result;
+		}
 		
-		static mergeI18n(list:Array<I18>):Info2 {
+		private static mergeI18n(list:Array<I18>):Info2 {
 			const result:any = {};
 			list.forEach(item => {
 				Object.keys(item).forEach(key => {
@@ -35,7 +67,7 @@ namespace ymovie.util {
 			return <Info2>result;
 		}
 		
-		static resolvePoster(list:Array<I18>):string | undefined {
+		private static resolvePoster(list:Array<I18>):string | undefined {
 			const missing = /^https:\/\/img.csfd.cz\/assets\/b[0-9]+\/images\/poster-free\.png$/;
 			for(const info of list){
 				const url = info?.art?.poster;
@@ -45,7 +77,7 @@ namespace ymovie.util {
 			return undefined;
 		}
 
-		static resolvePorterThumbnail(original:string | undefined):string | undefined {
+		private static resolvePorterThumbnail(original:string | undefined):string | undefined {
 			if(!original)
 				return undefined;
 				
@@ -71,35 +103,7 @@ namespace ymovie.util {
 			return url;
 		}
 		
-		static normalizeItem(item:Item):type.Type.SccItem | undefined {
-			const id = item._id;
-			const source = item._source;
-			const info = source.info_labels;
-			const info2 = source.info2 = this.mergeI18n(source.i18n_info_labels);
-			let result:type.Type.SccItem;
-			if(info.mediatype === "movie")
-				result = this.normalizeMovie(id, source);
-			else if(info.mediatype === "tvshow")
-				result = this.normalizeSeries(id);
-			else if(info.mediatype === "season")
-				result = this.normalizeSeason(id, source);
-			else if(info.mediatype === "episode")
-				result = this.normalizeEpisode(id, source);
-			else
-				return undefined;
-
-			
-			result.poster = this.resolvePoster(source.i18n_info_labels);
-			result.posterThumbnail = this.resolvePorterThumbnail(result.poster);
-			if(info2.title) result.title = info2.title;
-			if(!result.longTitle) result.longTitle = result.title;
-			if(info.year) result.year = (info.year + "") || undefined;
-			this.normalizeRating(source, result);
-			this.normalizeLanguage(source, result);
-			return result;
-		}
-		
-		static normalizePlayable(source:Source, result:type.Type.PlayableSccItem):void {
+		private static normalizePlayable(source:Source, result:type.Media.PlayableScc):void {
 			const info = source.info_labels;
 			const info2 = source.info2;
 			const trailers = source.i18n_info_labels.map(item => item.trailer).filter(item => !!item);
@@ -115,7 +119,7 @@ namespace ymovie.util {
 			if(source.cast?.length) result.cast = source.cast.map(item => item.name).join(", ");
 		}
 		
-		static normalizeRating(source:Source, result:type.Type.Item):void {
+		private static normalizeRating(source:Source, result:type.Media.Base):void {
 			if(!source?.ratings)
 				return;
 			var count = 0;
@@ -128,7 +132,7 @@ namespace ymovie.util {
 				result.rating = (rating / count).toFixed(1);
 		}
 		
-		static normalizeLanguage(source:Source, result:type.Type.SccItem):void {
+		private static normalizeLanguage(source:Source, result:type.Media.Scc):void {
 			const stream = source?.stream_info;
 			const streams = source?.available_streams;
 			if(stream?.audio?.language == "cs"
@@ -140,18 +144,18 @@ namespace ymovie.util {
 				result.isCZSK = true;
 		}
 		
-		static normalizeMovie(id:string, source:Source):type.Type.Movie {
-			const result = new type.Type.Movie(id);
+		private static normalizeMovie(id:string, source:Source):type.Media.Movie {
+			const result = new type.Media.Movie(id);
 			this.normalizePlayable(source, result);
 			return result;
 		}
 		
-		static normalizeSeries(id:string):type.Type.Series {
-			return new type.Type.Series(id);
+		private static normalizeSeries(id:string):type.Media.Series {
+			return new type.Media.Series(id);
 		}
 		
-		static normalizeSeason(id:string, source:Source):type.Type.Season {
-			const result = new type.Type.Season(id);
+		private static normalizeSeason(id:string, source:Source):type.Media.Season {
+			const result = new type.Media.Season(id);
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
 			result.seasonNumber = source.info_labels.season;
@@ -159,8 +163,8 @@ namespace ymovie.util {
 			return result;
 		}
 		
-		static normalizeEpisode(id:string, source:Source):type.Type.Episode {
-			const result = new type.Type.Episode(id);
+		private static normalizeEpisode(id:string, source:Source):type.Media.Episode {
+			const result = new type.Media.Episode(id);
 			this.normalizePlayable(source, result);
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
@@ -171,23 +175,18 @@ namespace ymovie.util {
 			return result;
 		}
 		
-		static normalizeRootTitle(source:Source):string {
+		private static normalizeRootTitle(source:Source):string {
 			return source.i18n_info_labels
 					.find(item => item?.parent_titles?.[0])?.parent_titles?.[0]
 				|| source?.root_info_labels?.originaltitle
 				|| "(?) " + source?.root_parent;
 		}
 		
-		static normalizeRootId(source:Source):string {
+		private static normalizeRootId(source:Source):string {
 			return source?.root_parent;
 		}
 		
-		static normalizeStreams(source:StreamsResponse):Array<type.Type.Stream> {
-			const streams:Array<type.Type.Stream | undefined> = source.map(item => this.normalizeStream(item));
-			return <Array<type.Type.Stream>>streams.filter(item => item != undefined);
-		}
-		
-		static normalizeStream(source:Stream):type.Type.Stream | undefined {
+		private static normalizeStream(source:Stream):type.Type.Stream | undefined {
 			if(!source.video || !source.video.length)
 				return undefined;
 			const video = <VideoStream>source.video[0];

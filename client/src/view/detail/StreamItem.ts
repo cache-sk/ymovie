@@ -2,10 +2,6 @@
 
 namespace ymovie.view.detail {
 	export class StreamItem extends StreamOption<Data> {
-		static create(data:Data){
-			return new this(data);
-		}
-
 		renderInfo(){
 			const data = this.data?.stream;
 			if(!data)
@@ -28,9 +24,9 @@ namespace ymovie.view.detail {
 		onClick(){
 			this.element.classList.add("loading");
 			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<type.Type.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
-			if(this.data?.source instanceof type.Type.Movie)
+			if(this.data?.source instanceof type.Media.Movie)
 				util.WatchedUtil.addMovie(this.data.source.id);
-			if(this.data?.source instanceof type.Type.Episode) {
+			if(this.data?.source instanceof type.Media.Episode) {
 				if(this.data.source.seriesId)
 					util.WatchedUtil.addSeries(this.data.source.seriesId);
 				util.WatchedUtil.addEpisode(this.data.source.id);
@@ -46,7 +42,7 @@ namespace ymovie.view.detail {
 
 	type Data = {
 		stream:type.Type.Stream;
-		source:type.Type.Playable;
+		source:type.Media.Playable;
 		url?:string;
 	}
 }

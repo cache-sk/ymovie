@@ -51,7 +51,6 @@ namespace ymovie.util {
 			} catch(error){
 				return new Date;
 			}
-			
 		}
 
 		static formatSize(value:number | undefined):string | undefined {
@@ -66,6 +65,12 @@ namespace ymovie.util {
 				return undefined;
 			const iso = new Date(value  * 1000).toISOString().substr(11, 5);
 			return iso[0] === "0" ? iso.substr(1) : iso;
+		}
+
+		static containsExtension(url:string):boolean {
+			var chunks = url.split(".");
+			var extension = chunks[chunks.length - 1];
+			return extension ? extension.length < 5 : false;
 		}
 	}
 }

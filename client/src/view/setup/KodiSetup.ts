@@ -16,8 +16,8 @@ namespace ymovie.view.setup {
 			this.clean();
 			
 			this.append([util.DOM.h1("Kodi"),
-				KodiSetupForm.create(this.api, 1).render(),
-				KodiSetupForm.create(this.api, 2).render()]);
+				new KodiSetupForm(this.api, 1).render(),
+				new KodiSetupForm(this.api, 2).render()]);
 			this.append(this.instructions);
 			return super.render();
 		}

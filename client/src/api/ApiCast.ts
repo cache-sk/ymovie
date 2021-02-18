@@ -42,7 +42,7 @@ namespace ymovie.api {
 		}
 		
 		loadMedia(data:type.Type.PlayableStream, resolve:(value:unknown) => void, reject:(reason?:any) => void){
-			const mediaInfo = util.CastUtil.toCastInfo(data);
+			const mediaInfo = this.toMetadata(data);
 			const request = new chrome.cast.media.LoadRequest(mediaInfo);
 			const onError = (error:any) => {
 				let detail = "";
@@ -52,6 +52,38 @@ namespace ymovie.api {
 				reject(`Cast can't play this video.${detail}`);
 			}
 			this.session?.loadMedia(request, resolve, onError);
+		}
+
+		private toMetadata(data:type.Type.PlayableStream):chrome.cast.media.IMetadata {
+			const poster = (data.source instanceof type.Media.PlayableScc && data.source.posterThumbnail) || data.source.poster;
+			const result = new chrome.cast.media.MediaInfo(<string>data.url, "video/mp4");
+			if(data.source instanceof type.Media.Episode)
+				result.metadata = this.fromEpisode(data.source) 
+			else if(data.source instanceof type.Media.Movie)
+				result.metadata = this.fromMovide(data.source);
+			else
+				result.metadata = {title:data.source.title};
+			if(poster)
+				result.metadata.images = [{url:poster}];
+			return result;
+		}
+		
+		private fromEpisode(data:type.Media.Episode):chrome.cast.media.TvShowMediaMetadata {
+			const result = new chrome.cast.media.TvShowMediaMetadata();
+			result.episode = data.episodeNumber;
+			result.originalAirdate = data.year;
+			result.season = data.seasonNumber;
+			result.seriesTitle = data.seriesTitle;
+			result.title = data.title;
+			return result;
+		}
+		
+		private fromMovide(data:type.Media.Movie):chrome.cast.media.MovieMediaMetadata {
+			const result = new chrome.cast.media.MovieMediaMetadata();
+			result.title = data.title;
+			result.studio = data.studio;
+			result.releaseDate = data.year;
+			return result;
 		}
 		
 		createSessionRequest():chrome.cast.SessionRequest {

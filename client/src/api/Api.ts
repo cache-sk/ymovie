@@ -71,45 +71,53 @@ namespace ymovie.api {
 		}
 		
 		async searchScc(query:string, title:string) {
-			return util.SccUtil.normalizeResponse(await this.scc.search(query.trim()), title);
+			return parser.Scc.toCatalogue(await this.scc.search(query.trim()), title);
 		}
 		
+		isWebshareSearchQuery(query:string):boolean {
+			return query.match(/[\s]+ws$/) ? true : false;
+		}
+		
+		private normalizeWebshareSearchQuery(query:string):string {
+			return query.replace(/[\s]+ws$/, "").trim();
+		}
+
 		async searchWebshare(query:string, title:string, page:number) {
-			const normalizedQuery = util.WebshareUtil.normalizeSearchQuery(query);
-			return util.WebshareUtil.normalizeSearchResponse(await this.webshare.search(normalizedQuery, page), query, title, page);
+			const normalizedQuery = this.normalizeWebshareSearchQuery(query);
+			return parser.Webshare.searchResponseToCatalogue(await this.webshare.search(normalizedQuery, page), query, title, page);
 		}
 		
-		async loadMedia(id:string):Promise<type.Type.Item | undefined> {
-			return util.SccUtil.normalizeItem({_id:id, _source:await this.scc.loadMedia(id)});
+		async loadMedia(id:string):Promise<type.Media.Scc | undefined> {
+			return parser.Scc.toItem({_id:id, _source:await this.scc.loadMedia(id)});
 		}
 		
-		async loadPath(url:string, title:string){
-			return util.SccUtil.normalizeResponse(await this.scc.loadPath(url), title);
+		async loadPath(url:string, title:string) {
+			return parser.Scc.toCatalogue(await this.scc.loadPath(url), title);
 		}
 		
-		async loadIds(ids:Array<string>, title:string):Promise<Array<type.Type.AnyCatalogueItem>> {
-			return util.SccUtil.normalizeIdsResponse(await this.scc.loadIds(ids), ids, title);
+		async loadIds(ids:Array<string>, title:string):Promise<Array<type.Catalogue.AnyItem>> {
+			return parser.Scc.idsToCatalogue(await this.scc.loadIds(ids), ids, title);
 		}
 		
 		async loadSeasons(id:string, title:string) {
-			return util.SccUtil.normalizeResponse(await this.scc.loadSeasons(id), title);
+			return parser.Scc.toCatalogue(await this.scc.loadSeasons(id), title);
 		}
 		
 		async loadEpisodes(id:string, title:string) {
-			return util.SccUtil.normalizeResponse(await this.scc.loadEpisodes(id), title);
+			return parser.Scc.toCatalogue(await this.scc.loadEpisodes(id), title);
 		}
 		
-		async loadStreams(data:type.Type.PlayableSccItem):Promise<Array<type.Type.Stream>> {
-			return util.SccUtil.normalizeStreams(await this.scc.loadStreams(data.id));
+		async loadStreams(data:type.Media.PlayableScc):Promise<Array<type.Type.Stream>> {
+			return parser.Scc.toStreams(await this.scc.loadStreams(data.id));
 		}
 		
 		async loadWebshareMedia(ident:string) {
-			return util.WebshareUtil.normalizeItemResponse(await this.webshare.fileInfo(ident), ident);
+			return parser.Webshare.fileInfoToItem(await this.webshare.fileInfo(ident), ident);
 		}
 		
-		async loadWebshareStreams(data:type.Type.WebshareItem):Promise<Array<type.Type.Stream>> {
+		async loadWebshareStreams(data:type.Media.Webshare):Promise<Array<type.Type.Stream>> {
 			const ident = data.id;
-			return util.WebshareUtil.normalizeStreams(ident, await this.webshare.fileInfo(ident));
+			return parser.Webshare.fileInfoToStreams(ident, await this.webshare.fileInfo(ident));
 		}
 		
 		async resolveStreamUrl(stream:type.Type.Stream){

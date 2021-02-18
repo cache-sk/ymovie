@@ -15,10 +15,6 @@ namespace ymovie.view.setup {
 			this.endpointInput = util.DOM.input(undefined, "endpoint", endpoint || undefined, `Endpoint #${this.position}`)
 		}
 
-		static create(api:api.Api, position:number){
-			return new this(api, position);
-		}
-
 		update(data?:Data):HTMLElement {
 			this.data = data;
 			return this.render();

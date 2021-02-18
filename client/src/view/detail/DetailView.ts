@@ -23,9 +23,9 @@ namespace ymovie.view.detail {
 				return undefined;
 			
 			return [util.DOM.h1(data.title),
-				data instanceof type.Type.Episode ? util.DOM.h2(data.subtitle) : undefined,
+				data instanceof type.Media.Episode ? util.DOM.h2(data.subtitle) : undefined,
 				this.renderMetadata(),
-				data instanceof type.Type.PlayableSccItem ? util.DOM.p("plot", data.plot) : undefined,
+				data instanceof type.Media.PlayableScc ? util.DOM.p("plot", data.plot) : undefined,
 				this.webshareSetup.render(),
 				this.streamsView.update()];
 		}
@@ -43,15 +43,15 @@ namespace ymovie.view.detail {
 			if(!data)
 				return undefined;
 			return util.DOM.div("metadata", [
-				data instanceof type.Type.Season ? this.renderProperty("series", "Series", data.seriesTitle) : undefined,
-				data instanceof type.Type.PlayableSccItem ? this.renderProperty("original", "Original Title", data.originalTitle) : undefined,
-				data instanceof type.Type.SccItem ? this.renderProperty("year", "Year", data.year) : undefined,
-				data instanceof type.Type.PlayableSccItem ? this.renderProperty("genre", "Genre", data.genres) : undefined,
+				data instanceof type.Media.Season ? this.renderProperty("series", "Series", data.seriesTitle) : undefined,
+				data instanceof type.Media.PlayableScc ? this.renderProperty("original", "Original Title", data.originalTitle) : undefined,
+				data instanceof type.Media.Scc ? this.renderProperty("year", "Year", data.year) : undefined,
+				data instanceof type.Media.PlayableScc ? this.renderProperty("genre", "Genre", data.genres) : undefined,
 				this.renderProperty("rating", "Rating", data.rating),
-				data instanceof type.Type.PlayableSccItem ? this.renderProperty("mpaa", "MPAA", data.mpaa) : undefined,
-				data instanceof type.Type.PlayableSccItem ? this.renderProperty("director", "Director", data.directors) : undefined,
-				data instanceof type.Type.SccItem ? this.renderProperty("studio", "Studio", data.studio) : undefined,
-				data instanceof type.Type.PlayableSccItem ? this.renderProperty("cast", "Cast", data.cast) : undefined,
+				data instanceof type.Media.PlayableScc ? this.renderProperty("mpaa", "MPAA", data.mpaa) : undefined,
+				data instanceof type.Media.PlayableScc ? this.renderProperty("director", "Director", data.directors) : undefined,
+				data instanceof type.Media.Scc ? this.renderProperty("studio", "Studio", data.studio) : undefined,
+				data instanceof type.Media.PlayableScc ? this.renderProperty("cast", "Cast", data.cast) : undefined,
 				this.renderServices(data)
 			]);
 		}
@@ -60,17 +60,17 @@ namespace ymovie.view.detail {
 			return value ? util.DOM.div(className, [util.DOM.span("label", label), util.DOM.span("value", value)]) : null;
 		}
 		
-		renderServices(data:type.Type.PlayableSccItem){
+		renderServices(data:type.Media.PlayableScc){
 			const services = data.services;
 			if(!services || (!services.csfd && !services.imdb && !services.trakt))
 				return null;
 			return util.DOM.div("services", [util.DOM.span("label", "Services"), 
 				services.csfd ? util.DOM.a(undefined, "csfd", `https://www.csfd.cz/film/${services.csfd}`, "_blank") : null,
 				services.imdb ? util.DOM.a(undefined, "imdb", `https://www.imdb.com/title/${services.imdb}`, "_blank") : null,
-				services.trakt ? util.DOM.a(undefined, "trakt", data instanceof type.Type.Episode
+				services.trakt ? util.DOM.a(undefined, "trakt", data instanceof type.Media.Episode
 					? `https://trakt.tv/search/trakt/${services.trakt}?id_type=episode`
 					: `https://trakt.tv/movies/${services.trakt}`, "_blank") : null,
-				services.tmdb && data instanceof type.Type.Movie 
+				services.tmdb && data instanceof type.Media.Movie 
 					? util.DOM.a(undefined, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
 		}
 
@@ -105,7 +105,7 @@ namespace ymovie.view.detail {
 		}
 		
 		onStreams(data:Array<type.Type.Stream>){
-			this.streamsView.update({data:<type.Type.Playable>this.data?.detail, streams:data});
+			this.streamsView.update({data:<type.Media.Playable>this.data?.detail, streams:data});
 		}
 
 		onDocumentKeyDown(event:KeyboardEvent){
@@ -135,7 +135,7 @@ namespace ymovie.view.detail {
 	}
 
 	type Data = {
-		detail:type.Type.Playable;
-		list:Array<type.Type.AnyCatalogueItem>;
+		detail:type.Media.Playable;
+		list:Array<type.Catalogue.AnyItem>;
 	}
 }

@@ -10,7 +10,7 @@ namespace ymovie.type.Action {
 	export class CastStatusUpdates extends util.TriggerAction<enums.PlayerStatus> {}
 	export class Search extends util.TriggerAction<SearchData> {}
 	export class NavChanged extends util.TriggerAction<NavChangeData> {}
-	export class CatalogueItemSelected extends util.TriggerAction<Type.AnyCatalogueItem> {}
+	export class CatalogueItemSelected extends util.TriggerAction<Catalogue.AnyItem> {}
 	export class ResolveStreams extends util.TriggerAction<ResolveStreamsData> {}
 	export class ResolveStreamUrl extends util.TriggerAction<ResolveStreamUrlData> {}
 	export class Play extends util.TriggerAction<PlayData> {}
@@ -37,7 +37,7 @@ namespace ymovie.type.Action {
 	}
 
 	export type ResolveStreamsData = {
-		data:type.Type.Playable;
+		data:type.Media.Playable;
 		callback:(list:Array<type.Type.Stream>) => void;
 	}
 

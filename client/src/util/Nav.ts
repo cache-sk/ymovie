@@ -62,12 +62,12 @@ namespace ymovie.util {
 		}
 		
 		go(data:type.Type.NavStateSource, path:string, title:string):void {
-			const dataPage = data instanceof type.Type.CatalogueItemSccLink ? data.page : null;
+			const dataPage = data instanceof type.Catalogue.SccLink ? data.page : null;
 			const page = (dataPage && dataPage > 1) ? `/${dataPage}` : '';
 			this.pushState(data, title, `#${path}/${this.safePath(title)}${page}`);
 		}
 		
-		goReplaceMedia(data:type.Type.Item):void {
+		goReplaceMedia(data:type.Media.Base):void {
 			this.pushState(data, <string>data.longTitle, location.hash, true);
 		}
 		
@@ -78,7 +78,7 @@ namespace ymovie.util {
 				history.back();
 		}
 		
-		assignCatalogue(value:Array<type.Type.AnyCatalogueItem> | undefined):void {
+		assignCatalogue(value:Array<type.Catalogue.AnyItem> | undefined):void {
 			const enhancedState = <type.Type.NavState>history.state;
 			if(enhancedState.state)
 				enhancedState.state.catalogue = value;
@@ -121,7 +121,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_SEARCH);
 		}
 		
-		goSccBrowse(data:type.Type.CatalogueItemSccLink):void {
+		goSccBrowse(data:type.Catalogue.SccLink):void {
 			this.go(data, Nav.PATH_SCC_BROWSE, data.label);
 		}
 		
@@ -129,7 +129,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_BROWSE);
 		}
 		
-		goSccMovie(data:type.Type.Movie):void {
+		goSccMovie(data:type.Media.Movie):void {
 			this.go(data, `${Nav.PATH_SCC_MOVIE}/${data.id}`, <string>data.title);
 		}
 		
@@ -137,7 +137,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_MOVIE);
 		}
 		
-		goSccSeries(data:type.Type.Series):void {
+		goSccSeries(data:type.Media.Series):void {
 			this.go(data, `${Nav.PATH_SCC_SERIES}/${data.id}`, <string>data.title);
 		}
 		
@@ -145,7 +145,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_SERIES);
 		}
 		
-		goSccSeason(data:type.Type.Season):void {
+		goSccSeason(data:type.Media.Season):void {
 			this.go(data, `${Nav.PATH_SCC_SEASON}/${data.id}`, <string>data.longTitle);
 		}
 		
@@ -153,7 +153,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_SEASON);
 		}
 		
-		goSccEpisode(data:type.Type.Episode):void {
+		goSccEpisode(data:type.Media.Episode):void {
 			this.go(data, `${Nav.PATH_SCC_EPISODE}/${data.id}`, <string>data.longTitle);
 		}
 		
@@ -186,7 +186,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_WEBSHARE_SEARCH);
 		}
 		
-		goWebshareVideo(data:type.Type.WebshareItem):void {
+		goWebshareVideo(data:type.Media.Webshare):void {
 			this.go(data, `${Nav.PATH_WEBSHARE_VIDEO}/${data.id}`, <string>data.title);
 		}
 		

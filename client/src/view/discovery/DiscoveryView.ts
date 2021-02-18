@@ -45,6 +45,6 @@ namespace ymovie.view.discovery {
 
 	type Data = {
 		type?:string;
-		catalogue:Array<type.Type.AnyCatalogueItem> | Error | undefined;
+		catalogue:Array<type.Catalogue.AnyItem> | Error | undefined;
 	}
 }

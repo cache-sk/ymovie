@@ -1,5 +1,5 @@
 namespace ymovie.view.catalogue {
-	export class CatalogueItem<TData extends type.Type.AnyCatalogueItem> extends base.DataComponent<HTMLDivElement, TData> {
+	export class CatalogueItem<TData extends type.Catalogue.AnyItem> extends base.DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
 			super("div");
 			this.element.classList.add("CatalogueItem");
@@ -9,7 +9,7 @@ namespace ymovie.view.catalogue {
 		}
 		
 		get selectAction():util.TriggerActionAny {
-			return new type.Action.CatalogueItemSelected(<type.Type.AnyCatalogueItem>this.data);
+			return new type.Action.CatalogueItemSelected(<type.Catalogue.AnyItem>this.data);
 		}
 	}
 }

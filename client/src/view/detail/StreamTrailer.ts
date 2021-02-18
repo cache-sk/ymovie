@@ -1,9 +1,5 @@
 namespace ymovie.view.detail {
 	export class StreamTrailer extends StreamOption<Data> {
-		static create(data:Data){
-			return new this(data);
-		}
-		
 		renderInfo(){
 			const domain = new URL(<string>this.data?.trailer).hostname.split(".").splice(-2, 1);
 			return util.DOM.span("info", [util.DOM.span("name", "Trailer"), util.DOM.span("domain", domain)]);

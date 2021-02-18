@@ -1,5 +1,5 @@
 namespace ymovie.view.detail {
-	export class StreamOption<TData extends {source?:type.Type.Playable, url?:string}> extends base.DataComponent<HTMLDivElement, TData> {
+	export class StreamOption<TData extends {source?:type.Media.Playable, url?:string}> extends base.DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
 			super("div");
 			this.data = data;
@@ -38,7 +38,7 @@ namespace ymovie.view.detail {
 				? util.DOM.a("android", "Play on Android", `intent:${url}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
 				: null;
 			
-			const url2 = util.WebshareUtil.containsExtension(url) ? null : `${url}.mkv`;
+			const url2 = util.Util.containsExtension(url) ? null : `${url}.mkv`;
 			const android2 = url2 && util.Util.getAndroidVersion()
 				? util.DOM.a("android fix", "Play on Android", `intent:${url2}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
 				: null;
@@ -68,7 +68,7 @@ namespace ymovie.view.detail {
 		}
 
 		triggerPlay(player:enums.Player, position?:number){
-			const data:type.Type.PlayableStream = {source:<type.Type.Playable>this.data?.source, url:<string>this.url};
+			const data:type.Type.PlayableStream = {source:<type.Media.Playable>this.data?.source, url:<string>this.url};
 			this.trigger?.(new type.Action.Play({player, position, data}));
 		}
 
