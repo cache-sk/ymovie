@@ -1,4 +1,8 @@
 namespace ymovie.api {
+	const Storage = util.Storage;
+	const Action = type.Action;
+	type KodiPosition = type.Player.KodiPosition;
+
 	export class Api {
 		static KEY_UUID = "UUID";
 		static KEY_KODI_ENDPOINT = "KODI_ENDPOINT";
@@ -22,16 +26,16 @@ namespace ymovie.api {
 		
 		async init(){
 			this.cast.init();
-			const list:Array<type.Player.KodiPosition> = [1, 2];
+			const list:Array<KodiPosition> = [1, 2];
 			for (let position of list) {
 				const status = this.getKodiEndpoint(position) ? enums.Status.DEFINED: enums.Status.NOT_AVAILABLE;
-				this.trigger?.(new type.Action.KodiStatusUpdated({position, status}));
+				this.trigger?.(new Action.KodiStatusUpdated({position, status}));
 			}
 			await this.checkWebshareStatus();
 		}
 		
 		get uuid(){
-			const result = util.Storage.get(Api.KEY_UUID);
+			const result = Storage.get(Api.KEY_UUID);
 			if(result)
 				return result;
 			
@@ -42,33 +46,33 @@ namespace ymovie.api {
 		
 		set uuid(value){
 			if(value === null)
-				util.Storage.remove(Api.KEY_UUID);
+				Storage.remove(Api.KEY_UUID);
 			else
-				util.Storage.set(Api.KEY_UUID, value);
+				Storage.set(Api.KEY_UUID, value);
 		}
 		
 		get webshareToken(){
-			return util.Storage.get(Api.KEY_WEBSHARE_TOKEN);
+			return Storage.get(Api.KEY_WEBSHARE_TOKEN);
 		}
 		
 		set webshareToken(value){
 			if(value === null)
-				util.Storage.remove(Api.KEY_WEBSHARE_TOKEN);
+				Storage.remove(Api.KEY_WEBSHARE_TOKEN);
 			else
-				util.Storage.set(Api.KEY_WEBSHARE_TOKEN, value);
+				Storage.set(Api.KEY_WEBSHARE_TOKEN, value);
 		}
 		
-		getKodiEndpoint(position:type.Player.KodiPosition):string | null {
+		getKodiEndpoint(position:KodiPosition):string | null {
 			const key = Api.KEY_KODI_ENDPOINT + (position === 1 ? "" : position);
-			return util.Storage.get(key);
+			return Storage.get(key);
 		}
 		
-		setKodiEndpoint(position:type.Player.KodiPosition, value:string) {
+		setKodiEndpoint(position:KodiPosition, value:string) {
 			const key = Api.KEY_KODI_ENDPOINT + (position === 1 ? "" : position);
 			if(value === null)
-				util.Storage.remove(key);
+				Storage.remove(key);
 			else
-				util.Storage.set(key, value);
+				Storage.set(key, value);
 		}
 		
 		async searchScc(query:string, title:string) {
@@ -129,17 +133,17 @@ namespace ymovie.api {
 			await this.cast.play(media, url);
 		}
 		
-		async playOnKodi(position:type.Player.KodiPosition, url:string){
+		async playOnKodi(position:KodiPosition, url:string){
 			await this.kodi.play(<string>this.getKodiEndpoint(position), url);
 		}
 		
-		async connectKodi(position:type.Player.KodiPosition, endpoint:string) {
+		async connectKodi(position:KodiPosition, endpoint:string) {
 			try {
 				this.setKodiEndpoint(position, endpoint);
 				await this.kodi.isAvailable(endpoint);
-				this.trigger?.(new type.Action.KodiStatusUpdated({position, status:enums.Status.OK}));
+				this.trigger?.(new Action.KodiStatusUpdated({position, status:enums.Status.OK}));
 			} catch(error) {
-				this.trigger?.(new type.Action.KodiStatusUpdated({position, status:enums.Status.NOT_AVAILABLE}));
+				this.trigger?.(new Action.KodiStatusUpdated({position, status:enums.Status.NOT_AVAILABLE}));
 				throw error;
 			}
 		}
@@ -151,13 +155,13 @@ namespace ymovie.api {
 			} catch(error) {
 				success = false;
 			}
-			this.trigger?.(new type.Action.WebshareStatusUpdated(success ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(success ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
 			return success;
 		}
 		
 		logoutWebshare(){
 			this.webshareToken = null;
-			this.trigger?.(new type.Action.WebshareStatusUpdated(enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(enums.Status.NOT_AVAILABLE));
 		}
 		
 		async checkWebshareStatus(){
@@ -168,12 +172,12 @@ namespace ymovie.api {
 				success = false;
 				this.webshareToken = null;
 			}
-			this.trigger?.(new type.Action.WebshareStatusUpdated(success ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(success ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
 			return success;
 		}
 		
 		onCastStatus(available:boolean){
-			this.trigger?.(new type.Action.CastStatusUpdates(available ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.CastStatusUpdates(available ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
 		}
 	}
 }
