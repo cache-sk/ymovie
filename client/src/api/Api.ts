@@ -99,7 +99,7 @@ namespace ymovie.api {
 			return util.SccUtil.normalizeResponse(await this.scc.loadEpisodes(id), title);
 		}
 		
-		async loadStreams(data:type.Type.Playable):Promise<Array<type.Type.Stream>> {
+		async loadStreams(data:type.Type.PlayableSccItem):Promise<Array<type.Type.Stream>> {
 			return util.SccUtil.normalizeStreams(await this.scc.loadStreams(data.id));
 		}
 		

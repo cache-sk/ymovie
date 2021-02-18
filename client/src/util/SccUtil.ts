@@ -44,13 +44,39 @@ namespace ymovie.util {
 			}
 			return undefined;
 		}
+
+		static resolvePorterThumbnail(original:string | undefined):string | undefined {
+			if(!original)
+				return undefined;
+				
+			let url = original.replace("http://", "https://");
+			// https://www.themoviedb.org/talk/53c11d4ec3a3684cf4006400
+			// http://image.tmdb.org/t/p/original/4W24saRPKCJIwsvrf76zmV6FlsD.jpg
+			if(url.indexOf("image.tmdb.org") > -1)
+				return url.replace("/original/", "/w342/");
+			// https://img.csfd.cz/files/images/film/posters/158/066/158066908_cf9118.jpg
+			// to https://image.pmgstatic.com/cache/resized/w180/files/images/film/posters/158/066/158066908_cf9118.jpg
+			if(url.indexOf("img.csfd.cz") > -1)
+				return url.replace("//img.csfd.cz", "//image.pmgstatic.com/cache/resized/w180");
+			// https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb.jpg
+			// to https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb_t.jpg
+			// https://thetvdb.com/banners/posters/71470-2.jpg
+			// to // https://thetvdb.com/banners/posters/71470-2_t.jpg
+			if(url.indexOf("thetvdb.com") > -1)
+				return url.replace(/^(?!.+_t)(.+)(\.[a-z]+)$/, "$1_t$2");
+			// https://assets.fanart.tv/fanart/movies/13475/movieposter/star-trek-54d39f41a8ab8.jpg
+			// to https://fanart.tv/detailpreview/fanart/movies/13475/movieposter/star-trek-54d39f41a8ab8.jpg
+			if(url.indexOf("assets.fanart.tv") > -1)
+				return url.replace("assets.fanart.tv", "fanart.tv/detailpreview");
+			return url;
+		}
 		
-		static normalizeItem(item:Item):type.Type.Item | undefined {
+		static normalizeItem(item:Item):type.Type.SccItem | undefined {
 			const id = item._id;
 			const source = item._source;
 			const info = source.info_labels;
 			const info2 = source.info2 = this.mergeI18n(source.i18n_info_labels);
-			let result:type.Type.Item;
+			let result:type.Type.SccItem;
 			if(info.mediatype === "movie")
 				result = this.normalizeMovie(id, source);
 			else if(info.mediatype === "tvshow")
@@ -62,15 +88,18 @@ namespace ymovie.util {
 			else
 				return undefined;
 
+			
 			result.poster = this.resolvePoster(source.i18n_info_labels);
+			result.posterThumbnail = this.resolvePorterThumbnail(result.poster);
 			if(info2.title) result.title = info2.title;
-			if(info.year) result.year = info.year;
+			if(!result.longTitle) result.longTitle = result.title;
+			if(info.year) result.year = (info.year + "") || undefined;
 			this.normalizeRating(source, result);
 			this.normalizeLanguage(source, result);
 			return result;
 		}
 		
-		static normalizePlayable(source:Source, result:type.Type.Playable):void {
+		static normalizePlayable(source:Source, result:type.Type.PlayableSccItem):void {
 			const info = source.info_labels;
 			const info2 = source.info2;
 			const trailers = source.i18n_info_labels.map(item => item.trailer).filter(item => !!item);
@@ -96,10 +125,10 @@ namespace ymovie.util {
 				count++;
 			}
 			if(count > 0)
-				result.rating = rating / count;
+				result.rating = (rating / count).toFixed(1);
 		}
 		
-		static normalizeLanguage(source:Source, result:type.Type.Item):void {
+		static normalizeLanguage(source:Source, result:type.Type.SccItem):void {
 			const stream = source?.stream_info;
 			const streams = source?.available_streams;
 			if(stream?.audio?.language == "cs"
@@ -126,6 +155,7 @@ namespace ymovie.util {
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
 			result.seasonNumber = source.info_labels.season;
+			result.longTitle = `${result.seriesTitle} - Season ${result.seasonNumber}`;
 			return result;
 		}
 		
@@ -136,6 +166,8 @@ namespace ymovie.util {
 			result.seriesTitle = this.normalizeRootTitle(source);
 			result.seasonNumber = source.info_labels.season;
 			result.episodeNumber = source.info_labels.episode;
+			result.subtitle = `Season ${result.seasonNumber}, Episode ${result.episodeNumber}`;
+			result.longTitle = `${result.seriesTitle} - Season ${result.seasonNumber} - Episode ${result.episodeNumber}`;
 			return result;
 		}
 		

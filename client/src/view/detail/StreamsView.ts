@@ -9,9 +9,9 @@ namespace ymovie.view.detail {
 			
 			this.element.classList.toggle("loading", !this.data);
 			if(this.data){
-				const decorator = util.ItemDecorator.create(this.data.data);
-				if(decorator.trailers)
-					for(const trailer of decorator.trailers)
+				const data = this.data.data;
+				if(data instanceof type.Type.PlayableSccItem && data.trailers)
+					for(const trailer of data.trailers)
 						this.append(StreamTrailer.create({trailer}).render());
 				
 				if(this.data.streams?.length)

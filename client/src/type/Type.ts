@@ -3,33 +3,38 @@ namespace ymovie.type.Type {
 		readonly id:string; // = "ae15"
 
 		title?:string; // = "Avatar";
+		longTitle?:string;
+		rating?:string; // = 7.1
 		poster?:string; // = "http://xyz..."
-		year?:number; // = 2020
-		rating?:number; // = 7.1
-		isCZSK?:boolean;
 
 		constructor(id:string) {
 			this.id = id;
 		}
 	}
 
+	export class SccItem extends Item {
+		isCZSK?:boolean;
+		year?:string; // = 2020
+		posterThumbnail?:string;
+	}
+
 	export class WebshareItem extends Item {
 		size?:number;
 		formatSize?:string;
-		ratingPositive?:number;
-		ratingNegative?:number;
 	}
 
-	export class Season extends Item {
+	export type Playable = PlayableSccItem | WebshareItem;
+
+	export class Season extends SccItem {
 		seriesId?:string;
 		seriesTitle?:string; // = "Simsons"
 		seasonNumber?:number; // = 2
 	}
 
-	export class Series extends Item {
+	export class Series extends SccItem {
 	}
 
-	export abstract class Playable extends Item {
+	export abstract class PlayableSccItem extends SccItem {
 		plot?:string; // = "Abc. Def."
 		trailers?:Array<string>; // = ["http://xyz..."]
 		mpaa?:number; // = 12
@@ -42,11 +47,12 @@ namespace ymovie.type.Type {
 		cast?:string; // = "A, B, C";
 	}
 
-	export class Movie extends Playable {
+	export class Movie extends PlayableSccItem {
 
 	}
 
-	export class Episode extends Playable {
+	export class Episode extends PlayableSccItem {
+		subtitle?:string;
 		seriesId?:string;
 		seriesTitle?:string; // = "Simsons"
 		seasonNumber?:number; // = 4

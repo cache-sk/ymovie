@@ -16,20 +16,16 @@ namespace ymovie.view.detail {
 			document.addEventListener("touchmove", this.onDocumentTouchMove.bind(this));
 			document.addEventListener("touchend", this.onDocumentTouchEnd.bind(this));
 		}
-		
-		get detail():type.Type.Playable {
-			return <type.Type.Playable>this.data?.detail;
-		}
 
 		renderContent():util.DOMContent {
-			if(!this.detail)
+			const data = this.data?.detail;
+			if(!data)
 				return undefined;
 			
-			const decorator = util.ItemDecorator.create(this.detail);
-			return [util.DOM.h1(this.detail.title),
-				util.DOM.h2(decorator.subtitle),
+			return [util.DOM.h1(data.title),
+				data instanceof type.Type.Episode ? util.DOM.h2(data.subtitle) : undefined,
 				this.renderMetadata(),
-				util.DOM.p("plot", decorator.plot),
+				data instanceof type.Type.PlayableSccItem ? util.DOM.p("plot", data.plot) : undefined,
 				this.webshareSetup.render(),
 				this.streamsView.update()];
 		}
@@ -43,18 +39,20 @@ namespace ymovie.view.detail {
 		}
 		
 		renderMetadata(){
-			const decorator = util.ItemDecorator.create(this.detail);
+			const data = this.data?.detail;
+			if(!data)
+				return undefined;
 			return util.DOM.div("metadata", [
-				this.renderProperty("series", "Series", decorator.seriesTitle),
-				this.renderProperty("original", "Original Title", decorator.originalTitle),
-				this.renderProperty("year", "Year", decorator.year),
-				this.renderProperty("genre", "Genre", decorator.inlineGenres),
-				this.renderProperty("rating", "Rating", decorator.rating),
-				this.renderProperty("mpaa", "MPAA", decorator.mpaa),
-				this.renderProperty("director", "Director", decorator.inlineDirectors),
-				this.renderProperty("studio", "Studio", decorator.studio),
-				this.renderProperty("cast", "Cast", decorator.inlineCast),
-				this.renderServices(decorator)
+				data instanceof type.Type.Season ? this.renderProperty("series", "Series", data.seriesTitle) : undefined,
+				data instanceof type.Type.PlayableSccItem ? this.renderProperty("original", "Original Title", data.originalTitle) : undefined,
+				data instanceof type.Type.SccItem ? this.renderProperty("year", "Year", data.year) : undefined,
+				data instanceof type.Type.PlayableSccItem ? this.renderProperty("genre", "Genre", data.genres) : undefined,
+				this.renderProperty("rating", "Rating", data.rating),
+				data instanceof type.Type.PlayableSccItem ? this.renderProperty("mpaa", "MPAA", data.mpaa) : undefined,
+				data instanceof type.Type.PlayableSccItem ? this.renderProperty("director", "Director", data.directors) : undefined,
+				data instanceof type.Type.SccItem ? this.renderProperty("studio", "Studio", data.studio) : undefined,
+				data instanceof type.Type.PlayableSccItem ? this.renderProperty("cast", "Cast", data.cast) : undefined,
+				this.renderServices(data)
 			]);
 		}
 		
@@ -62,17 +60,17 @@ namespace ymovie.view.detail {
 			return value ? util.DOM.div(className, [util.DOM.span("label", label), util.DOM.span("value", value)]) : null;
 		}
 		
-		renderServices(decorator:util.ItemDecorator){
-			const services = decorator.services;
+		renderServices(data:type.Type.PlayableSccItem){
+			const services = data.services;
 			if(!services || (!services.csfd && !services.imdb && !services.trakt))
 				return null;
 			return util.DOM.div("services", [util.DOM.span("label", "Services"), 
 				services.csfd ? util.DOM.a(undefined, "csfd", `https://www.csfd.cz/film/${services.csfd}`, "_blank") : null,
 				services.imdb ? util.DOM.a(undefined, "imdb", `https://www.imdb.com/title/${services.imdb}`, "_blank") : null,
-				services.trakt ? util.DOM.a(undefined, "trakt", decorator.source instanceof type.Type.Episode
+				services.trakt ? util.DOM.a(undefined, "trakt", data instanceof type.Type.Episode
 					? `https://trakt.tv/search/trakt/${services.trakt}?id_type=episode`
 					: `https://trakt.tv/movies/${services.trakt}`, "_blank") : null,
-				services.tmdb && decorator.source instanceof type.Type.Movie 
+				services.tmdb && data instanceof type.Type.Movie 
 					? util.DOM.a(undefined, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
 		}
 
@@ -85,7 +83,7 @@ namespace ymovie.view.detail {
 				return;
 
 			const list = this.data.list;
-			const index = list.indexOf(this.detail);
+			const index = list.indexOf(this.data.detail);
 			const item = index != -1 && index > 0 ? list[index - 1] : null;
 			if(item)
 				this.trigger?.(new type.Action.CatalogueItemSelected(item));
@@ -96,7 +94,7 @@ namespace ymovie.view.detail {
 				return;
 
 			const list = this.data.list;
-			const index = list.indexOf(this.detail);
+			const index = list.indexOf(this.data.detail);
 			const item = index != -1 && index < list.length - 1 ? list[index + 1] : null;
 			if(item)
 				this.trigger?.(new type.Action.CatalogueItemSelected(item));
@@ -107,7 +105,7 @@ namespace ymovie.view.detail {
 		}
 		
 		onStreams(data:Array<type.Type.Stream>){
-			this.streamsView.update({data:this.detail, streams:data});
+			this.streamsView.update({data:<type.Type.Playable>this.data?.detail, streams:data});
 		}
 
 		onDocumentKeyDown(event:KeyboardEvent){

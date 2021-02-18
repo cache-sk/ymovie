@@ -68,7 +68,7 @@ namespace ymovie.util {
 		}
 		
 		goReplaceMedia(data:type.Type.Item):void {
-			this.pushState(data, ItemDecorator.create(data).longTitle, location.hash, true);
+			this.pushState(data, <string>data.longTitle, location.hash, true);
 		}
 		
 		goBack():void {
@@ -129,9 +129,8 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_BROWSE);
 		}
 		
-		goSccMovie(data:type.Type.Item):void {
-			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_MOVIE}/${data.id}`, decorator.longTitle);
+		goSccMovie(data:type.Type.Movie):void {
+			this.go(data, `${Nav.PATH_SCC_MOVIE}/${data.id}`, <string>data.title);
 		}
 		
 		isSccMovie(path:string):boolean {
@@ -139,8 +138,7 @@ namespace ymovie.util {
 		}
 		
 		goSccSeries(data:type.Type.Series):void {
-			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_SERIES}/${data.id}`, decorator.longTitle);
+			this.go(data, `${Nav.PATH_SCC_SERIES}/${data.id}`, <string>data.title);
 		}
 		
 		isSccSeries(path:string):boolean {
@@ -148,8 +146,7 @@ namespace ymovie.util {
 		}
 		
 		goSccSeason(data:type.Type.Season):void {
-			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_SEASON}/${data.id}`, decorator.longTitle);
+			this.go(data, `${Nav.PATH_SCC_SEASON}/${data.id}`, <string>data.longTitle);
 		}
 		
 		isSccSeason(path:string):boolean {
@@ -157,8 +154,7 @@ namespace ymovie.util {
 		}
 		
 		goSccEpisode(data:type.Type.Episode):void {
-			const decorator = ItemDecorator.create(data);
-			this.go(data, `${Nav.PATH_SCC_EPISODE}/${data.id}`, decorator.longTitle);
+			this.go(data, `${Nav.PATH_SCC_EPISODE}/${data.id}`, <string>data.longTitle);
 		}
 		
 		isSccEpisode(path:string):boolean {
@@ -190,7 +186,7 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_WEBSHARE_SEARCH);
 		}
 		
-		goWebshareVideo(data:type.Type.Item):void {
+		goWebshareVideo(data:type.Type.WebshareItem):void {
 			this.go(data, `${Nav.PATH_WEBSHARE_VIDEO}/${data.id}`, <string>data.title);
 		}
 		

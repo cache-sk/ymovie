@@ -50,9 +50,11 @@ namespace ymovie.util {
 		static normalizeItem(item:Element, id?:string):type.Type.WebshareItem {
 			const result = new type.Type.WebshareItem(id || <string>this.getText(item, "ident"));
 			result.poster = this.getText(item, "img");
-			result.title = this.getText(item, "name");
-			result.ratingPositive = this.getInt(item, "positive_votes");
-			result.ratingNegative = this.getInt(item, "negative_votes");
+			result.title = result.longTitle = this.getText(item, "name");
+			const ratingPositive = this.getInt(item, "positive_votes");
+			const ratingNegative = this.getInt(item, "negative_votes");
+			if(ratingPositive || ratingNegative)
+				result.rating = `${ratingPositive || 0}:${ratingNegative || 0}`;
 			result.size = this.getInt(item, "size");
 			result.formatSize = Util.formatSize(result.size);
 			return result;

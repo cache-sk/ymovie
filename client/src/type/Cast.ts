@@ -26,23 +26,24 @@ declare namespace chrome.cast {
 		var DEFAULT_MEDIA_RECEIVER_APP_ID:string;
 
 		interface IMetadata {
-			images:Array<{url:string}> | undefined;
+			title?:string;
+			images?:Array<{url:string}>;
 		}
 
 		class MovieMediaMetadata implements IMetadata {
-			title:string | undefined;
-			studio:string | undefined;
-			releaseDate:string | undefined;
-			images:Array<{url:string}> | undefined;
+			title?:string;
+			studio?:string;
+			releaseDate?:string;
+			images?:Array<{url:string}>;
 		}
 
 		class TvShowMediaMetadata implements IMetadata {
-			episode:number | undefined;
-			originalAirdate:string;
-			season:number | undefined;
-			seriesTitle:string | undefined;
-			title:string | undefined;
-			images:Array<{url:string}> | undefined;
+			episode?:number;
+			originalAirdate?:string;
+			season?:number;
+			seriesTitle?:string;
+			title?:string;
+			images?:Array<{url:string}>;
 		}
 
 		class MediaInfo {
