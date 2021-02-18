@@ -1,8 +1,8 @@
 namespace ymovie.parser {
 	export class Scc {
-		static toStreams(source:StreamsResponse):Array<type.Type.Stream> {
-			const streams:Array<type.Type.Stream | undefined> = source.map(item => this.normalizeStream(item));
-			return <Array<type.Type.Stream>>streams.filter(item => item != undefined);
+		static toStreams(source:StreamsResponse):Array<type.Media.Stream> {
+			const streams:Array<type.Media.Stream | undefined> = source.map(item => this.normalizeStream(item));
+			return <Array<type.Media.Stream>>streams.filter(item => item != undefined);
 		}
 
 		static toCatalogue(data:Response, title:string):Array<type.Catalogue.AnyItem> {
@@ -186,11 +186,11 @@ namespace ymovie.parser {
 			return source?.root_parent;
 		}
 		
-		private static normalizeStream(source:Stream):type.Type.Stream | undefined {
+		private static normalizeStream(source:Stream):type.Media.Stream | undefined {
 			if(!source.video || !source.video.length)
 				return undefined;
 			const video = <VideoStream>source.video[0];
-			const result:type.Type.Stream = {
+			const result:type.Media.Stream = {
 				size: source.size,
 				language: source.audio
 					?.map(item => item.language.toUpperCase() || "?")
@@ -242,13 +242,20 @@ namespace ymovie.parser {
 		info_labels:Info;
 		i18n_info_labels:Array<I18>;
 		info2:Info2; // created during normalization
-		services:type.Type.Services;
+		services:Services;
 		available_streams?:AvailableStreams;
 		cast?:Array<Person>;
 		root_info_labels:RootInfo;
 		root_parent:string;
 		ratings?:any;
 		stream_info?:StreamInfo;
+	}
+
+	export type Services = {
+		csfd?:number; // = 787059
+		imdb?:number; // = 6285944
+		trakt?:number; // = 473980
+		tmdb?:number; // = 456
 	}
 
 	type Info = {

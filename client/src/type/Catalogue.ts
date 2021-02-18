@@ -1,9 +1,9 @@
 namespace ymovie.type.Catalogue {
 	export abstract class Base {
 		readonly label:string;
-		readonly group:enums.ItemGroup;
+		readonly group:ItemType;
 
-		constructor(group:enums.ItemGroup, label:string) {
+		constructor(group:ItemType, label:string) {
 			this.group = group;
 			this.label = label;
 		}
@@ -16,7 +16,7 @@ namespace ymovie.type.Catalogue {
 		readonly subtitle?:string;
 		readonly page?:number;
 
-		constructor(group:enums.ItemGroup, label:string, url:string, subtitle?:string, page?:number) {
+		constructor(group:ItemType, label:string, url:string, subtitle?:string, page?:number) {
 			super(group, label);
 			this.url = url;
 			this.subtitle = subtitle;
@@ -27,7 +27,7 @@ namespace ymovie.type.Catalogue {
 	export class Callback extends Base {
 		readonly callback:(replace?:boolean) => void;
 
-		constructor(group:enums.ItemGroup, label:string, callback:(replace?:boolean) => void) {
+		constructor(group:ItemType, label:string, callback:(replace?:boolean) => void) {
 			super(group, label);
 			this.callback = callback;
 		}
@@ -37,7 +37,7 @@ namespace ymovie.type.Catalogue {
 		readonly subtitle:string;
 		readonly action:util.TriggerActionAny;
 
-		constructor(group:enums.ItemGroup, label:string, subtitle:string, action:util.TriggerActionAny) {
+		constructor(group:ItemType, label:string, subtitle:string, action:util.TriggerActionAny) {
 			super(group, label);
 			this.subtitle = subtitle;
 			this.action = action;
@@ -45,4 +45,6 @@ namespace ymovie.type.Catalogue {
 	}
 
 	export type AnyItem = Base | Media.Base;
+
+	export type ItemType = "movie" | "series" | "folder" | "concert" | "fairyTale" | "animated" | "popular" | "watched";
 }

@@ -16,10 +16,10 @@ namespace ymovie.parser {
 			return this.normalizeItem(data, ident);
 		}
 		
-		static fileInfoToStreams(ident:string, data:Element):Array<type.Type.Stream> {
+		static fileInfoToStreams(ident:string, data:Element):Array<type.Media.Stream> {
 			const video = this.getFirst(data, "video");
 			const audio = this.getFirst(data, "audio");
-			const stream:type.Type.Stream = {
+			const stream:type.Media.Stream = {
 				ident,
 				size: this.getInt(data, "size"),
 				duration: this.getInt(data, "length"),

@@ -31,7 +31,7 @@ namespace ymovie.type.Media {
 		trailers?:Array<string>;
 		mpaa?:number;
 		studio?:string;
-		services?:Type.Services;
+		services?:parser.Services;
 		streamCount?:number;
 		originalTitle?:string;
 		genres?:string;
@@ -54,4 +54,18 @@ namespace ymovie.type.Media {
 	}
 
 	export type Playable = PlayableScc | Webshare;
+
+	export type Stream = {
+		size:number;
+		language?:string;
+		subtitles?:string;
+		width:number;
+		height:number;
+		videoCodec?:string;
+		audioCodec?:string;
+		duration:number;
+		ident:string;
+		hdr?:boolean;
+		is3d?:boolean;
+	}
 }

@@ -68,8 +68,7 @@ namespace ymovie.view.detail {
 		}
 
 		triggerPlay(player:enums.Player, position?:number){
-			const data:type.Type.PlayableStream = {source:<type.Media.Playable>this.data?.source, url:<string>this.url};
-			this.trigger?.(new type.Action.Play({player, position, data}));
+			this.trigger?.(new type.Action.Play({player, position, media:<type.Media.Playable>this.data?.source, url:<string>this.url}));
 		}
 
 		onClipboard(event:MouseEvent){

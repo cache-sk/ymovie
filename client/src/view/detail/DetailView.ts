@@ -104,7 +104,7 @@ namespace ymovie.view.detail {
 			this.trigger?.(new type.Action.GoBack(undefined));
 		}
 		
-		onStreams(data:Array<type.Type.Stream>){
+		onStreams(data:Array<type.Media.Stream>){
 			this.streamsView.update({data:<type.Media.Playable>this.data?.detail, streams:data});
 		}
 

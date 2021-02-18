@@ -1,6 +1,6 @@
 namespace ymovie.enums {
-	export enum PlayerStatus {
-		// used as class names
+	/** used as class names  */
+	export enum Status {
 		OK = "ok",
 		NOT_AVAILABLE = "na",
 		DEFINED = "defined"

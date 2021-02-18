@@ -27,6 +27,6 @@ namespace ymovie.view.detail {
 
 	type Data = {
 		data:type.Media.Playable;
-		streams:Array<type.Type.Stream>;
+		streams:Array<type.Media.Stream>;
 	}
 }

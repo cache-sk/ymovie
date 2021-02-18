@@ -23,7 +23,7 @@ namespace ymovie.view.detail {
 		
 		onClick(){
 			this.element.classList.add("loading");
-			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<type.Type.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
+			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<type.Media.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
 			if(this.data?.source instanceof type.Media.Movie)
 				util.WatchedUtil.addMovie(this.data.source.id);
 			if(this.data?.source instanceof type.Media.Episode) {
@@ -41,7 +41,7 @@ namespace ymovie.view.detail {
 	}
 
 	type Data = {
-		stream:type.Type.Stream;
+		stream:type.Media.Stream;
 		source:type.Media.Playable;
 		url?:string;
 	}

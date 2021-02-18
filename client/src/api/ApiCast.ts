@@ -24,14 +24,14 @@ namespace ymovie.api {
 			chrome.cast.initialize(config, this.onInitSuccess, this.onInitError);
 		}
 		
-		play(data:type.Type.PlayableStream){
+		play(media:type.Media.Playable, url:string){
 			return new Promise((resolve, reject) => {
 				if(this.session)
-					return this.loadMedia(data, resolve, reject);
+					return this.loadMedia(media, url, resolve, reject);
 			
 				const onSuccess = (session:chrome.cast.Session) => {
 					this.onRequestSessionSuccess(session);
-					this.loadMedia(data, resolve, reject);
+					this.loadMedia(media, url, resolve, reject);
 				}
 
 				const onError = () => reject("Requesting session cancelled or failed.");
@@ -41,8 +41,8 @@ namespace ymovie.api {
 			})
 		}
 		
-		loadMedia(data:type.Type.PlayableStream, resolve:(value:unknown) => void, reject:(reason?:any) => void){
-			const mediaInfo = this.toMetadata(data);
+		loadMedia(media:type.Media.Playable, url:string, resolve:(value:unknown) => void, reject:(reason?:any) => void){
+			const mediaInfo = this.toMetadata(media, url);
 			const request = new chrome.cast.media.LoadRequest(mediaInfo);
 			const onError = (error:any) => {
 				let detail = "";
@@ -54,15 +54,15 @@ namespace ymovie.api {
 			this.session?.loadMedia(request, resolve, onError);
 		}
 
-		private toMetadata(data:type.Type.PlayableStream):chrome.cast.media.IMetadata {
-			const poster = (data.source instanceof type.Media.PlayableScc && data.source.posterThumbnail) || data.source.poster;
-			const result = new chrome.cast.media.MediaInfo(<string>data.url, "video/mp4");
-			if(data.source instanceof type.Media.Episode)
-				result.metadata = this.fromEpisode(data.source) 
-			else if(data.source instanceof type.Media.Movie)
-				result.metadata = this.fromMovide(data.source);
+		private toMetadata(media:type.Media.Playable, url:string):chrome.cast.media.IMetadata {
+			const poster = (media instanceof type.Media.PlayableScc && media.posterThumbnail) || media.poster;
+			const result = new chrome.cast.media.MediaInfo(url, "video/mp4");
+			if(media instanceof type.Media.Episode)
+				result.metadata = this.fromEpisode(media) 
+			else if(media instanceof type.Media.Movie)
+				result.metadata = this.fromMovide(media);
 			else
-				result.metadata = {title:data.source.title};
+				result.metadata = {title:media.title};
 			if(poster)
 				result.metadata.images = [{url:poster}];
 			return result;

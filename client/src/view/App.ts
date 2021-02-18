@@ -137,10 +137,10 @@ namespace ymovie.view {
 			this.element.classList.toggle(key, toggle);
 		}
 		
-		toggleApiClass(key:string, status:enums.PlayerStatus){
-			this.toggleClass(`${key}-${ymovie.enums.PlayerStatus.OK}`, status === ymovie.enums.PlayerStatus.OK);
-			this.toggleClass(`${key}-${ymovie.enums.PlayerStatus.NOT_AVAILABLE}`, status === ymovie.enums.PlayerStatus.NOT_AVAILABLE);
-			this.toggleClass(`${key}-${ymovie.enums.PlayerStatus.DEFINED}`, status === ymovie.enums.PlayerStatus.DEFINED);
+		toggleApiClass(key:string, status:enums.Status){
+			this.toggleClass(`${key}-${enums.Status.OK}`, status === enums.Status.OK);
+			this.toggleClass(`${key}-${enums.Status.NOT_AVAILABLE}`, status === enums.Status.NOT_AVAILABLE);
+			this.toggleClass(`${key}-${enums.Status.DEFINED}`, status === enums.Status.DEFINED);
 		}
 		
 		set loading(toggle:boolean) {
@@ -222,20 +222,20 @@ namespace ymovie.view {
 		}
 		
 		async play(payload:type.Action.PlayData){
-			const {player, position, data} = payload;
+			const {player, position, media, url} = payload;
 			const notificationTitle = player === enums.Player.CAST ? "Cast" : "Kodi";
 			try {
 				if(this.api && player === enums.Player.CAST)
-					await this.api.playOnCast(data);
+					await this.api.playOnCast(media, url);
 				else if(this.api && player === enums.Player.KODI)
-					await this.api.playOnKodi(<number>position, data);
-				this.showNotification(`${notificationTitle} Success`, `Playing ${data.source.title}`);
+					await this.api.playOnKodi(<number>position, url);
+				this.showNotification(`${notificationTitle} Success`, `Playing ${media.title}`);
 			} catch(error) {
 				this.showNotification(`${notificationTitle} Error`, error);
 			}
 		}
 		
-		onApiCastStatus(status:enums.PlayerStatus){
+		onApiCastStatus(status:enums.Status){
 			this.toggleApiClass("cast", status);
 		}
 		
@@ -244,7 +244,7 @@ namespace ymovie.view {
 			this.toggleApiClass(key, data.status);
 		}
 		
-		onApiWebshareStatus(status:enums.PlayerStatus){
+		onApiWebshareStatus(status:enums.Status){
 			this.toggleApiClass("webshare", status);
 		}
 		
