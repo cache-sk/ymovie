@@ -7,16 +7,18 @@ namespace ymovie.view.detail {
 		}
 
 		renderInfo(){
-			const decorator = util.StreamDecorator.create(<type.Type.Stream>this.data?.stream);
+			const data = this.data?.stream;
+			if(!data)
+				return undefined;
 			return util.DOM.span("info", [
-				this.add("size", decorator.formatSize),
-				this.add("language", decorator.language),
-				this.add("subtitles", decorator.subtitles),
-				this.add("hdr", decorator.formatHDR),
-				this.add("3d", decorator.format3D),
-				this.add("quality", `${decorator.width}x${decorator.height}`),
-				this.add("codec", `${decorator.videoCodec}+${decorator.audioCodec}`),
-				this.add("duration", decorator.formatDuration)]);
+				this.add("size", util.Util.formatDuration(data.size)),
+				this.add("language", data.language),
+				this.add("subtitles", data.subtitles),
+				this.add("hdr", data.hdr ? "HDR" : undefined),
+				this.add("3d", data.is3d ? "3D" : undefined),
+				this.add("quality", `${data.width}x${data.height}`),
+				this.add("codec", `${data.videoCodec}+${data.audioCodec}`),
+				this.add("duration", util.Util.formatDuration(data.duration))]);
 		}
 		
 		add(className:string, value:string | undefined | null):util.DOMContent {

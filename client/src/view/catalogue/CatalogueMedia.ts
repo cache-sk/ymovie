@@ -25,7 +25,7 @@ namespace ymovie.view.catalogue {
 		render() {
 			const name = ymovie.util.DOM.span("name", this.data?.title);
 			const language = this.data instanceof type.Type.SccItem && this.data.isCZSK ? ymovie.util.DOM.span("language", "CZ/SK") : null;
-			const size = this.data instanceof type.Type.WebshareItem ? util.DOM.span("size", this.data.formatSize) : null;
+			const size = this.data instanceof type.Type.WebshareItem ? util.DOM.span("size", util.Util.formatSize(this.data.size)) : null;
 			const year = this.data instanceof type.Type.SccItem ? util.DOM.span("year", this.data.year) : null;
 			const title = ymovie.util.DOM.span("title", [name, language, size || year]);
 			const rating = this.data?.rating ? util.DOM.span("rating", this.data.rating) : null;

@@ -56,7 +56,6 @@ namespace ymovie.util {
 			if(ratingPositive || ratingNegative)
 				result.rating = `${ratingPositive || 0}:${ratingNegative || 0}`;
 			result.size = this.getInt(item, "size");
-			result.formatSize = Util.formatSize(result.size);
 			return result;
 		}
 		

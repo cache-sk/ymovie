@@ -20,7 +20,6 @@ namespace ymovie.type.Type {
 
 	export class WebshareItem extends Item {
 		size?:number;
-		formatSize?:string;
 	}
 
 	export type Playable = PlayableSccItem | WebshareItem;

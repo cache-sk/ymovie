@@ -54,9 +54,18 @@ namespace ymovie.util {
 			
 		}
 
-		static formatSize(value:number):string {
+		static formatSize(value:number | undefined):string | undefined {
+			if(!value)
+				return undefined;
 			const mb = value / 1024 / 1024;
 			return mb > 100 ? (mb / 1024).toFixed(1) + "G" : mb.toFixed(1) + "M";
+		}
+
+		static formatDuration(value:number | undefined):string | undefined {
+			if(!value)
+				return undefined;
+			const iso = new Date(value  * 1000).toISOString().substr(11, 5);
+			return iso[0] === "0" ? iso.substr(1) : iso;
 		}
 	}
 }
