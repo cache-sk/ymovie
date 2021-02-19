@@ -1,27 +1,30 @@
 namespace ymovie.parser {
+	import Media = type.Media;
+	import Catalogue = type.Catalogue;
+
 	export class Scc {
-		static toStreams(source:StreamsResponse):Array<type.Media.Stream> {
-			const streams:Array<type.Media.Stream | undefined> = source.map(item => this.normalizeStream(item));
-			return <Array<type.Media.Stream>>streams.filter(item => item != undefined);
+		static toStreams(source:StreamsResponse):Array<Media.Stream> {
+			const streams:Array<Media.Stream | undefined> = source.map(item => this.normalizeStream(item));
+			return <Array<Media.Stream>>streams.filter(item => item != undefined);
 		}
 
-		static toCatalogue(data:Response, title:string):Array<type.Catalogue.AnyItem> {
-			const result:Array<type.Catalogue.AnyItem> = <Array<type.Catalogue.AnyItem>>data.data
+		static toCatalogue(data:Response, title:string):Array<Catalogue.AnyItem> {
+			const result:Array<Catalogue.AnyItem> = <Array<Catalogue.AnyItem>>data.data
 				.map(item => this.toItem(item))
 				.filter(item => item != undefined);
 			const page = data?.pagination;
 			if(page?.prev)
-				result.unshift(new type.Catalogue.SccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
+				result.unshift(new Catalogue.SccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
 			if(page?.next)
-				result.push(new type.Catalogue.SccLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
+				result.push(new Catalogue.SccLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
 			return result;
 		}
 		
-		static idsToCatalogue(data:Response, ids:Array<string>, title:string):Array<type.Catalogue.AnyItem> {
+		static idsToCatalogue(data:Response, ids:Array<string>, title:string):Array<Catalogue.AnyItem> {
 			const normalized = this.toCatalogue(data, title);
 			const result = [];
 			for(const id of ids){
-				const item = normalized.find((item:type.Catalogue.AnyItem) => (<type.Media.Base>item).id === id);
+				const item = normalized.find((item:Catalogue.AnyItem) => (<Media.Base>item).id === id);
 				if(item)
 					result.push(item);
 			}
@@ -29,12 +32,12 @@ namespace ymovie.parser {
 			return result;
 		}
 
-		static toItem(item:Item):type.Media.Scc | undefined {
+		static toItem(item:Item):Media.Scc | undefined {
 			const id = item._id;
 			const source = item._source;
 			const info = source.info_labels;
 			const info2 = source.info2 = this.mergeI18n(source.i18n_info_labels);
-			let result:type.Media.Scc;
+			let result:Media.Scc;
 			if(info.mediatype === "movie")
 				result = this.normalizeMovie(id, source);
 			else if(info.mediatype === "tvshow")
@@ -47,7 +50,6 @@ namespace ymovie.parser {
 				return undefined;
 			
 			result.poster = this.resolvePoster(source.i18n_info_labels);
-			result.posterThumbnail = this.resolvePorterThumbnail(result.poster);
 			if(info2.title) result.title = info2.title;
 			if(!result.longTitle) result.longTitle = result.title;
 			if(info.year) result.year = (info.year + "") || undefined;
@@ -76,34 +78,8 @@ namespace ymovie.parser {
 			}
 			return undefined;
 		}
-
-		private static resolvePorterThumbnail(original:string | undefined):string | undefined {
-			if(!original)
-				return undefined;
-				
-			let url = original.replace("http://", "https://");
-			// https://www.themoviedb.org/talk/53c11d4ec3a3684cf4006400
-			// http://image.tmdb.org/t/p/original/4W24saRPKCJIwsvrf76zmV6FlsD.jpg
-			if(url.indexOf("image.tmdb.org") > -1)
-				return url.replace("/original/", "/w342/");
-			// https://img.csfd.cz/files/images/film/posters/158/066/158066908_cf9118.jpg
-			// to https://image.pmgstatic.com/cache/resized/w180/files/images/film/posters/158/066/158066908_cf9118.jpg
-			if(url.indexOf("img.csfd.cz") > -1)
-				return url.replace("//img.csfd.cz", "//image.pmgstatic.com/cache/resized/w180");
-			// https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb.jpg
-			// to https://thetvdb.com/banners/series/375903/posters/5e86c5d2a7fcb_t.jpg
-			// https://thetvdb.com/banners/posters/71470-2.jpg
-			// to // https://thetvdb.com/banners/posters/71470-2_t.jpg
-			if(url.indexOf("thetvdb.com") > -1)
-				return url.replace(/^(?!.+_t)(.+)(\.[a-z]+)$/, "$1_t$2");
-			// https://assets.fanart.tv/fanart/movies/13475/movieposter/star-trek-54d39f41a8ab8.jpg
-			// to https://fanart.tv/detailpreview/fanart/movies/13475/movieposter/star-trek-54d39f41a8ab8.jpg
-			if(url.indexOf("assets.fanart.tv") > -1)
-				return url.replace("assets.fanart.tv", "fanart.tv/detailpreview");
-			return url;
-		}
 		
-		private static normalizePlayable(source:Source, result:type.Media.PlayableScc):void {
+		private static normalizePlayable(source:Source, result:Media.PlayableScc):void {
 			const info = source.info_labels;
 			const info2 = source.info2;
 			const trailers = source.i18n_info_labels.map(item => item.trailer).filter(item => !!item);
@@ -119,7 +95,7 @@ namespace ymovie.parser {
 			if(source.cast?.length) result.cast = source.cast.map(item => item.name).join(", ");
 		}
 		
-		private static normalizeRating(source:Source, result:type.Media.Base):void {
+		private static normalizeRating(source:Source, result:Media.Base):void {
 			if(!source?.ratings)
 				return;
 			var count = 0;
@@ -132,7 +108,7 @@ namespace ymovie.parser {
 				result.rating = (rating / count).toFixed(1);
 		}
 		
-		private static normalizeLanguage(source:Source, result:type.Media.Scc):void {
+		private static normalizeLanguage(source:Source, result:Media.Scc):void {
 			const stream = source?.stream_info;
 			const streams = source?.available_streams;
 			if(stream?.audio?.language == "cs"
@@ -144,18 +120,18 @@ namespace ymovie.parser {
 				result.isCZSK = true;
 		}
 		
-		private static normalizeMovie(id:string, source:Source):type.Media.Movie {
-			const result = new type.Media.Movie(id);
+		private static normalizeMovie(id:string, source:Source):Media.Movie {
+			const result = new Media.Movie(id);
 			this.normalizePlayable(source, result);
 			return result;
 		}
 		
-		private static normalizeSeries(id:string):type.Media.Series {
-			return new type.Media.Series(id);
+		private static normalizeSeries(id:string):Media.Series {
+			return new Media.Series(id);
 		}
 		
-		private static normalizeSeason(id:string, source:Source):type.Media.Season {
-			const result = new type.Media.Season(id);
+		private static normalizeSeason(id:string, source:Source):Media.Season {
+			const result = new Media.Season(id);
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
 			result.seasonNumber = source.info_labels.season;
@@ -163,8 +139,8 @@ namespace ymovie.parser {
 			return result;
 		}
 		
-		private static normalizeEpisode(id:string, source:Source):type.Media.Episode {
-			const result = new type.Media.Episode(id);
+		private static normalizeEpisode(id:string, source:Source):Media.Episode {
+			const result = new Media.Episode(id);
 			this.normalizePlayable(source, result);
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
@@ -186,11 +162,11 @@ namespace ymovie.parser {
 			return source?.root_parent;
 		}
 		
-		private static normalizeStream(source:Stream):type.Media.Stream | undefined {
+		private static normalizeStream(source:Stream):Media.Stream | undefined {
 			if(!source.video || !source.video.length)
 				return undefined;
 			const video = <VideoStream>source.video[0];
-			const result:type.Media.Stream = {
+			const result:Media.Stream = {
 				size: source.size,
 				language: source.audio
 					?.map(item => item.language.toUpperCase() || "?")

@@ -29,7 +29,7 @@ namespace ymovie.type.Nav {
 
 	export class StateSource {
 		source:StateSourceData;
-		catalogue:Array<type.Catalogue.AnyItem> | undefined;
+		catalogue:Array<Catalogue.AnyItem> | undefined;
 
 		constructor(source:StateSourceData) {
 			this.source = source;

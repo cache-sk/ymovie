@@ -3,33 +3,39 @@ namespace ymovie.api {
 	 * Cast sender is tricky to work on localhost (http, https), filesystem or secured domain (https).
 	 * For that reason the app should be only served from https.
 	 */
+
+	import cast = chrome.cast;
+	import cmedia = cast.media;
+	import Media = type.Media;
+	import Session = cast.Session;
+
 	export class ApiCast {
 		onStatus:(available:boolean) => void;
-		session:chrome.cast.Session | undefined;
+		session:Session | undefined;
 
 		constructor(onStatus:(available:boolean) => void){
 			this.onStatus = onStatus;
 		}
 		
 		init(){
-			if(window?.chrome && chrome.cast)
+			if(window?.chrome && cast)
 				this.initApi();
 			else
 				(<any>window)['__onGCastApiAvailable'] = this.onCastApiAvailable.bind(this);
 		}
 		
 		initApi(){
-			const config = new chrome.cast.ApiConfig(this.createSessionRequest(), 
+			const config = new cast.ApiConfig(this.createSessionRequest(), 
 				this.onSession.bind(this), this.onReceiverAvailability.bind(this));
-			chrome.cast.initialize(config, this.onInitSuccess, this.onInitError);
+			cast.initialize(config, this.onInitSuccess, this.onInitError);
 		}
 		
-		play(media:type.Media.Playable, url:string){
+		play(media:Media.Playable, url:string){
 			return new Promise((resolve, reject) => {
 				if(this.session)
 					return this.loadMedia(media, url, resolve, reject);
 			
-				const onSuccess = (session:chrome.cast.Session) => {
+				const onSuccess = (session:Session) => {
 					this.onRequestSessionSuccess(session);
 					this.loadMedia(media, url, resolve, reject);
 				}
@@ -37,13 +43,13 @@ namespace ymovie.api {
 				const onError = () => reject("Requesting session cancelled or failed.");
 
 				// requestSession() must be invoked by user action!
-				chrome.cast.requestSession(onSuccess, onError, this.createSessionRequest());
+				cast.requestSession(onSuccess, onError, this.createSessionRequest());
 			})
 		}
 		
-		loadMedia(media:type.Media.Playable, url:string, resolve:(value:unknown) => void, reject:(reason?:any) => void){
+		loadMedia(media:Media.Playable, url:string, resolve:(value:unknown) => void, reject:(reason?:any) => void){
 			const mediaInfo = this.toMetadata(media, url);
-			const request = new chrome.cast.media.LoadRequest(mediaInfo);
+			const request = new cmedia.LoadRequest(mediaInfo);
 			const onError = (error:any) => {
 				let detail = "";
 				try {
@@ -54,12 +60,12 @@ namespace ymovie.api {
 			this.session?.loadMedia(request, resolve, onError);
 		}
 
-		private toMetadata(media:type.Media.Playable, url:string):chrome.cast.media.IMetadata {
-			const poster = (media instanceof type.Media.PlayableScc && media.posterThumbnail) || media.poster;
-			const result = new chrome.cast.media.MediaInfo(url, "video/mp4");
-			if(media instanceof type.Media.Episode)
+		private toMetadata(media:Media.Playable, url:string):cmedia.IMetadata {
+			const poster = util.Thumbnail.fromOriginal(media.poster);
+			const result = new cmedia.MediaInfo(url, "video/mp4");
+			if(media instanceof Media.Episode)
 				result.metadata = this.fromEpisode(media) 
-			else if(media instanceof type.Media.Movie)
+			else if(media instanceof Media.Movie)
 				result.metadata = this.fromMovide(media);
 			else
 				result.metadata = {title:media.title};
@@ -68,8 +74,8 @@ namespace ymovie.api {
 			return result;
 		}
 		
-		private fromEpisode(data:type.Media.Episode):chrome.cast.media.TvShowMediaMetadata {
-			const result = new chrome.cast.media.TvShowMediaMetadata();
+		private fromEpisode(data:Media.Episode):cmedia.TvShowMediaMetadata {
+			const result = new cmedia.TvShowMediaMetadata();
 			result.episode = data.episodeNumber;
 			result.originalAirdate = data.year;
 			result.season = data.seasonNumber;
@@ -78,16 +84,16 @@ namespace ymovie.api {
 			return result;
 		}
 		
-		private fromMovide(data:type.Media.Movie):chrome.cast.media.MovieMediaMetadata {
-			const result = new chrome.cast.media.MovieMediaMetadata();
+		private fromMovide(data:Media.Movie):cmedia.MovieMediaMetadata {
+			const result = new cmedia.MovieMediaMetadata();
 			result.title = data.title;
 			result.studio = data.studio;
 			result.releaseDate = data.year;
 			return result;
 		}
 		
-		createSessionRequest():chrome.cast.SessionRequest {
-			return new chrome.cast.SessionRequest(chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
+		createSessionRequest():cast.SessionRequest {
+			return new cast.SessionRequest(cmedia.DEFAULT_MEDIA_RECEIVER_APP_ID);
 		}
 		
 		onCastApiAvailable(value:any):void {
@@ -95,17 +101,17 @@ namespace ymovie.api {
 				this.initApi();
 		}
 		
-		onRequestSessionSuccess(session:chrome.cast.Session):void {
+		onRequestSessionSuccess(session:Session):void {
 			this.onSession(session);
 		}
 		
-		onSession(session:chrome.cast.Session):void {
+		onSession(session:Session):void {
 			this.session = session;
 			this.session.addUpdateListener(() => this.onSessionUpdate(session));
 		}
 		
-		onSessionUpdate(session:chrome.cast.Session):void {
-			if(session.status === chrome.cast.SessionStatus.STOPPED)
+		onSessionUpdate(session:Session):void {
+			if(session.status === cast.SessionStatus.STOPPED)
 				this.session = undefined;
 		}
 		

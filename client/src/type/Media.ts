@@ -15,7 +15,6 @@ namespace ymovie.type.Media {
 	export abstract class Scc extends Base {
 		isCZSK?:boolean;
 		year?:string;
-		posterThumbnail?:string;
 	}
 
 	export class Season extends Scc {

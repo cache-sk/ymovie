@@ -1,4 +1,6 @@
 namespace ymovie.view.setup {
+	import DOM = util.DOM;
+
 	export class WebshareSetup extends base.Form {
 		api:api.Api;
 		clear:HTMLButtonElement;
@@ -13,20 +15,20 @@ namespace ymovie.view.setup {
 			this.api = api;
 			this.api.listen?.(type.Action.WebshareStatusUpdated, this.render.bind(this));
 			
-			this.clear = util.DOM.button("clear", "Clear token");
+			this.clear = DOM.button("clear", "Clear token");
 			this.clear.addEventListener("click", this.onClearClick.bind(this));
 			
-			this.instructions = util.DOM.p();
+			this.instructions = DOM.p();
 			this.instructions.innerHTML = `Provide your Webshare credentials to resolve available streams. Only access token is stored in a cookie.`;
 
-			this.tokenInput = util.DOM.input("token", "token");
-			this.usernameInput = util.DOM.input(undefined, "username", undefined, "username");
-			this.passwordInput = util.DOM.password(undefined, "password", undefined, "password");
+			this.tokenInput = DOM.input("token", "token");
+			this.usernameInput = DOM.input(undefined, "username", undefined, "username");
+			this.passwordInput = DOM.password(undefined, "password", undefined, "password");
 		}
 		
 		render(){
 			this.clean();
-			this.append(util.DOM.h1("Webshare"));
+			this.append(DOM.h1("Webshare"));
 			
 			const data = this.data;
 			const token = this.api.webshareToken;
@@ -40,9 +42,9 @@ namespace ymovie.view.setup {
 				this.append([this.usernameInput, this.passwordInput]);
 			}
 			
-			this.append(util.DOM.submit(undefined, "Submit"));
+			this.append(DOM.submit(undefined, "Submit"));
 			if(this.data && this.data.error)
-				this.append(util.DOM.span("error", this.data.error));
+				this.append(DOM.span("error", this.data.error));
 			this.append(this.instructions);
 			return super.render();
 		}

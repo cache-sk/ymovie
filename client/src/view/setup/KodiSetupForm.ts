@@ -1,18 +1,21 @@
 namespace ymovie.view.setup {
+	import DOM = util.DOM;
+	import Position = type.Player.KodiPosition;
+
 	export class KodiSetupForm extends base.Form {
 		api:api.Api;
-		position:type.Player.KodiPosition;
+		position:Position;
 		data:Data | undefined;
 		endpointInput:HTMLInputElement;
 
-		constructor(api:api.Api, position:type.Player.KodiPosition){
+		constructor(api:api.Api, position:Position){
 			super();
 			this.api = api;
 			this.api.listen?.(type.Action.KodiStatusUpdated, this.render.bind(this));
 			this.position = position;
 			this.element.classList.add(`position${position}`);
 			const endpoint = this.api.getKodiEndpoint(this.position);
-			this.endpointInput = util.DOM.input(undefined, "endpoint", endpoint || undefined, `Endpoint #${this.position}`)
+			this.endpointInput = DOM.input(undefined, "endpoint", endpoint || undefined, `Endpoint #${this.position}`)
 		}
 
 		update(data?:Data):HTMLElement {
@@ -24,9 +27,9 @@ namespace ymovie.view.setup {
 			this.clean();
 			this.append([
 				this.endpointInput,
-				util.DOM.submit(undefined, "Submit")]);
+				DOM.submit(undefined, "Submit")]);
 			if(this.data && this.data.error)
-				this.append(util.DOM.span("error", this.data.error));
+				this.append(DOM.span("error", this.data.error));
 			return super.render();
 		}
 		

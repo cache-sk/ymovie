@@ -1,11 +1,13 @@
 /// <reference path="base/Component.ts"/>
 
 namespace ymovie.view {
-	const Action = type.Action;
-	const Catalogue = type.Catalogue;
-	const Media = type.Media;
-	const ApiScc = api.ApiScc;
-	const DOM = util.DOM;
+	import Action = type.Action;
+	import ApiScc = api.ApiScc;
+	import Catalogue = type.Catalogue;
+	import DOM = util.DOM;
+	import Media = type.Media;
+	import Nav = type.Nav;
+	import Player = type.Player;
 
 	export class App extends base.Component<HTMLBodyElement> {
 		api:api.Api | undefined;
@@ -104,7 +106,7 @@ namespace ymovie.view {
 			const {path, sccMediaId, webshareMediaId, sccLinkLabel} = this.nav.locationData;
 			const sccLink = sccLinkLabel && this.menu.home.find(item => sccLinkLabel == this.nav?.safePath(item.label));
 			if(sccMediaId)
-				return this.nav.goReplaceMedia(<type.Media.Base>await this.api.loadMedia(sccMediaId));
+				return this.nav.goReplaceMedia(<Media.Base>await this.api.loadMedia(sccMediaId));
 			if(webshareMediaId)
 				return this.nav.goReplaceMedia(await this.api.loadWebshareMedia(webshareMediaId));
 			if(sccLink && sccLink instanceof Catalogue.SccLink)
@@ -157,7 +159,7 @@ namespace ymovie.view {
 			this.notificationView?.update({title, message});
 		}
 
-		async loadCatalogue(data:Array<type.Catalogue.AnyItem> | undefined, command:() => Promise<Array<type.Catalogue.AnyItem> | undefined>, type?:string):Promise<any> {
+		async loadCatalogue(data:Array<Catalogue.AnyItem> | undefined, command:() => Promise<Array<Catalogue.AnyItem> | undefined>, type?:string):Promise<any> {
 			if(data)
 				return this.updateCatalogue(data, type);
 			
@@ -177,11 +179,11 @@ namespace ymovie.view {
 			window.scrollTo(0, 0);
 		}
 		
-		updateCatalogue(catalogue:Array<type.Catalogue.AnyItem> | Error | undefined, type?:string){
+		updateCatalogue(catalogue:Array<Catalogue.AnyItem> | Error | undefined, type?:string){
 			return this.discoveryView?.update({type, catalogue});
 		}
 		
-		search(data:type.Action.SearchData){
+		search(data:Action.SearchData){
 			if(!data.query)
 				return this.nav?.goHome();
 			if(this.api?.isWebshareSearchQuery(data.query))
@@ -189,7 +191,7 @@ namespace ymovie.view {
 			this.nav?.goSccSearch(data.query);
 		}
 		
-		selectCatalogueItem(data:type.Catalogue.AnyItem){
+		selectCatalogueItem(data:Catalogue.AnyItem){
 			if(data instanceof Catalogue.SccLink) {
 				this.nav?.goSccBrowse(data);
 			} else if(data instanceof Media.Episode) {
@@ -209,7 +211,7 @@ namespace ymovie.view {
 			}
 		}
 		
-		async resolveStreams(data:type.Action.ResolveStreamsData){
+		async resolveStreams(data:Action.ResolveStreamsData){
 			if(!this.api)
 				return;
 			if(data.data instanceof Media.Webshare)
@@ -218,7 +220,7 @@ namespace ymovie.view {
 				data.callback(await this.api.loadStreams(data.data));
 		}
 		
-		async resolveStreamUrl(data:type.Action.ResolveStreamUrlData){
+		async resolveStreamUrl(data:Action.ResolveStreamUrlData){
 			try {
 				if(this.api)
 					data.callback(await this.api.resolveStreamUrl(data.stream));
@@ -227,13 +229,13 @@ namespace ymovie.view {
 			}
 		}
 		
-		async play(payload:type.Action.PlayData){
+		async play(payload:Action.PlayData){
 			const {player, media, url} = payload;
-			const notificationTitle = player instanceof type.Player.Cast ? "Cast" : "Kodi";
+			const notificationTitle = player instanceof Player.Cast ? "Cast" : "Kodi";
 			try {
-				if(this.api && player instanceof type.Player.Cast)
+				if(this.api && player instanceof Player.Cast)
 					await this.api.playOnCast(media, url);
-				else if(this.api && player instanceof type.Player.Kodi)
+				else if(this.api && player instanceof Player.Kodi)
 					await this.api.playOnKodi(player.position, url);
 				this.showNotification(`${notificationTitle} Success`, `Playing ${media.title}`);
 			} catch(error) {
@@ -245,7 +247,7 @@ namespace ymovie.view {
 			this.toggleApiClass("cast", status);
 		}
 		
-		onApiKodiStatus(data:type.Action.KodiStatusUpdatedData){
+		onApiKodiStatus(data:Action.KodiStatusUpdatedData){
 			const key = "kodi" + (data.position === 1 ? "" : "2");
 			this.toggleApiClass(key, data.status);
 		}
@@ -254,7 +256,7 @@ namespace ymovie.view {
 			this.toggleApiClass("webshare", status);
 		}
 		
-		async onNavChange(data:type.Action.NavChangeData){
+		async onNavChange(data:Action.NavChangeData){
 			if(!this.api || !this.nav || !this.detailView || !this.setupView || !this.aboutView || !this.discoveryView || !this.menu)
 				return;
 
@@ -284,30 +286,30 @@ namespace ymovie.view {
 				return await this.loadCatalogue(undefined,
 					async () => await this.api?.loadIds(util.Watched.series, data.title));
 			if(isDetail(path))
-				return this.detailView.update({detail:<type.Media.Playable>state.source, list:<Array<type.Catalogue.AnyItem>>this.discoveryView.data?.catalogue});
+				return this.detailView.update({detail:<Media.Playable>state.source, list:<Array<Catalogue.AnyItem>>this.discoveryView.data?.catalogue});
 			if(nav.isSccSeries(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadSeasons((<type.Media.Series>state.source).id, data.title));
+					async () => await this.api?.loadSeasons((<Media.Series>state.source).id, data.title));
 			if(nav.isSccSeason(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadEpisodes((<type.Media.Episode>state.source).id, data.title));
+					async () => await this.api?.loadEpisodes((<Media.Episode>state.source).id, data.title));
 			if(nav.isSccBrowse(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadPath(<string>(<type.Catalogue.SccLink>state.source).url, data.title));
+					async () => await this.api?.loadPath(<string>(<Catalogue.SccLink>state.source).url, data.title));
 			
-			this.discoveryView.searchQuery = (<type.Nav.StateSearch>state.source)?.query || "";
+			this.discoveryView.searchQuery = (<Nav.StateSearch>state.source)?.query || "";
 			if(nav.isSccSearch(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.searchScc((<type.Nav.StateSearch>state.source).query, data.title));
+					async () => await this.api?.searchScc((<Nav.StateSearch>state.source).query, data.title));
 			if(nav.isWebshareSearch(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.searchWebshare((<type.Nav.StateSearch>state.source).query, data.title, <number>(<type.Nav.StateSearch>state.source).page), "webshare");
+					async () => await this.api?.searchWebshare((<Nav.StateSearch>state.source).query, data.title, <number>(<Nav.StateSearch>state.source).page), "webshare");
 			
 			this.updateCatalogue(this.menu.home, "home");
 		}
 	}
 
 	type Menu = {
-		home:Array<type.Catalogue.Base>;
+		home:Array<Catalogue.Base>;
 	}
 }

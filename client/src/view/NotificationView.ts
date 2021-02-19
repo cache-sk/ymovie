@@ -1,5 +1,5 @@
 namespace ymovie.view {
-	const DOM = util.DOM;
+	import DOM = util.DOM;
 
 	export class NotificationView extends base.Dialogue<Data> {
 		title:HTMLHeadingElement;

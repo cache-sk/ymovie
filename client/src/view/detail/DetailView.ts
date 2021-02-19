@@ -1,5 +1,5 @@
 namespace ymovie.view.detail {
-	const DOM = util.DOM;
+	import DOM = util.DOM;
 
 	export class DetailView extends base.Dialogue<Data> {
 		webshareSetup:setup.WebshareSetup;

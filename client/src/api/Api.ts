@@ -1,7 +1,11 @@
+/// <reference path="../util/Storage.ts"/>
+
 namespace ymovie.api {
-	const Storage = util.Storage;
-	const Action = type.Action;
-	type KodiPosition = type.Player.KodiPosition;
+	import Action = type.Action;
+	import KodiPosition = type.Player.KodiPosition;
+	import Media = type.Media;
+	import Status = enums.Status;
+	import Storage = util.Storage;
 
 	export class Api {
 		static KEY_UUID = "UUID";
@@ -28,7 +32,7 @@ namespace ymovie.api {
 			this.cast.init();
 			const list:Array<KodiPosition> = [1, 2];
 			for (let position of list) {
-				const status = this.getKodiEndpoint(position) ? enums.Status.DEFINED: enums.Status.NOT_AVAILABLE;
+				const status = this.getKodiEndpoint(position) ? Status.DEFINED: Status.NOT_AVAILABLE;
 				this.trigger?.(new Action.KodiStatusUpdated({position, status}));
 			}
 			await this.checkWebshareStatus();
@@ -92,7 +96,7 @@ namespace ymovie.api {
 			return parser.Webshare.searchResponseToCatalogue(await this.webshare.search(normalizedQuery, page), query, title, page);
 		}
 		
-		async loadMedia(id:string):Promise<type.Media.Scc | undefined> {
+		async loadMedia(id:string):Promise<Media.Scc | undefined> {
 			return parser.Scc.toItem({_id:id, _source:await this.scc.loadMedia(id)});
 		}
 		
@@ -112,7 +116,7 @@ namespace ymovie.api {
 			return parser.Scc.toCatalogue(await this.scc.loadEpisodes(id), title);
 		}
 		
-		async loadStreams(data:type.Media.PlayableScc):Promise<Array<type.Media.Stream>> {
+		async loadStreams(data:Media.PlayableScc):Promise<Array<Media.Stream>> {
 			return parser.Scc.toStreams(await this.scc.loadStreams(data.id));
 		}
 		
@@ -120,16 +124,16 @@ namespace ymovie.api {
 			return parser.Webshare.fileInfoToItem(await this.webshare.fileInfo(ident), ident);
 		}
 		
-		async loadWebshareStreams(data:type.Media.Webshare):Promise<Array<type.Media.Stream>> {
+		async loadWebshareStreams(data:Media.Webshare):Promise<Array<Media.Stream>> {
 			const ident = data.id;
 			return parser.Webshare.fileInfoToStreams(ident, await this.webshare.fileInfo(ident));
 		}
 		
-		async resolveStreamUrl(stream:type.Media.Stream){
+		async resolveStreamUrl(stream:Media.Stream){
 			return await this.webshare.getLink(stream.ident, <string>this.webshareToken);
 		}
 		
-		async playOnCast(media:type.Media.PlayableScc, url:string){
+		async playOnCast(media:Media.PlayableScc, url:string){
 			await this.cast.play(media, url);
 		}
 		
@@ -141,9 +145,9 @@ namespace ymovie.api {
 			try {
 				this.setKodiEndpoint(position, endpoint);
 				await this.kodi.isAvailable(endpoint);
-				this.trigger?.(new Action.KodiStatusUpdated({position, status:enums.Status.OK}));
+				this.trigger?.(new Action.KodiStatusUpdated({position, status:Status.OK}));
 			} catch(error) {
-				this.trigger?.(new Action.KodiStatusUpdated({position, status:enums.Status.NOT_AVAILABLE}));
+				this.trigger?.(new Action.KodiStatusUpdated({position, status:Status.NOT_AVAILABLE}));
 				throw error;
 			}
 		}
@@ -155,13 +159,13 @@ namespace ymovie.api {
 			} catch(error) {
 				success = false;
 			}
-			this.trigger?.(new Action.WebshareStatusUpdated(success ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(success ? Status.OK : Status.NOT_AVAILABLE));
 			return success;
 		}
 		
 		logoutWebshare(){
 			this.webshareToken = null;
-			this.trigger?.(new Action.WebshareStatusUpdated(enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(Status.NOT_AVAILABLE));
 		}
 		
 		async checkWebshareStatus(){
@@ -172,12 +176,12 @@ namespace ymovie.api {
 				success = false;
 				this.webshareToken = null;
 			}
-			this.trigger?.(new Action.WebshareStatusUpdated(success ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(success ? Status.OK : Status.NOT_AVAILABLE));
 			return success;
 		}
 		
 		onCastStatus(available:boolean){
-			this.trigger?.(new Action.CastStatusUpdates(available ? enums.Status.OK : enums.Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.CastStatusUpdates(available ? Status.OK : Status.NOT_AVAILABLE));
 		}
 	}
 }

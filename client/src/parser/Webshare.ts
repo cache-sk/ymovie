@@ -1,25 +1,28 @@
 namespace ymovie.parser {
+	import Media = type.Media;
+	import Catalogue = type.Catalogue;
+
 	export class Webshare {
-		static searchResponseToCatalogue(data:Element, query:string, title:string, page:number):Array<type.Catalogue.AnyItem> {
+		static searchResponseToCatalogue(data:Element, query:string, title:string, page:number):Array<Catalogue.AnyItem> {
 			const total = this.getInt(data, "total");
-			const result:Array<type.Catalogue.AnyItem> = this.getElementsByTagNameArray(data, "file")
+			const result:Array<Catalogue.AnyItem> = this.getElementsByTagNameArray(data, "file")
 				.map(item => this.normalizeItem(item));
 			const pageCount = Math.ceil(total / 100);
 			if(page)
-				result.unshift(new type.Catalogue.Trigger("folder", title, `${page}/${pageCount}`, new type.Action.Search({query, page:page - 1})));
+				result.unshift(new Catalogue.Trigger("folder", title, `${page}/${pageCount}`, new type.Action.Search({query, page:page - 1})));
 			if(page + 1 < pageCount)
-				result.push(new type.Catalogue.Trigger("folder", title, `${page + 2}/${pageCount}`, new type.Action.Search({query, page:page + 1})));
+				result.push(new Catalogue.Trigger("folder", title, `${page + 2}/${pageCount}`, new type.Action.Search({query, page:page + 1})));
 			return result;
 		}
 		
-		static fileInfoToItem(data:Element, ident:string):type.Media.Webshare {
+		static fileInfoToItem(data:Element, ident:string):Media.Webshare {
 			return this.normalizeItem(data, ident);
 		}
 		
-		static fileInfoToStreams(ident:string, data:Element):Array<type.Media.Stream> {
+		static fileInfoToStreams(ident:string, data:Element):Array<Media.Stream> {
 			const video = this.getFirst(data, "video");
 			const audio = this.getFirst(data, "audio");
-			const stream:type.Media.Stream = {
+			const stream:Media.Stream = {
 				ident,
 				size: this.getInt(data, "size"),
 				duration: this.getInt(data, "length"),
@@ -58,8 +61,8 @@ namespace ymovie.parser {
 			return result;
 		}
 
-		private static normalizeItem(item:Element, id?:string):type.Media.Webshare {
-			const result = new type.Media.Webshare(id || <string>this.getText(item, "ident"));
+		private static normalizeItem(item:Element, id?:string):Media.Webshare {
+			const result = new Media.Webshare(id || <string>this.getText(item, "ident"));
 			result.poster = this.getText(item, "img");
 			result.title = result.longTitle = this.getText(item, "name");
 			const ratingPositive = this.getInt(item, "positive_votes");
