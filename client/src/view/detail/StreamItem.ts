@@ -1,24 +1,27 @@
 /// <reference path="StreamOption.ts"/>
 
 namespace ymovie.view.detail {
+	import DOM = util.DOM;
+	import Util = util.Util;
+
 	export class StreamItem extends StreamOption<Data> {
 		renderInfo(){
 			const data = this.data?.stream;
 			if(!data)
 				return undefined;
-			return util.DOM.span("info", [
-				this.add("size", util.Util.formatDuration(data.size)),
+			return DOM.span("info", [
+				this.add("size", Util.formatSize(data.size)),
 				this.add("language", data.language),
 				this.add("subtitles", data.subtitles),
 				this.add("hdr", data.hdr ? "HDR" : undefined),
 				this.add("3d", data.is3d ? "3D" : undefined),
 				this.add("quality", `${data.width}x${data.height}`),
 				this.add("codec", `${data.videoCodec}+${data.audioCodec}`),
-				this.add("duration", util.Util.formatDuration(data.duration))]);
+				this.add("duration", Util.formatDuration(data.duration))]);
 		}
 		
 		add(className:string, value:string | undefined | null):util.DOMContent {
-			return value ? util.DOM.span(className, value) : undefined;
+			return value ? DOM.span(className, value) : undefined;
 		}
 		
 		onClick(){
