@@ -1,8 +1,10 @@
 namespace ymovie.hbbtv.view {
-	export class App extends ymovie.view.Component<HTMLBodyElement> {
-		constructor(){
-			super(document.body);
-		}
+	import SharedAction = ymovie.type.Action;
+	import Catalogue = type.Catalogue;
+
+	export class App extends ymovie.view.App {
+		api:api.Api | undefined;
+		catalogueView:CatalogueView | undefined;
 
 		static async init(){
 			const result = new App();
@@ -10,15 +12,24 @@ namespace ymovie.hbbtv.view {
 		}
 
 		async init():Promise<any> {
-			console.log('hello');
-			this.render();
+			this.api = new api.Api();
 
+			this.catalogueView = new CatalogueView();
+
+			this.api.listen?.(SharedAction.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
+			await this.api.init();
+
+			this.render();
 			this.element.classList.toggle("initializing", false);
 		}
 
-		render() {
-			this.append("hello");
+		render(){
+			this.append(this.updateCatalogue(this.menu));
 			return super.render();
+		}
+
+		updateCatalogue(data:Array<Catalogue.Base>){
+			return this.catalogueView?.update(data);
 		}
 	}
 }

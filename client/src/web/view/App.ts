@@ -1,27 +1,21 @@
 namespace ymovie.web.view {
 	import Action = type.Action;
 	import SharedAction = ymovie.type.Action;
-	import ApiScc = ymovie.api.ApiScc;
 	import Catalogue = type.Catalogue;
 	import DOM = util.DOM;
 	import Media = type.Media;
 	import Nav = type.Nav;
 	import Player = type.Player;
 
-	export class App extends Component<HTMLBodyElement> {
+	export class App extends ymovie.view.App {
 		api:api.Api | undefined;
 		nav:util.Nav | undefined;
 		ga:util.GA | undefined;
-		menu:Menu | undefined;
 		setupView:setup.SetupView | undefined;
 		aboutView:AboutView | undefined;
 		discoveryView:discovery.DiscoveryView | undefined;
 		detailView:detail.DetailView | undefined;
 		notificationView:NotificationView | undefined;
-
-		constructor(){
-			super(document.body);
-		}
 
 		static async init(){
 			const result = new App();
@@ -41,22 +35,8 @@ namespace ymovie.web.view {
 			this.api = new api.Api();
 			this.nav = new util.Nav();
 			this.ga = new util.GA();
-			this.menu = {home:[
-				new Catalogue.SccLink("movie", "Movies", ApiScc.PATH_MOVIES),
-				new Catalogue.SccLink("series", "Series", ApiScc.PATH_SERIES),
-				new Catalogue.SccLink("concert", "Concerts", ApiScc.PATH_CONCERTS),
-				new Catalogue.SccLink("fairyTale", "Fairy Tales", ApiScc.PATH_FAIRY_TALES),
-				new Catalogue.SccLink("animated", "Animated Movies", ApiScc.PATH_ANIMATED_MOVIES),
-				new Catalogue.SccLink("animated", "Animated Series", ApiScc.PATH_ANIMATED_SERIES),
-				new Catalogue.SccLink("movie", "Movies CZ/SK", ApiScc.PATH_MOVIES_CZSK),
-				new Catalogue.SccLink("series", "Series CZ/SK", ApiScc.PATH_SERIES_CZSK),
-				new Catalogue.SccLink("popular", "Popular Movies", ApiScc.PATH_POPULAR_MOVIES),
-				new Catalogue.SccLink("popular", "Popular Series", ApiScc.PATH_POPULAR_SERIES),
-				new Catalogue.SccLink("movie", "Added Movies", ApiScc.PATH_MOVIES_ADDED),
-				new Catalogue.SccLink("series", "Added Series", ApiScc.PATH_SERIES_ADDED),
-				new Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)),
-				new Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav))
-			]};
+			this.menu.push(new Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)));
+			this.menu.push(new Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav)));
 			
 			this.setupView = new setup.SetupView(this.api);
 			this.aboutView = new AboutView();
@@ -99,11 +79,11 @@ namespace ymovie.web.view {
 		}
 		
 		async initDeeplink(){
-			if(!this.api || !this.nav || !this.menu)
+			if(!this.api || !this.nav)
 				return;
 
 			const {path, sccMediaId, webshareMediaId, sccLinkLabel} = this.nav.locationData;
-			const sccLink = sccLinkLabel && this.menu.home.find(item => sccLinkLabel == this.nav?.safePath(item.label));
+			const sccLink = sccLinkLabel && this.menu.find(item => sccLinkLabel == this.nav?.safePath(item.label));
 			if(sccMediaId)
 				return this.nav.goReplaceMedia(<Media.Base>await this.api.loadMedia(sccMediaId));
 			if(webshareMediaId)
@@ -132,22 +112,12 @@ namespace ymovie.web.view {
 		
 		render(){
 			this.append([
-				this.updateCatalogue(this.menu?.home, "home"),
+				this.updateCatalogue(this.menu, "home"),
 				this.detailView?.render(),
 				this.setupView?.render(),
 				this.aboutView?.render(),
 				this.notificationView?.render()]);
 			return super.render();
-		}
-
-		toggleClass(key:string, toggle:boolean){
-			this.element.classList.toggle(key, toggle);
-		}
-		
-		toggleApiClass(key:string, status:enums.Status){
-			this.toggleClass(`${key}-${enums.Status.OK}`, status === enums.Status.OK);
-			this.toggleClass(`${key}-${enums.Status.NOT_AVAILABLE}`, status === enums.Status.NOT_AVAILABLE);
-			this.toggleClass(`${key}-${enums.Status.DEFINED}`, status === enums.Status.DEFINED);
 		}
 		
 		set loading(toggle:boolean) {
@@ -252,12 +222,8 @@ namespace ymovie.web.view {
 			this.toggleApiClass(key, data.status);
 		}
 		
-		onApiWebshareStatus(status:enums.Status){
-			this.toggleApiClass("webshare", status);
-		}
-		
 		async onNavChange(data:Action.NavChangeData){
-			if(!this.api || !this.nav || !this.detailView || !this.setupView || !this.aboutView || !this.discoveryView || !this.menu)
+			if(!this.api || !this.nav || !this.detailView || !this.setupView || !this.aboutView || !this.discoveryView)
 				return;
 
 			this.ga?.pageview(data.url, data.title);
@@ -307,11 +273,7 @@ namespace ymovie.web.view {
 				return await this.loadCatalogue(state?.catalogue,
 					async () => await this.api?.searchWebshare((<Nav.StateSearch>state.source).query, data.title, <number>(<Nav.StateSearch>state.source).page), "webshare");
 			
-			this.updateCatalogue(this.menu.home, "home");
+			this.updateCatalogue(this.menu, "home");
 		}
-	}
-
-	type Menu = {
-		home:Array<Catalogue.Base>;
 	}
 }
