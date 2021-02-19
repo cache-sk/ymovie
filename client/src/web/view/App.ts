@@ -81,7 +81,7 @@ namespace ymovie.web.view {
 			
 			this.api.listen?.(Action.CastStatusUpdates, this.onApiCastStatus.bind(this));
 			this.api.listen?.(Action.KodiStatusUpdated, this.onApiKodiStatus.bind(this));
-			this.api.listen?.(Action.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
+			this.api.listen?.(SharedAction.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
 			await this.api.init();
 			
 			this.render();

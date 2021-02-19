@@ -13,7 +13,6 @@ namespace ymovie.web.type.Action {
 	export class ShowSetup extends TriggerAction<boolean> {}
 	export class ShowAbout extends TriggerAction<boolean> {}
 	export class KodiStatusUpdated extends TriggerAction<KodiStatusUpdatedData> {}
-	export class WebshareStatusUpdated extends TriggerAction<enums.Status> {}
 	export class CastStatusUpdates extends TriggerAction<enums.Status> {}
 	export class NavChanged extends TriggerAction<NavChangeData> {}
 	export class CatalogueItemSelected extends TriggerAction<CatalogueItemSelectedData> {}

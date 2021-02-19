@@ -7,6 +7,7 @@ namespace ymovie.web {
 	export namespace util {
 		export import DOM = ymovie.util.DOM;
 		export import DOMContent = ymovie.util.DOMContent;
+		export import Storage = ymovie.util.Storage;
 		export import Thumbnail = ymovie.util.Thumbnail;
 		export import Trigger = ymovie.util.Trigger;
 		export import Util = ymovie.util.Util;

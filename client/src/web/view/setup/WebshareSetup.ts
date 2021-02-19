@@ -13,7 +13,7 @@ namespace ymovie.web.view.setup {
 		constructor(api:api.Api){
 			super();
 			this.api = api;
-			this.api.listen?.(type.Action.WebshareStatusUpdated, this.render.bind(this));
+			this.api.listen?.(ymovie.type.Action.WebshareStatusUpdated, this.render.bind(this));
 			
 			this.clear = DOM.button("clear", "Clear token");
 			this.clear.addEventListener("click", this.onClearClick.bind(this));
