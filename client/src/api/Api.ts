@@ -1,11 +1,18 @@
+/// <reference path="../type/Action.ts"/>
+/// <reference path="../enums/Status.ts"/>
 /// <reference path="../util/Storage.ts"/>
+/// <reference path="../parser/Scc.ts"/>
+/// <reference path="../parser/Webshare.ts"/>
 
 namespace ymovie.api {
 	import Action = type.Action;
+	import Catalogue = type.Catalogue;
 	import KodiPosition = type.Player.KodiPosition;
 	import Media = type.Media;
+	import Scc = parser.Scc;
 	import Status = enums.Status;
 	import Storage = util.Storage;
+	import Webshare = parser.Webshare;
 
 	export class Api {
 		static KEY_UUID = "UUID";
@@ -80,7 +87,7 @@ namespace ymovie.api {
 		}
 		
 		async searchScc(query:string, title:string) {
-			return parser.Scc.toCatalogue(await this.scc.search(query.trim()), title);
+			return Scc.toCatalogue(await this.scc.search(query.trim()), title);
 		}
 		
 		isWebshareSearchQuery(query:string):boolean {
@@ -93,40 +100,40 @@ namespace ymovie.api {
 
 		async searchWebshare(query:string, title:string, page:number) {
 			const normalizedQuery = this.normalizeWebshareSearchQuery(query);
-			return parser.Webshare.searchResponseToCatalogue(await this.webshare.search(normalizedQuery, page), query, title, page);
+			return Webshare.searchResponseToCatalogue(await this.webshare.search(normalizedQuery, page), query, title, page);
 		}
 		
 		async loadMedia(id:string):Promise<Media.Scc | undefined> {
-			return parser.Scc.toItem({_id:id, _source:await this.scc.loadMedia(id)});
+			return Scc.toItem({_id:id, _source:await this.scc.loadMedia(id)});
 		}
 		
 		async loadPath(url:string, title:string) {
-			return parser.Scc.toCatalogue(await this.scc.loadPath(url), title);
+			return Scc.toCatalogue(await this.scc.loadPath(url), title);
 		}
 		
-		async loadIds(ids:Array<string>, title:string):Promise<Array<type.Catalogue.AnyItem>> {
-			return parser.Scc.idsToCatalogue(await this.scc.loadIds(ids), ids, title);
+		async loadIds(ids:Array<string>, title:string):Promise<Array<Catalogue.AnyItem>> {
+			return ids.length ? Scc.idsToCatalogue(await this.scc.loadIds(ids), ids, title) : [];
 		}
 		
 		async loadSeasons(id:string, title:string) {
-			return parser.Scc.toCatalogue(await this.scc.loadSeasons(id), title);
+			return Scc.toCatalogue(await this.scc.loadSeasons(id), title);
 		}
 		
 		async loadEpisodes(id:string, title:string) {
-			return parser.Scc.toCatalogue(await this.scc.loadEpisodes(id), title);
+			return Scc.toCatalogue(await this.scc.loadEpisodes(id), title);
 		}
 		
 		async loadStreams(data:Media.PlayableScc):Promise<Array<Media.Stream>> {
-			return parser.Scc.toStreams(await this.scc.loadStreams(data.id));
+			return Scc.toStreams(await this.scc.loadStreams(data.id));
 		}
 		
 		async loadWebshareMedia(ident:string) {
-			return parser.Webshare.fileInfoToItem(await this.webshare.fileInfo(ident), ident);
+			return Webshare.fileInfoToItem(await this.webshare.fileInfo(ident), ident);
 		}
 		
 		async loadWebshareStreams(data:Media.Webshare):Promise<Array<Media.Stream>> {
 			const ident = data.id;
-			return parser.Webshare.fileInfoToStreams(ident, await this.webshare.fileInfo(ident));
+			return Webshare.fileInfoToStreams(ident, await this.webshare.fileInfo(ident));
 		}
 		
 		async resolveStreamUrl(stream:Media.Stream){

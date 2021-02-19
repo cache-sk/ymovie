@@ -4,30 +4,27 @@ namespace ymovie.api {
 	 * For that reason the app should be only served from https.
 	 */
 
-	import cast = chrome.cast;
-	import cmedia = cast.media;
 	import Media = type.Media;
-	import Session = cast.Session;
 
 	export class ApiCast {
 		onStatus:(available:boolean) => void;
-		session:Session | undefined;
+		session:chrome.cast.Session | undefined;
 
 		constructor(onStatus:(available:boolean) => void){
 			this.onStatus = onStatus;
 		}
 		
 		init(){
-			if(window?.chrome && cast)
+			if(window?.chrome && chrome.cast)
 				this.initApi();
 			else
 				(<any>window)['__onGCastApiAvailable'] = this.onCastApiAvailable.bind(this);
 		}
 		
 		initApi(){
-			const config = new cast.ApiConfig(this.createSessionRequest(), 
+			const config = new chrome.cast.ApiConfig(this.createSessionRequest(), 
 				this.onSession.bind(this), this.onReceiverAvailability.bind(this));
-			cast.initialize(config, this.onInitSuccess, this.onInitError);
+			chrome.cast.initialize(config, this.onInitSuccess, this.onInitError);
 		}
 		
 		play(media:Media.Playable, url:string){
@@ -35,7 +32,7 @@ namespace ymovie.api {
 				if(this.session)
 					return this.loadMedia(media, url, resolve, reject);
 			
-				const onSuccess = (session:Session) => {
+				const onSuccess = (session:chrome.cast.Session) => {
 					this.onRequestSessionSuccess(session);
 					this.loadMedia(media, url, resolve, reject);
 				}
@@ -43,13 +40,13 @@ namespace ymovie.api {
 				const onError = () => reject("Requesting session cancelled or failed.");
 
 				// requestSession() must be invoked by user action!
-				cast.requestSession(onSuccess, onError, this.createSessionRequest());
+				chrome.cast.requestSession(onSuccess, onError, this.createSessionRequest());
 			})
 		}
 		
 		loadMedia(media:Media.Playable, url:string, resolve:(value:unknown) => void, reject:(reason?:any) => void){
 			const mediaInfo = this.toMetadata(media, url);
-			const request = new cmedia.LoadRequest(mediaInfo);
+			const request = new chrome.cast.media.LoadRequest(mediaInfo);
 			const onError = (error:any) => {
 				let detail = "";
 				try {
@@ -60,9 +57,9 @@ namespace ymovie.api {
 			this.session?.loadMedia(request, resolve, onError);
 		}
 
-		private toMetadata(media:Media.Playable, url:string):cmedia.IMetadata {
+		private toMetadata(media:Media.Playable, url:string):chrome.cast.media.IMetadata {
 			const poster = util.Thumbnail.fromOriginal(media.poster);
-			const result = new cmedia.MediaInfo(url, "video/mp4");
+			const result = new chrome.cast.media.MediaInfo(url, "video/mp4");
 			if(media instanceof Media.Episode)
 				result.metadata = this.fromEpisode(media) 
 			else if(media instanceof Media.Movie)
@@ -74,8 +71,8 @@ namespace ymovie.api {
 			return result;
 		}
 		
-		private fromEpisode(data:Media.Episode):cmedia.TvShowMediaMetadata {
-			const result = new cmedia.TvShowMediaMetadata();
+		private fromEpisode(data:Media.Episode):chrome.cast.media.TvShowMediaMetadata {
+			const result = new chrome.cast.media.TvShowMediaMetadata();
 			result.episode = data.episodeNumber;
 			result.originalAirdate = data.year;
 			result.season = data.seasonNumber;
@@ -84,16 +81,16 @@ namespace ymovie.api {
 			return result;
 		}
 		
-		private fromMovide(data:Media.Movie):cmedia.MovieMediaMetadata {
-			const result = new cmedia.MovieMediaMetadata();
+		private fromMovide(data:Media.Movie):chrome.cast.media.MovieMediaMetadata {
+			const result = new chrome.cast.media.MovieMediaMetadata();
 			result.title = data.title;
 			result.studio = data.studio;
 			result.releaseDate = data.year;
 			return result;
 		}
 		
-		createSessionRequest():cast.SessionRequest {
-			return new cast.SessionRequest(cmedia.DEFAULT_MEDIA_RECEIVER_APP_ID);
+		createSessionRequest():chrome.cast.SessionRequest {
+			return new chrome.cast.SessionRequest(chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
 		}
 		
 		onCastApiAvailable(value:any):void {
@@ -101,17 +98,17 @@ namespace ymovie.api {
 				this.initApi();
 		}
 		
-		onRequestSessionSuccess(session:Session):void {
+		onRequestSessionSuccess(session:chrome.cast.Session):void {
 			this.onSession(session);
 		}
 		
-		onSession(session:Session):void {
+		onSession(session:chrome.cast.Session):void {
 			this.session = session;
 			this.session.addUpdateListener(() => this.onSessionUpdate(session));
 		}
 		
-		onSessionUpdate(session:Session):void {
-			if(session.status === cast.SessionStatus.STOPPED)
+		onSessionUpdate(session:chrome.cast.Session):void {
+			if(session.status === chrome.cast.SessionStatus.STOPPED)
 				this.session = undefined;
 		}
 		
