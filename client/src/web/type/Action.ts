@@ -1,24 +1,27 @@
 /// <reference path="Nav.ts"/>
 
 namespace ymovie.web.type.Action {
-	import TriggerAction = util.Trigger.Action;
+	import Catalogue = ymovie.type.Catalogue;
+	import Media = ymovie.type.Media;
+	import Status = ymovie.type.Status;
+	import Trigger = ymovie.util.Trigger;
 
-	export class GoBack extends TriggerAction<undefined> {
+	export class GoBack extends Trigger.Action<undefined> {
 		constructor() {
 			super(undefined);
 		}
 	}
 
-	export class GoHome extends TriggerAction<boolean> {}
-	export class ShowSetup extends TriggerAction<boolean> {}
-	export class ShowAbout extends TriggerAction<boolean> {}
-	export class KodiStatusUpdated extends TriggerAction<KodiStatusUpdatedData> {}
-	export class CastStatusUpdates extends TriggerAction<enums.Status> {}
-	export class NavChanged extends TriggerAction<NavChangeData> {}
-	export class CatalogueItemSelected extends TriggerAction<CatalogueItemSelectedData> {}
-	export class ResolveStreams extends TriggerAction<ResolveStreamsData> {}
-	export class ResolveStreamUrl extends TriggerAction<ResolveStreamUrlData> {}
-	export class Play extends TriggerAction<PlayData> {}
+	export class GoHome extends Trigger.Action<boolean> {}
+	export class ShowSetup extends Trigger.Action<boolean> {}
+	export class ShowAbout extends Trigger.Action<boolean> {}
+	export class KodiStatusUpdated extends Trigger.Action<KodiStatusUpdatedData> {}
+	export class CastStatusUpdates extends Trigger.Action<Status> {}
+	export class NavChanged extends Trigger.Action<NavChangeData> {}
+	export class CatalogueItemSelected extends Trigger.Action<CatalogueItemSelectedData> {}
+	export class ResolveStreams extends Trigger.Action<ResolveStreamsData> {}
+	export class ResolveStreamUrl extends Trigger.Action<ResolveStreamUrlData> {}
+	export class Play extends Trigger.Action<PlayData> {}
 
 	export class NavChangeData extends Nav.State {
 		path:string;
@@ -39,7 +42,7 @@ namespace ymovie.web.type.Action {
 
 	export type KodiStatusUpdatedData = {
 		position:number;
-		status:enums.Status;
+		status:Status;
 	}
 
 	export type ResolveStreamsData = {

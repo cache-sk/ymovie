@@ -1,4 +1,7 @@
 namespace ymovie.web.type.Nav {
+	import Catalogue = ymovie.type.Catalogue;
+	import Media = ymovie.type.Media;
+
 	export class State {
 		readonly state:StateSource;
 		readonly title:string;

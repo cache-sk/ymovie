@@ -1,6 +1,7 @@
 namespace ymovie.web.view.detail {
-	import DOM = util.DOM;
-	import Media = type.Media;
+	import Catalogue = ymovie.type.Catalogue;
+	import DOM = ymovie.util.DOM;
+	import Media = ymovie.type.Media;
 
 	export class DetailView extends base.Dialogue<Data> {
 		private webshareSetup:setup.WebshareSetup;
@@ -32,7 +33,7 @@ namespace ymovie.web.view.detail {
 			super.hide();
 		}
 
-		renderContent():util.DOMContent {
+		renderContent():DOM.Content {
 			const data = this.data?.detail;
 			if(!data)
 				return undefined;
@@ -72,7 +73,7 @@ namespace ymovie.web.view.detail {
 			]);
 		}
 		
-		renderProperty(className:string, label:string, value:util.DOMContent){
+		renderProperty(className:string, label:string, value:DOM.Content){
 			return value ? DOM.div(className, [DOM.span("label", label), DOM.span("value", value)]) : null;
 		}
 		
@@ -179,7 +180,7 @@ namespace ymovie.web.view.detail {
 
 	type Data = {
 		detail:Media.Playable;
-		list:Array<type.Catalogue.AnyItem>;
+		list:Array<Catalogue.AnyItem>;
 	}
 
 	type Touch = {

@@ -1,4 +1,7 @@
 namespace ymovie.web.view.discovery {
+	import Catalogue = ymovie.type.Catalogue;
+	import DataComponent = ymovie.view.DataComponent
+
 	export class DiscoveryView extends DataComponent<HTMLDivElement, Data> {
 		catalogue:catalogue.Catalogue;
 		header:DiscoveryHeader;
@@ -45,6 +48,6 @@ namespace ymovie.web.view.discovery {
 
 	type Data = {
 		type?:string;
-		catalogue:Array<type.Catalogue.AnyItem> | Error | undefined;
+		catalogue:Array<Catalogue.AnyItem> | Error | undefined;
 	}
 }

@@ -1,8 +1,9 @@
 /// <reference path="StreamOption.ts"/>
 
 namespace ymovie.web.view.detail {
-	import DOM = util.DOM;
-	import Util = util.Util;
+	import DOM = ymovie.util.DOM;
+	import Media = ymovie.type.Media;
+	import Util = ymovie.util.Util;
 
 	export class StreamItem extends StreamOption<Data> {
 		renderInfo(){
@@ -20,16 +21,16 @@ namespace ymovie.web.view.detail {
 				this.add("duration", Util.formatDuration(data.duration))]);
 		}
 		
-		add(className:string, value:string | undefined | null):util.DOMContent {
+		add(className:string, value:string | undefined | null):DOM.Content {
 			return value ? DOM.span(className, value) : undefined;
 		}
 		
 		onClick(){
 			this.element.classList.add("loading");
-			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<type.Media.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
-			if(this.data?.source instanceof type.Media.Movie)
+			this.trigger?.(new type.Action.ResolveStreamUrl({stream:<Media.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
+			if(this.data?.source instanceof Media.Movie)
 				util.Watched.addMovie(this.data.source.id);
-			if(this.data?.source instanceof type.Media.Episode) {
+			if(this.data?.source instanceof Media.Episode) {
 				if(this.data.source.seriesId)
 					util.Watched.addSeries(this.data.source.seriesId);
 				util.Watched.addEpisode(this.data.source.id);
@@ -44,8 +45,8 @@ namespace ymovie.web.view.detail {
 	}
 
 	type Data = {
-		stream:type.Media.Stream;
-		source:type.Media.Playable;
+		stream:Media.Stream;
+		source:Media.Playable;
 		url?:string;
 	}
 }

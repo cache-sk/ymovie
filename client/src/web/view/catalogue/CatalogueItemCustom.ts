@@ -1,5 +1,8 @@
 namespace ymovie.web.view.catalogue {
-	export class CatalogueItemCustom<T extends type.Catalogue.Base> extends CatalogueItem<T> {
+	import Catalogue = ymovie.type.Catalogue;
+	import DOM = ymovie.util.DOM;
+
+	export class CatalogueItemCustom<T extends Catalogue.Base> extends CatalogueItem<T> {
 		constructor(data:T){
 			super(data);
 			this.element.classList.add("CatalogueItemCustom");
@@ -8,10 +11,10 @@ namespace ymovie.web.view.catalogue {
 		render(){
 			const data = this.data;
 			this.element.classList.add(<string>data?.group);
-			const name = util.DOM.span("name", data?.label);
-			const subtitle = data instanceof type.Catalogue.SccLink && data.subtitle 
-				? util.DOM.span("subtitle", data.subtitle) : null;
-			this.append(util.DOM.span("title", [name, subtitle]));
+			const name = DOM.span("name", data?.label);
+			const subtitle = data instanceof Catalogue.SccLink && data.subtitle 
+				? DOM.span("subtitle", data.subtitle) : null;
+			this.append(DOM.span("title", [name, subtitle]));
 			return super.render();
 		}
 	}

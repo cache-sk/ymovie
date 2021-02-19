@@ -1,10 +1,12 @@
 namespace ymovie.web.util {
 	import Action = type.Action;
-	import Catalogue = type.Catalogue;
-	import Media = type.Media;
+	import Catalogue = ymovie.type.Catalogue;
+	import Media = ymovie.type.Media;
 	import State = type.Nav.State;
 	import StateSource = type.Nav.StateSource;
 	import StateSourceData = type.Nav.StateSourceData;
+	import Trigger = ymovie.util.Trigger;
+	import Util = ymovie.util.Util;
 
 	export class Nav {
 		static PATH_SETUP = "/setup";
@@ -26,8 +28,8 @@ namespace ymovie.web.util {
 		private currentState:State | undefined;
 		private readonly serializer:Serializer = new Serializer();
 
-		trigger:util.Trigger.Triggerer;
-		listen:util.Trigger.Listener;
+		trigger:Trigger.Triggerer;
+		listen:Trigger.Listener;
 		
 		constructor() {
 			Trigger.enhance(this);

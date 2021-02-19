@@ -1,7 +1,10 @@
 namespace ymovie.web.view.catalogue {
-	export class CatalogueTrigger extends CatalogueItemCustom<type.Catalogue.Trigger> {
-		get selectAction():util.Trigger.ActionAny {
-			return <util.Trigger.ActionAny>this.data?.action;
+	import Catalogue = ymovie.type.Catalogue;
+	import Trigger = ymovie.util.Trigger;
+
+	export class CatalogueTrigger extends CatalogueItemCustom<Catalogue.Trigger> {
+		get selectAction():Trigger.ActionAny {
+			return <Trigger.ActionAny>this.data?.action;
 		}
 	}
 }

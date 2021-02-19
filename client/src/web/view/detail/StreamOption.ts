@@ -1,8 +1,11 @@
 namespace ymovie.web.view.detail {
-	import DOM = util.DOM;
+	import DataComponent = ymovie.view.DataComponent
+	import DOM = ymovie.util.DOM;
+	import Media = ymovie.type.Media;
 	import Player = type.Player;
+	import Util = ymovie.util.Util;
 
-	export class StreamOption<TData extends {source?:type.Media.Playable, url?:string}> extends DataComponent<HTMLDivElement, TData> {
+	export class StreamOption<TData extends {source?:Media.Playable, url?:string}> extends DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
 			super("div");
 			this.data = data;
@@ -37,12 +40,12 @@ namespace ymovie.web.view.detail {
 			const isYoutube = url.indexOf("youtube.com") > -1;
 			const download = DOM.a("download", "Download", url, "_blank");
 			
-			const android = util.Util.getAndroidVersion()
+			const android = Util.getAndroidVersion()
 				? DOM.a("android", "Play on Android", `intent:${url}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
 				: null;
 			
-			const url2 = util.Util.containsExtension(url) ? null : `${url}.mkv`;
-			const android2 = url2 && util.Util.getAndroidVersion()
+			const url2 = Util.containsExtension(url) ? null : `${url}.mkv`;
+			const android2 = url2 && Util.getAndroidVersion()
 				? DOM.a("android fix", "Play on Android", `intent:${url2}#Intent;action=android.intent.action.VIEW;type=video/*;end`)
 				: null;
 			
@@ -71,7 +74,7 @@ namespace ymovie.web.view.detail {
 		}
 
 		triggerPlay(player:Player.Base){
-			this.trigger?.(new type.Action.Play({player, media:<type.Media.Playable>this.data?.source, url:<string>this.url}));
+			this.trigger?.(new type.Action.Play({player, media:<Media.Playable>this.data?.source, url:<string>this.url}));
 		}
 
 		onClipboard(event:MouseEvent){

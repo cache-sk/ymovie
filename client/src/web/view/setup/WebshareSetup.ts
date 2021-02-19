@@ -1,5 +1,5 @@
 namespace ymovie.web.view.setup {
-	import DOM = util.DOM;
+	import DOM = ymovie.util.DOM;
 
 	export class WebshareSetup extends base.Form {
 		api:api.Api;

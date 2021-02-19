@@ -1,5 +1,5 @@
 namespace ymovie.web.view.setup {
-	import DOM = util.DOM;
+	import DOM = ymovie.util.DOM;
 	import Position = type.Player.KodiPosition;
 
 	export class KodiSetupForm extends base.Form {

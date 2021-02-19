@@ -1,11 +1,12 @@
 namespace ymovie.web.view {
 	import Action = type.Action;
 	import SharedAction = ymovie.type.Action;
-	import Catalogue = type.Catalogue;
-	import DOM = util.DOM;
-	import Media = type.Media;
+	import Catalogue = ymovie.type.Catalogue;
+	import DOM = ymovie.util.DOM;
+	import Media = ymovie.type.Media;
 	import Nav = type.Nav;
 	import Player = type.Player;
+	import Status = ymovie.type.Status;
 
 	export class App extends ymovie.view.App {
 		api:api.Api | undefined;
@@ -213,7 +214,7 @@ namespace ymovie.web.view {
 			}
 		}
 		
-		onApiCastStatus(status:enums.Status){
+		onApiCastStatus(status:Status){
 			this.toggleApiClass("cast", status);
 		}
 		

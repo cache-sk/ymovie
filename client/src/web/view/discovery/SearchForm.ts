@@ -1,11 +1,13 @@
 namespace ymovie.web.view.discovery {
+	import DOM = ymovie.util.DOM;
+
 	export class SearchForm extends base.Form {
 		input:HTMLInputElement;
 		timeout:number | undefined;
 
 		constructor(){
 			super();
-			this.input = util.DOM.input(undefined, "query", undefined, "search");
+			this.input = DOM.input(undefined, "query", undefined, "search");
 			this.input.addEventListener("keyup", this.onChange.bind(this));
 		}
 		

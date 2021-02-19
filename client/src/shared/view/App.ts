@@ -3,6 +3,7 @@
 namespace ymovie.view {
 	import ApiScc = ymovie.api.ApiScc;
 	import Catalogue = type.Catalogue;
+	import Status = type.Status;
 
 	export abstract class App extends Component<HTMLBodyElement> {
 		readonly menu:Array<Catalogue.Base> = [
@@ -27,13 +28,13 @@ namespace ymovie.view {
 			this.element.classList.toggle(key, toggle);
 		}
 
-		toggleApiClass(key:string, status:enums.Status){
-			this.toggleClass(`${key}-${enums.Status.OK}`, status === enums.Status.OK);
-			this.toggleClass(`${key}-${enums.Status.NOT_AVAILABLE}`, status === enums.Status.NOT_AVAILABLE);
-			this.toggleClass(`${key}-${enums.Status.DEFINED}`, status === enums.Status.DEFINED);
+		toggleApiClass(key:string, status:Status){
+			this.toggleClass(`${key}-ok`, status === "ok");
+			this.toggleClass(`${key}-na`, status === "na");
+			this.toggleClass(`${key}-defined`, status === "defined");
 		}
 
-		onApiWebshareStatus(status:enums.Status){
+		onApiWebshareStatus(status:Status){
 			this.toggleApiClass("webshare", status);
 		}
 	}

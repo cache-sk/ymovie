@@ -1,4 +1,7 @@
 namespace ymovie.web.view.base {
+	import DataComponent = ymovie.view.DataComponent
+	import DOM = ymovie.util.DOM;
+
 	export class Dialogue<TData> extends DataComponent<HTMLDivElement, TData> {
 		protected readonly content:HTMLDivElement;
 		protected readonly closeButton:HTMLButtonElement;
@@ -17,8 +20,8 @@ namespace ymovie.web.view.base {
 			this.element.classList.toggle("scrollable", scrollable);
 			this.element.addEventListener("transitionend", this.onTransitionEnd.bind(this));
 			
-			this.content = util.DOM.div("content");
-			this.closeButton = util.DOM.button("close", "close");
+			this.content = DOM.div("content");
+			this.closeButton = DOM.button("close", "close");
 			this.closeButton.addEventListener("click", this.onCloseClick.bind(this));
 		}
 		
@@ -53,12 +56,12 @@ namespace ymovie.web.view.base {
 		
 		defaultRender() {
 			this.clean();
-			util.DOM.clean(this.content);
-			util.DOM.append(this.content, this.renderContent());
+			DOM.clean(this.content);
+			DOM.append(this.content, this.renderContent());
 			this.append([this.content, this.closeButton]);
 		}
 		
-		renderContent():util.DOMContent {
+		renderContent():DOM.Content {
 			return undefined;
 		}
 

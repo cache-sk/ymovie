@@ -1,5 +1,6 @@
 namespace ymovie.hbbtv.view {
-	import Catalogue = type.Catalogue;
+	import Catalogue = ymovie.type.Catalogue;
+	import DataComponent = ymovie.view.DataComponent;
 
 	export class CatalogueView extends DataComponent<HTMLDivElement, Data> {
 		constructor() {

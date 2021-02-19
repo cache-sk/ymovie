@@ -1,6 +1,8 @@
 /// <reference path="base/Dialogue.ts"/>
 
 namespace ymovie.web.view {
+	import Util = ymovie.util.Util;
+
 	export class AboutView extends base.Dialogue<any> {
 		constructor(){
 			super(true);
@@ -57,7 +59,7 @@ namespace ymovie.web.view {
 	<p>Icons by <a href="https://iconmonstr.com" target="_blank">iconmonstr.com</a> &amp; <a href="https://www.flaticon.com/" target="_blank">flaticon.com</a>. SVG to PNG conversion by <a href="https://ezgif.com/svg-to-png" target="_blank">ezgif.com</a>.</p>
 
 	<h2>Version</h2>
-	<p>Release date: ${util.Util.getCommitDate().toISOString()}</p>
+	<p>Release date: ${Util.getCommitDate().toISOString()}</p>
 			`;
 		}
 		

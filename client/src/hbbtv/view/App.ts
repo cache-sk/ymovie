@@ -1,6 +1,6 @@
 namespace ymovie.hbbtv.view {
 	import SharedAction = ymovie.type.Action;
-	import Catalogue = type.Catalogue;
+	import Catalogue = ymovie.type.Catalogue
 
 	export class App extends ymovie.view.App {
 		api:api.Api | undefined;

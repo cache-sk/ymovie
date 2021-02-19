@@ -4,7 +4,8 @@ namespace ymovie.web.api {
 	 * For that reason the app should be only served from https.
 	 */
 
-	import Media = type.Media;
+	import Media = ymovie.type.Media
+	import Thumbnail = ymovie.util.Thumbnail;
 
 	export class ApiCast {
 		onStatus:(available:boolean) => void;
@@ -58,7 +59,7 @@ namespace ymovie.web.api {
 		}
 
 		private toMetadata(media:Media.Playable, url:string):chrome.cast.media.IMetadata {
-			const poster = util.Thumbnail.fromOriginal(media.poster);
+			const poster = Thumbnail.fromOriginal(media.poster);
 			const result = new chrome.cast.media.MediaInfo(url, "video/mp4");
 			if(media instanceof Media.Episode)
 				result.metadata = this.fromEpisode(media) 

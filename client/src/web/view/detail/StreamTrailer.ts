@@ -1,5 +1,5 @@
 namespace ymovie.web.view.detail {
-	import DOM = util.DOM;
+	import DOM = ymovie.util.DOM;
 
 	export class StreamTrailer extends StreamOption<Data> {
 		renderInfo(){

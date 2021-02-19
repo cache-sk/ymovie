@@ -4,7 +4,6 @@
 /// <reference path="../parser/Webshare.ts"/>
 /// <reference path="../util/Storage.ts"/>
 /// <reference path="../type/Action.ts"/>
-/// <reference path="../enums/Status.ts"/>
 
 namespace ymovie.api {
 	import Action = type.Action;
@@ -13,7 +12,6 @@ namespace ymovie.api {
 	import Catalogue = type.Catalogue;
 	import Media = type.Media;
 	import Scc = parser.Scc;
-	import Status = enums.Status;
 	import Storage = util.Storage;
 	import Webshare = parser.Webshare;
 
@@ -126,13 +124,13 @@ namespace ymovie.api {
 			} catch(error) {
 				success = false;
 			}
-			this.trigger?.(new Action.WebshareStatusUpdated(success ? Status.OK : Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(success ? "ok" : "na"));
 			return success;
 		}
 		
 		logoutWebshare(){
 			this.webshareToken = null;
-			this.trigger?.(new Action.WebshareStatusUpdated(Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated("na"));
 		}
 		
 		async checkWebshareStatus(){
@@ -143,7 +141,7 @@ namespace ymovie.api {
 				success = false;
 				this.webshareToken = null;
 			}
-			this.trigger?.(new Action.WebshareStatusUpdated(success ? Status.OK : Status.NOT_AVAILABLE));
+			this.trigger?.(new Action.WebshareStatusUpdated(success ? "ok" : "na"));
 			return success;
 		}
 	}
