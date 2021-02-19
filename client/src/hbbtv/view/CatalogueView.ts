@@ -7,7 +7,12 @@ namespace ymovie.hbbtv.view {
 		}
 
 		render() {
+			this.append(this.data?.map(this.renderItem));
 			return super.render();
+		}
+
+		renderItem(data:Catalogue.Base) {
+			return new CatalogueRowView().update({source:data});
 		}
 	}
 
