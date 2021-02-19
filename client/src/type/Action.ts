@@ -4,7 +4,12 @@
 namespace ymovie.type.Action {
 	import TriggerAction = util.TriggerAction;
 
-	export class GoBack extends TriggerAction<undefined> {}
+	export class GoBack extends TriggerAction<undefined> {
+		constructor() {
+			super(undefined);
+		}
+	}
+
 	export class GoHome extends TriggerAction<boolean> {}
 	export class ShowSetup extends TriggerAction<boolean> {}
 	export class ShowAbout extends TriggerAction<boolean> {}
@@ -13,7 +18,7 @@ namespace ymovie.type.Action {
 	export class CastStatusUpdates extends TriggerAction<enums.Status> {}
 	export class Search extends TriggerAction<SearchData> {}
 	export class NavChanged extends TriggerAction<NavChangeData> {}
-	export class CatalogueItemSelected extends TriggerAction<Catalogue.AnyItem> {}
+	export class CatalogueItemSelected extends TriggerAction<CatalogueItemSelectedData> {}
 	export class ResolveStreams extends TriggerAction<ResolveStreamsData> {}
 	export class ResolveStreamUrl extends TriggerAction<ResolveStreamUrlData> {}
 	export class Play extends TriggerAction<PlayData> {}
@@ -53,5 +58,10 @@ namespace ymovie.type.Action {
 	export type ResolveStreamUrlData = {
 		stream:Media.Stream; 
 		callback:(url:string) => void;
+	}
+
+	export type CatalogueItemSelectedData = {
+		item:Catalogue.AnyItem;
+		replace?:boolean;
 	}
 }

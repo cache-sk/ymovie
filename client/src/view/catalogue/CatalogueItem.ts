@@ -9,7 +9,7 @@ namespace ymovie.view.catalogue {
 		}
 		
 		get selectAction():util.TriggerActionAny {
-			return new type.Action.CatalogueItemSelected(<type.Catalogue.AnyItem>this.data);
+			return new type.Action.CatalogueItemSelected({item:<type.Catalogue.AnyItem>this.data});
 		}
 	}
 }

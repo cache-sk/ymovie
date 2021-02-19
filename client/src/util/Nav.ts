@@ -69,10 +69,10 @@ namespace ymovie.util {
 			return source ? Util.removeDiacritics(source).replace(/[^a-z0-9]+/gi, '-') : "";
 		}
 		
-		go(data:StateSourceData, path:string, title:string):void {
+		go(data:StateSourceData, path:string, title:string, replace?:boolean):void {
 			const dataPage = data instanceof Catalogue.SccLink ? data.page : null;
 			const page = (dataPage && dataPage > 1) ? `/${dataPage}` : '';
-			this.pushState(data, title, `#${path}/${this.safePath(title)}${page}`);
+			this.pushState(data, title, `#${path}/${this.safePath(title)}${page}`, replace);
 		}
 		
 		goReplaceMedia(data:Media.Base):void {
@@ -136,8 +136,8 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_BROWSE);
 		}
 		
-		goSccMovie(data:Media.Movie):void {
-			this.go(data, `${Nav.PATH_SCC_MOVIE}/${data.id}`, <string>data.title);
+		goSccMovie(data:Media.Movie, replace?:boolean):void {
+			this.go(data, `${Nav.PATH_SCC_MOVIE}/${data.id}`, <string>data.title, replace);
 		}
 		
 		isSccMovie(path:string):boolean {
@@ -160,8 +160,8 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_SCC_SEASON);
 		}
 		
-		goSccEpisode(data:Media.Episode):void {
-			this.go(data, `${Nav.PATH_SCC_EPISODE}/${data.id}`, <string>data.longTitle);
+		goSccEpisode(data:Media.Episode, replace?:boolean):void {
+			this.go(data, `${Nav.PATH_SCC_EPISODE}/${data.id}`, <string>data.longTitle, replace);
 		}
 		
 		isSccEpisode(path:string):boolean {
@@ -193,8 +193,8 @@ namespace ymovie.util {
 			return path?.startsWith(Nav.PATH_WEBSHARE_SEARCH);
 		}
 		
-		goWebshareVideo(data:Media.Webshare):void {
-			this.go(data, `${Nav.PATH_WEBSHARE_VIDEO}/${data.id}`, <string>data.title);
+		goWebshareVideo(data:Media.Webshare, replace?:boolean):void {
+			this.go(data, `${Nav.PATH_WEBSHARE_VIDEO}/${data.id}`, <string>data.title, replace);
 		}
 		
 		isWebshareVideo(path:string):boolean {

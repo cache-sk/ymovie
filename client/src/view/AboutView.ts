@@ -61,8 +61,8 @@ namespace ymovie.view {
 			`;
 		}
 		
-		onCloseClick(){
-			this.trigger?.(new type.Action.GoBack(undefined));
+		close() {
+			this.trigger?.(new type.Action.GoBack());
 		}
 	}
 }

@@ -13,8 +13,8 @@ namespace ymovie.view.setup {
 			return [this.webshareSetup.render(), this.kodiSetup.render()];
 		}
 		
-		onCloseClick(){
-			this.trigger?.(new type.Action.GoHome(false));
+		close() {
+			this.trigger?.(new type.Action.GoBack());
 		}
 	}
 }

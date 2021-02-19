@@ -2,9 +2,11 @@
 
 namespace ymovie.view.base {
 	export class Dialogue<TData> extends DataComponent<HTMLDivElement, TData> {
-		scrollable:boolean;
-		content:HTMLDivElement;
-		closeButton:HTMLButtonElement;
+		protected readonly content:HTMLDivElement;
+		protected readonly closeButton:HTMLButtonElement;
+
+		private scrollable:boolean;
+		private _onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
 
 		constructor(scrollable?:boolean){
 			super("div");
@@ -29,11 +31,13 @@ namespace ymovie.view.base {
 			this.element.classList.toggle("transition", true);
 			if(this.scrollable)
 				this.content.style.transform = `translateY(${window.scrollY}px)`;
+			document.addEventListener("keydown", this._onDocumentKeyDown);
 		}
 		
 		hide(){
 			this.element.classList.toggle("visible", false);
 			this.element.classList.toggle("transition", true);
+			document.removeEventListener("keydown", this._onDocumentKeyDown);
 		}
 
 		render(){
@@ -51,13 +55,22 @@ namespace ymovie.view.base {
 		renderContent():util.DOMContent {
 			return undefined;
 		}
+
+		close() {
+			this.hide();
+		}
 		
 		onTransitionEnd(){
 			this.element.classList.toggle("transition", false);
 		}
 		
 		onCloseClick(){
-			this.hide();
+			this.close();
+		}
+
+		onDocumentKeyDown(event:KeyboardEvent) {
+			if(event.key == "Escape")
+				return this.close();
 		}
 	}
 }

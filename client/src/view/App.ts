@@ -191,23 +191,24 @@ namespace ymovie.view {
 			this.nav?.goSccSearch(data.query);
 		}
 		
-		selectCatalogueItem(data:Catalogue.AnyItem){
-			if(data instanceof Catalogue.SccLink) {
-				this.nav?.goSccBrowse(data);
-			} else if(data instanceof Media.Episode) {
-				this.nav?.goSccEpisode(data);
-			} else if(data instanceof Media.Movie) {
-				this.nav?.goSccMovie(data);
-			} else if(data instanceof Media.Season) {
-				this.nav?.goSccSeason(data);
+		selectCatalogueItem(data:Action.CatalogueItemSelectedData){
+			const item = data.item;
+			if(item instanceof Catalogue.SccLink) {
+				this.nav?.goSccBrowse(item);
+			} else if(item instanceof Media.Episode) {
+				this.nav?.goSccEpisode(item, data.replace);
+			} else if(item instanceof Media.Movie) {
+				this.nav?.goSccMovie(item, data.replace);
+			} else if(item instanceof Media.Season) {
+				this.nav?.goSccSeason(item);
 				this.scrollTop();
-			} else if(data instanceof Media.Series) {
-				this.nav?.goSccSeries(data);
+			} else if(item instanceof Media.Series) {
+				this.nav?.goSccSeries(item);
 				this.scrollTop();
-			} else if(data instanceof Media.Webshare) {
-				this.nav?.goWebshareVideo(data);
-			} else if(data instanceof Catalogue.Callback) {
-				data.callback();
+			} else if(item instanceof Media.Webshare) {
+				this.nav?.goWebshareVideo(item, data.replace);
+			} else if(item instanceof Catalogue.Callback) {
+				item.callback();
 			}
 		}
 		
@@ -267,7 +268,9 @@ namespace ymovie.view {
 			const state = data.state;
 			const isDetail = (path:string) => nav.isSccMovie(path) || nav.isSccEpisode(path) || nav.isWebshareVideo(path);
 			
-			/** Short circuit here on popup closing to avoid flickering catalogue */
+			/** Short circuit here on popup closing to avoid flickering catalogue. 
+			 * Flickering is caused by catalogue data is replaced by the very same 
+			 * coming from history state, which recreates it from serialized data. */
 			if(isDetail(previousPath) && !isDetail(path))
 				return this.detailView.hide();
 			if(nav.isSetup(previousPath))
