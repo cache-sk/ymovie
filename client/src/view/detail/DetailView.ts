@@ -6,10 +6,7 @@ namespace ymovie.view.detail {
 		private webshareSetup:setup.WebshareSetup;
 		private streamsView:StreamsView;
 
-		private touchStartX:number | undefined;
-		private touchLastX:number | undefined;
-		private canMovePrevious:boolean = false;
-		private canMoveNext:boolean = false;
+		private touch:Touch | undefined;
 
 		private _onDocumentTouchStart = this.onDocumentTouchStart.bind(this);
 		private _onDocumentTouchMove = this.onDocumentTouchMove.bind(this);
@@ -93,8 +90,8 @@ namespace ymovie.view.detail {
 					? DOM.a(undefined, "tmdb", `https://www.themoviedb.org/movie/${services.tmdb}`, "_blank") : null]);
 		}
 
-		getTouchX(event:TouchEvent):number | undefined {
-			return event.touches.length > 0 ? event.touches[0]?.clientX : undefined;
+		getTouchPoint(event:TouchEvent):Point {
+			return event.touches.length > 0 ? {x:event.touches[0]?.clientX || 0, y:event.touches[0]?.clientY || 0} : {x:0, y:0};
 		}
 		
 		showNext(step:number){
@@ -125,11 +122,17 @@ namespace ymovie.view.detail {
 		}
 
 		getShowNextStepForTouch():number {
-			if(this.touchLastX === undefined || this.touchStartX === undefined)
+			if(!this.touch || !this.touch.last)
 				return 0;
-			const diff = (this.touchLastX - this.touchStartX) / this.element.clientWidth;
-			if(diff > .2 && this.canMovePrevious) return -1;
-			if(diff < -.2 && this.canMoveNext) return 1;
+
+			const dx = this.touch.last.x - this.touch.start.x;
+			const dy = this.touch.last.y - this.touch.start.y;
+			if(Math.abs(dy) > Math.abs(dx))
+				return 0;
+
+			const diff = dx / this.element.clientWidth;
+			if(diff > .2 && this.touch.previous) return -1;
+			if(diff < -.2 && this.touch.next) return 1;
 			return 0;
 		}
 
@@ -151,16 +154,18 @@ namespace ymovie.view.detail {
 		}
 
 		onDocumentTouchStart(event:TouchEvent){
-			this.touchStartX = this.getTouchX(event);
-			this.canMovePrevious = this.findNext(-1) ? true : false;
-			this.canMoveNext = this.findNext(1) ? true : false;
+			this.touch = {
+				start: this.getTouchPoint(event),
+				previous: this.findNext(-1) ? true : false,
+				next: this.findNext(1) ? true : false
+			}
 		}
 
 		onDocumentTouchMove(event:TouchEvent){
-			this.touchLastX = this.getTouchX(event);
-			this.translateX = this.getShowNextStepForTouch() 
-				? (this.touchLastX && this.touchStartX ? this.touchLastX - this.touchStartX : 0)
-				: 0;
+			if(!this.touch)
+				return;
+			this.touch.last = this.getTouchPoint(event);
+			this.translateX = this.getShowNextStepForTouch() ? this.touch.last.x - this.touch.start.x : 0;
 			this.transformContent();
 		}
 
@@ -168,14 +173,24 @@ namespace ymovie.view.detail {
 			const step = this.getShowNextStepForTouch();
 			if(step)
 				this.showNext(step);
-			this.touchStartX = undefined;
-			this.canMovePrevious = false;
-			this.canMoveNext = false;
+			this.touch = undefined;
 		}
 	}
 
 	type Data = {
 		detail:Media.Playable;
 		list:Array<type.Catalogue.AnyItem>;
+	}
+
+	type Touch = {
+		start:Point;
+		last?:Point;
+		previous:boolean;
+		next:boolean;
+	}
+
+	type Point = {
+		x:number;
+		y:number;
 	}
 }
