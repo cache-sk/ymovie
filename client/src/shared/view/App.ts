@@ -1,24 +1,24 @@
 /// <reference path="Component.ts"/>
 
 namespace ymovie.view {
-	import ApiScc = ymovie.api.ApiScc;
 	import Catalogue = type.Catalogue;
+	import Scc = ymovie.api.Scc;
 	import Status = type.Status;
 
 	export abstract class App extends Component<HTMLBodyElement> {
 		readonly menu:Array<Catalogue.Base> = [
-			new Catalogue.SccLink("movie", "Movies", ApiScc.PATH_MOVIES),
-			new Catalogue.SccLink("series", "Series", ApiScc.PATH_SERIES),
-			new Catalogue.SccLink("concert", "Concerts", ApiScc.PATH_CONCERTS),
-			new Catalogue.SccLink("fairyTale", "Fairy Tales", ApiScc.PATH_FAIRY_TALES),
-			new Catalogue.SccLink("animated", "Animated Movies", ApiScc.PATH_ANIMATED_MOVIES),
-			new Catalogue.SccLink("animated", "Animated Series", ApiScc.PATH_ANIMATED_SERIES),
-			new Catalogue.SccLink("movie", "Movies CZ/SK", ApiScc.PATH_MOVIES_CZSK),
-			new Catalogue.SccLink("series", "Series CZ/SK", ApiScc.PATH_SERIES_CZSK),
-			new Catalogue.SccLink("popular", "Popular Movies", ApiScc.PATH_POPULAR_MOVIES),
-			new Catalogue.SccLink("popular", "Popular Series", ApiScc.PATH_POPULAR_SERIES),
-			new Catalogue.SccLink("movie", "Added Movies", ApiScc.PATH_MOVIES_ADDED),
-			new Catalogue.SccLink("series", "Added Series", ApiScc.PATH_SERIES_ADDED)];
+			new Catalogue.SccLink("movie", "Movies", Scc.Api.PATH_MOVIES),
+			new Catalogue.SccLink("series", "Series", Scc.Api.PATH_SERIES),
+			new Catalogue.SccLink("concert", "Concerts", Scc.Api.PATH_CONCERTS),
+			new Catalogue.SccLink("fairyTale", "Fairy Tales", Scc.Api.PATH_FAIRY_TALES),
+			new Catalogue.SccLink("animated", "Animated Movies", Scc.Api.PATH_ANIMATED_MOVIES),
+			new Catalogue.SccLink("animated", "Animated Series", Scc.Api.PATH_ANIMATED_SERIES),
+			new Catalogue.SccLink("movie", "Movies CZ/SK", Scc.Api.PATH_MOVIES_CZSK),
+			new Catalogue.SccLink("series", "Series CZ/SK", Scc.Api.PATH_SERIES_CZSK),
+			new Catalogue.SccLink("popular", "Popular Movies", Scc.Api.PATH_POPULAR_MOVIES),
+			new Catalogue.SccLink("popular", "Popular Series", Scc.Api.PATH_POPULAR_SERIES),
+			new Catalogue.SccLink("movie", "Added Movies", Scc.Api.PATH_MOVIES_ADDED),
+			new Catalogue.SccLink("series", "Added Series", Scc.Api.PATH_SERIES_ADDED)];
 
 		constructor(){
 			super(document.body);

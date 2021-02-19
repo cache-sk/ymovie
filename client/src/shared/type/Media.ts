@@ -30,7 +30,7 @@ namespace ymovie.type.Media {
 		trailers?:Array<string>;
 		mpaa?:number;
 		studio?:string;
-		services?:parser.Services;
+		services?:Services;
 		streamCount?:number;
 		originalTitle?:string;
 		genres?:string;
@@ -66,5 +66,12 @@ namespace ymovie.type.Media {
 		ident:string;
 		hdr?:boolean;
 		is3d?:boolean;
+	}
+
+	type Services = {
+		csfd?:number;
+		imdb?:number;
+		trakt?:number;
+		tmdb?:number;
 	}
 }

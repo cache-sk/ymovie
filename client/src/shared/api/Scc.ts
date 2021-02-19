@@ -1,11 +1,81 @@
-/// <reference path="../type/Media.ts"/>
 /// <reference path="../type/Catalogue.ts"/>
+/// <reference path="../type/Media.ts"/>
 
-namespace ymovie.parser {
-	import Media = type.Media;
+namespace ymovie.api.Scc {
 	import Catalogue = type.Catalogue;
+	import Media = type.Media;
 
-	export class Scc {
+	export class Api {
+		static ENDPOINT = "https://plugin.sc2.zone";
+		static PATH_SEARCH = "/api/media/filter/search?order=desc&sort=score&type=*";
+
+		static PATH_MOVIES = "/api/media/filter/news?type=movie&sort=dateAdded&order=desc&days=365";
+		static PATH_SERIES = "/api/media/filter/news?type=tvshow&sort=dateAdded&order=desc&days=365";
+		static PATH_CONCERTS = "/api/media/filter/concert?type=*&sort=dateAdded&order=desc&days=730";
+		static PATH_FAIRY_TALES = "/api/media/filter/genre?type=movie&sort=premiered&order=desc&value=Fairy Tale";
+		static PATH_ANIMATED_MOVIES = "/api/media/filter/genre?type=movie&sort=premiered&order=desc&days=365&value=Animated";
+		static PATH_ANIMATED_SERIES = "/api/media/filter/genre?type=tvshow&sort=premiered&order=desc&days=365&value=Animated";
+		static PATH_MOVIES_CZSK = "/api/media/filter/newsDubbed?type=movie&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
+		static PATH_SERIES_CZSK = "/api/media/filter/newsDubbed?type=tvshow&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
+		static PATH_POPULAR_MOVIES = "/api/media/filter/all?type=movie&sort=playCount&order=desc";
+		static PATH_POPULAR_SERIES = "/api/media/filter/all?type=tvshow&sort=playCount&order=desc";
+		static PATH_MOVIES_ADDED = "/api/media/filter/all?type=movie&sort=dateAdded&order=desc";
+		static PATH_SERIES_ADDED = "/api/media/filter/all?type=tvshow&sort=dateAdded&order=desc";
+
+		static TOKEN_PARAM_NAME = "access_token"
+		static TOKEN_PARAM_VALUE = "th2tdy0no8v1zoh1fs59";
+
+		private uuid:string;
+
+		constructor(uuid:string){
+			this.uuid = uuid;
+		}
+
+		async search(query:string){
+			return await this.loadPath(`${Api.PATH_SEARCH}&value=${encodeURIComponent(query)}`);
+		}
+		
+		async loadPath(path:string){
+			return await this.loadUrl(`${Api.ENDPOINT}${path}`);
+		}
+		
+		async loadIds(ids:Array<string>){
+			const query = ids.reduce((a, c) => a + "&id=" + encodeURIComponent(c), "");
+			return await this.loadPath(`/api/media/filter/ids?${query}`);
+		}
+		
+		async loadMedia(id:string){
+			return await this.loadPath(`/api/media/${id}`);
+		}
+		
+		async loadStreams(id:string){
+			return await this.loadPath(`/api/media/${id}/streams`);
+		}
+		
+		async loadSeasons(id:string){
+			return await this.loadPath(`/api/media/filter/parent?value=${id}&sort=episode`);
+		}
+		
+		async loadEpisodes(id:string){
+			return await this.loadPath(`/api/media/filter/parent?value=${id}&sort=episode`);
+		}
+		
+		async loadUrl(url:string){
+			const headers = {"X-Uuid":this.uuid};
+			const finalUrl = this.appendAccessToken(url);
+			return await (await fetch(finalUrl, {headers})).json();
+		}
+		
+		appendAccessToken(url:string){
+			const name = Api.TOKEN_PARAM_NAME;
+			const value = Api.TOKEN_PARAM_VALUE;
+			if(url.indexOf(`&${name}=`) != -1 || url.indexOf(`?${name}=`) != -1)
+				return url;
+			return url + (url.indexOf("?") != -1 ? "&" : "?") + `${name}=${value}`;
+		}
+	}
+
+	export class Parser {
 		static toStreams(source:StreamsResponse):Array<Media.Stream> {
 			const streams:Array<Media.Stream | undefined> = source.map(item => this.normalizeStream(item));
 			return <Array<Media.Stream>>streams.filter(item => item != undefined);
@@ -31,7 +101,7 @@ namespace ymovie.parser {
 				if(item)
 					result.push(item);
 			}
-				
+			
 			return result;
 		}
 
@@ -230,11 +300,11 @@ namespace ymovie.parser {
 		stream_info?:StreamInfo;
 	}
 
-	export type Services = {
-		csfd?:number; // = 787059
-		imdb?:number; // = 6285944
-		trakt?:number; // = 473980
-		tmdb?:number; // = 456
+	type Services = {
+		csfd?:number;
+		imdb?:number;
+		trakt?:number;
+		tmdb?:number;
 	}
 
 	type Info = {
