@@ -2,18 +2,19 @@ namespace ymovie.api {
 	export class ApiScc {
 		static ENDPOINT = "https://plugin.sc2.zone";
 		static PATH_SEARCH = "/api/media/filter/search?order=desc&sort=score&type=*";
-		static PATH_MOVIES_POPULAR = "/api/media/filter/all?type=movie&sort=playCount&order=desc";
+
+		static PATH_MOVIES = "/api/media/filter/news?type=movie&sort=dateAdded&order=desc&days=365";
+		static PATH_SERIES = "/api/media/filter/news?type=tvshow&sort=dateAdded&order=desc&days=365";
+		static PATH_CONCERTS = "/api/media/filter/concert?type=*&sort=dateAdded&order=desc&days=730";
+		static PATH_FAIRY_TALES = "/api/media/filter/genre?type=movie&sort=premiered&order=desc&value=Fairy Tale";
+		static PATH_ANIMATED_MOVIES = "/api/media/filter/genre?type=movie&sort=premiered&order=desc&days=365&value=Animated";
+		static PATH_ANIMATED_SERIES = "/api/media/filter/genre?type=tvshow&sort=premiered&order=desc&days=365&value=Animated";
+		static PATH_MOVIES_CZSK = "/api/media/filter/newsDubbed?type=movie&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
+		static PATH_SERIES_CZSK = "/api/media/filter/newsDubbed?type=tvshow&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
+		static PATH_POPULAR_MOVIES = "/api/media/filter/all?type=movie&sort=playCount&order=desc";
+		static PATH_POPULAR_SERIES = "/api/media/filter/all?type=tvshow&sort=playCount&order=desc";
 		static PATH_MOVIES_ADDED = "/api/media/filter/all?type=movie&sort=dateAdded&order=desc";
-		static PATH_MOVIES_AIRED = "/api/media/filter/news?type=movie&sort=dateAdded&order=desc&days=365";
-		static PATH_DUBBED_MOVIES_AIRED = "/api/media/filter/newsDubbed?type=movie&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
-		static PATH_NEW_ANIMATED_MOVIES = "/api/media/filter/genre?type=movie&sort=premiered&order=desc&days=365&value=Animated";
-		static PATH_SERIES_POPULAR = "/api/media/filter/all?type=tvshow&sort=playCount&order=desc";
 		static PATH_SERIES_ADDED = "/api/media/filter/all?type=tvshow&sort=dateAdded&order=desc";
-		static PATH_SERIES_AIRED = "/api/media/filter/news?type=tvshow&sort=dateAdded&order=desc&days=365";
-		static PATH_DUBBED_SERIES_AIRED = "/api/media/filter/newsDubbed?type=tvshow&sort=langDateAdded&order=desc&lang=cs&lang=sk&days=730";
-		static PATH_NEW_ANIMATED_SERIES = "/api/media/filter/genre?type=tvshow&sort=premiered&order=desc&days=365&value=Animated";
-		static PATH_NEW_CONCERTS = "/api/media/filter/concert?type=*&sort=premiered&order=desc";
-		static PATH_NEW_FAIRY_TALES = "/api/media/filter/genre?type=movie&sort=premiered&order=desc&value=Fairy Tale";
 
 		static TOKEN_PARAM_NAME = "access_token"
 		static TOKEN_PARAM_VALUE = "th2tdy0no8v1zoh1fs59";
