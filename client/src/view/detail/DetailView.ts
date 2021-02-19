@@ -8,6 +8,8 @@ namespace ymovie.view.detail {
 
 		private touchStartX:number | undefined;
 		private touchLastX:number | undefined;
+		private canMovePrevious:boolean = false;
+		private canMoveNext:boolean = false;
 
 		private _onDocumentTouchStart = this.onDocumentTouchStart.bind(this);
 		private _onDocumentTouchMove = this.onDocumentTouchMove.bind(this);
@@ -47,6 +49,7 @@ namespace ymovie.view.detail {
 		}
 		
 		update(data:Data) {
+			this.translateX = 0;
 			if(data) {
 				this.show();
 				this.trigger?.(new type.Action.ResolveStreams({data:data.detail, callback:this.onStreams.bind(this)}));
@@ -91,17 +94,11 @@ namespace ymovie.view.detail {
 		}
 
 		getTouchX(event:TouchEvent):number | undefined {
-			return event.touches.length > 1 ? event.touches[0]?.clientX : undefined;
+			return event.touches.length > 0 ? event.touches[0]?.clientX : undefined;
 		}
 		
-		showPrevious(){
-			const item = this.findNext(-1);
-			if(item)
-				this.trigger?.(new type.Action.CatalogueItemSelected({item, replace:true}));
-		}
-
-		showNext(){
-			const item = this.findNext(1);
+		showNext(step:number){
+			const item = this.findNext(step);
 			if(item)
 				this.trigger?.(new type.Action.CatalogueItemSelected({item, replace:true}));
 		}
@@ -126,6 +123,20 @@ namespace ymovie.view.detail {
 		close(){
 			this.trigger?.(new type.Action.GoBack());
 		}
+
+		getShowNextStepForTouch():number {
+			if(this.touchLastX === undefined || this.touchStartX === undefined)
+				return 0;
+			const diff = (this.touchLastX - this.touchStartX) / this.element.clientWidth;
+			if(diff > .2 && this.canMovePrevious) return -1;
+			if(diff < -.2 && this.canMoveNext) return 1;
+			return 0;
+		}
+
+		transformContent() {
+			super.transformContent();
+			this.content.style.opacity = (1 - Math.abs(this.translateX / this.element.clientWidth)).toFixed(2);
+		}
 		
 		onStreams(data:Array<Media.Stream>){
 			this.streamsView.update({data:<Media.Playable>this.data?.detail, streams:data});
@@ -134,27 +145,32 @@ namespace ymovie.view.detail {
 		onDocumentKeyDown(event:KeyboardEvent) {
 			super.onDocumentKeyDown(event);
 			if(event.key == "ArrowLeft")
-				return this.showPrevious();
+				return this.showNext(-1);
 			if(event.key == "ArrowRight")
-				return this.showNext();
+				return this.showNext(1);
 		}
 
 		onDocumentTouchStart(event:TouchEvent){
 			this.touchStartX = this.getTouchX(event);
+			this.canMovePrevious = this.findNext(-1) ? true : false;
+			this.canMoveNext = this.findNext(1) ? true : false;
 		}
 
 		onDocumentTouchMove(event:TouchEvent){
 			this.touchLastX = this.getTouchX(event);
+			this.translateX = this.getShowNextStepForTouch() 
+				? (this.touchLastX && this.touchStartX ? this.touchLastX - this.touchStartX : 0)
+				: 0;
+			this.transformContent();
 		}
 
 		onDocumentTouchEnd(){
-			if(this.touchLastX === undefined || this.touchStartX === undefined)
-				return;
-			const diff = (this.touchLastX - this.touchStartX) / this.element.clientWidth;
-			if(diff > .5)
-				this.showPrevious();
-			else if(diff < -.5)
-				this.showNext();
+			const step = this.getShowNextStepForTouch();
+			if(step)
+				this.showNext(step);
+			this.touchStartX = undefined;
+			this.canMovePrevious = false;
+			this.canMoveNext = false;
 		}
 	}
 

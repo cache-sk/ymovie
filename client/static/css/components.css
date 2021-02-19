@@ -416,6 +416,7 @@
 .Dialogue .content {
 	padding: 20px;
 	position: relative;
+	transition: transform .3s ease-in-out, opacity .3s ease-in-out;
 }
 
 .Dialogue::before {
