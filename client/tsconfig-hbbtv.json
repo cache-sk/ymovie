@@ -4,5 +4,6 @@
 		"target": "ES5",
 		"lib": ["ES2015", "DOM"],
 		"outFile": "../dist/client/js/hbbtv.js"
-	}
+	},
+	"include": ["src/shared", "src/hbbtv"]
 }

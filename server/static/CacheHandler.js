@@ -8,7 +8,7 @@ const Util = require("./Util.js");
 module.exports = class CacheHandler extends StaticHandler {
 	constructor(){
 		super();
-		this.files = ["404.html", "index.html", "kodi.html", "play.html"];
+		this.files = ["404.html", "hbbtv.html", "index.html", "kodi.html", "play.html"];
 		this.cache = {};
 		this.htmlOptimizer = new HtmlOptimizer(this.base);
 	}

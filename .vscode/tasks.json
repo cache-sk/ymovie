@@ -16,16 +16,30 @@
 			"group": "build"
 		},
 		{
-			"label": "Client:Build",
+			"label": "Build",
 			"type": "npm",
-			"script": "client-build",
+			"script": "build",
 			"problemMatcher": ["$tsc"],
 			"group": "build"
 		},
 		{
-			"label": "Build",
+			"label": "Build Client",
 			"type": "npm",
-			"script": "build",
+			"script": "build-client",
+			"problemMatcher": ["$tsc"],
+			"group": "build"
+		},
+		{
+			"label": "Compile HbbTV",
+			"type": "npm",
+			"script": "compile-hbbtv",
+			"problemMatcher": ["$tsc"],
+			"group": "build"
+		},
+		{
+			"label": "Compile Web",
+			"type": "npm",
+			"script": "compile-web",
 			"problemMatcher": ["$tsc"],
 			"group": "build"
 		}
