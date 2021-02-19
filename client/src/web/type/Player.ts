@@ -1,4 +1,4 @@
-namespace ymovie.type.Player {
+namespace ymovie.web.type.Player {
 	export abstract class Base {}
 
 	export class Cast extends Base {}

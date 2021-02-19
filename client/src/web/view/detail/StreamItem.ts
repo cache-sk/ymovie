@@ -1,6 +1,6 @@
 /// <reference path="StreamOption.ts"/>
 
-namespace ymovie.view.detail {
+namespace ymovie.web.view.detail {
 	import DOM = util.DOM;
 	import Util = util.Util;
 

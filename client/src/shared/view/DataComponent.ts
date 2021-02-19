@@ -1,6 +1,6 @@
 /// <reference path="Component.ts"/>
 
-namespace ymovie.view.base {
+namespace ymovie.view {
 	export class DataComponent<TElement extends HTMLElement, TData> extends Component<TElement> {
 		data:TData | undefined;
 

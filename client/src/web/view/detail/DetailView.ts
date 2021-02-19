@@ -1,4 +1,4 @@
-namespace ymovie.view.detail {
+namespace ymovie.web.view.detail {
 	import DOM = util.DOM;
 	import Media = type.Media;
 

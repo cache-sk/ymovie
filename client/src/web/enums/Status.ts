@@ -1,4 +1,4 @@
-namespace ymovie.enums {
+namespace ymovie.web.enums {
 	/** used as class names  */
 	export enum Status {
 		OK = "ok",

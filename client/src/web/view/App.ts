@@ -1,15 +1,14 @@
-/// <reference path="base/Component.ts"/>
-
-namespace ymovie.view {
+namespace ymovie.web.view {
 	import Action = type.Action;
-	import ApiScc = api.ApiScc;
+	import SharedAction = ymovie.type.Action;
+	import ApiScc = ymovie.api.ApiScc;
 	import Catalogue = type.Catalogue;
 	import DOM = util.DOM;
 	import Media = type.Media;
 	import Nav = type.Nav;
 	import Player = type.Player;
 
-	export class App extends base.Component<HTMLBodyElement> {
+	export class App extends Component<HTMLBodyElement> {
 		api:api.Api | undefined;
 		nav:util.Nav | undefined;
 		ga:util.GA | undefined;
@@ -66,7 +65,7 @@ namespace ymovie.view {
 			this.notificationView = new NotificationView();
 
 			this.listen?.(Action.GoBack, this.nav.goBack.bind(this.nav));
-			this.listen?.(Action.Search, this.search.bind(this));
+			this.listen?.(SharedAction.Search, this.search.bind(this));
 			this.listen?.(Action.CatalogueItemSelected, this.selectCatalogueItem.bind(this));
 			this.listen?.(Action.ResolveStreams, this.resolveStreams.bind(this));
 			this.listen?.(Action.ResolveStreamUrl, this.resolveStreamUrl.bind(this));
@@ -183,7 +182,7 @@ namespace ymovie.view {
 			return this.discoveryView?.update({type, catalogue});
 		}
 		
-		search(data:Action.SearchData){
+		search(data:SharedAction.SearchData){
 			if(!data.query)
 				return this.nav?.goHome();
 			if(this.api?.isWebshareSearchQuery(data.query))

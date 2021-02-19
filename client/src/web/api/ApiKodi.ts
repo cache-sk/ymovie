@@ -1,4 +1,4 @@
-namespace ymovie.api {
+namespace ymovie.web.api {
 	/**
 	 * Kodi is only available on ws: protocol which is incompatible with cast api which is 
 	 * only available on secured origin. Either the app is loaded over http or https so either 

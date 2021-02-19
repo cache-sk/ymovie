@@ -1,4 +1,4 @@
-namespace ymovie.view.setup {
+namespace ymovie.web.view.setup {
 	export class SetupView extends base.Dialogue<any> {
 		webshareSetup:WebshareSetup;
 		kodiSetup:KodiSetup;

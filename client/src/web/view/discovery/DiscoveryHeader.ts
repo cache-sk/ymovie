@@ -1,8 +1,8 @@
-namespace ymovie.view.discovery {
+namespace ymovie.web.view.discovery {
 	import Action = type.Action;
 	import DOM = util.DOM;
 
-	export class DiscoveryHeader extends base.Component<HTMLDivElement> {
+	export class DiscoveryHeader extends Component<HTMLDivElement> {
 		searchForm:SearchForm;
 		menu:HTMLSpanElement;
 

@@ -1,4 +1,4 @@
-namespace ymovie.view.catalogue {
+namespace ymovie.web.view.catalogue {
 	export class CatalogueItemCustom<T extends type.Catalogue.Base> extends CatalogueItem<T> {
 		constructor(data:T){
 			super(data);

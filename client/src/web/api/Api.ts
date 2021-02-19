@@ -1,11 +1,11 @@
 /// <reference path="../type/Action.ts"/>
 /// <reference path="../enums/Status.ts"/>
 /// <reference path="../util/Storage.ts"/>
-/// <reference path="../parser/Scc.ts"/>
-/// <reference path="../parser/Webshare.ts"/>
 
-namespace ymovie.api {
+namespace ymovie.web.api {
 	import Action = type.Action;
+	import ApiScc = ymovie.api.ApiScc;
+	import ApiWebshare = ymovie.api.ApiWebshare;
 	import Catalogue = type.Catalogue;
 	import KodiPosition = type.Player.KodiPosition;
 	import Media = type.Media;
@@ -24,8 +24,8 @@ namespace ymovie.api {
 		kodi:ApiKodi;
 		cast:ApiCast;
 
-		trigger:util.Triggerer;
-		listen:util.TriggerListener;
+		trigger:util.Trigger.Triggerer;
+		listen:util.Trigger.Listener;
 
 		constructor(){
 			util.Trigger.enhance(this);

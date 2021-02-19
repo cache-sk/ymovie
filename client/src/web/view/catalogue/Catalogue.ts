@@ -1,5 +1,5 @@
-namespace ymovie.view.catalogue {
-	export class Catalogue extends base.DataComponent<HTMLDivElement, Array<type.Catalogue.AnyItem> | Error | undefined> {
+namespace ymovie.web.view.catalogue {
+	export class Catalogue extends DataComponent<HTMLDivElement, Array<type.Catalogue.AnyItem> | Error | undefined> {
 		constructor(){
 			super("div");
 		}

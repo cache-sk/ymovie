@@ -1,6 +1,4 @@
-/// <reference path="DataComponent.ts"/>
-
-namespace ymovie.view.base {
+namespace ymovie.web.view.base {
 	export class Dialogue<TData> extends DataComponent<HTMLDivElement, TData> {
 		protected readonly content:HTMLDivElement;
 		protected readonly closeButton:HTMLButtonElement;

@@ -1,6 +1,6 @@
 /// <reference path="base/Dialogue.ts"/>
 
-namespace ymovie.view {
+namespace ymovie.web.view {
 	export class AboutView extends base.Dialogue<any> {
 		constructor(){
 			super(true);

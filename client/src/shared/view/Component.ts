@@ -1,9 +1,9 @@
-namespace ymovie.view.base {
+namespace ymovie.view {
 	export class Component<TElement extends HTMLElement> {
 		element:TElement;
 
-		trigger:util.Triggerer;
-		listen:util.TriggerListener;
+		trigger:util.Trigger.Triggerer;
+		listen:util.Trigger.Listener;
 
 		constructor(element:ComponentElement) {
 			this.element = util.Util.isString(element) ? <TElement>util.DOM.create(<string>element) : <TElement>element;

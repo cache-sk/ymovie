@@ -1,4 +1,4 @@
-namespace ymovie.api {
+namespace ymovie.web.api {
 	/**
 	 * Cast sender is tricky to work on localhost (http, https), filesystem or secured domain (https).
 	 * For that reason the app should be only served from https.

@@ -1,6 +1,6 @@
 /// <reference path="StreamOption.ts"/>
 
-namespace ymovie.view.detail {
+namespace ymovie.web.view.detail {
 	export class StreamNA extends StreamOption<any> {
 		get url(){
 			return undefined;

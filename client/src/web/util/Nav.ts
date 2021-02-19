@@ -1,4 +1,4 @@
-namespace ymovie.util {
+namespace ymovie.web.util {
 	import Action = type.Action;
 	import Catalogue = type.Catalogue;
 	import Media = type.Media;
@@ -26,8 +26,8 @@ namespace ymovie.util {
 		private currentState:State | undefined;
 		private readonly serializer:Serializer = new Serializer();
 
-		trigger:util.Triggerer;
-		listen:util.TriggerListener;
+		trigger:util.Trigger.Triggerer;
+		listen:util.Trigger.Listener;
 		
 		constructor() {
 			Trigger.enhance(this);

@@ -1,8 +1,8 @@
-namespace ymovie.view.detail {
+namespace ymovie.web.view.detail {
 	import DOM = util.DOM;
 	import Player = type.Player;
 
-	export class StreamOption<TData extends {source?:type.Media.Playable, url?:string}> extends base.DataComponent<HTMLDivElement, TData> {
+	export class StreamOption<TData extends {source?:type.Media.Playable, url?:string}> extends DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
 			super("div");
 			this.data = data;

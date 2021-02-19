@@ -1,4 +1,4 @@
-namespace ymovie.view.setup {
+namespace ymovie.web.view.setup {
 	import DOM = util.DOM;
 	import Position = type.Player.KodiPosition;
 

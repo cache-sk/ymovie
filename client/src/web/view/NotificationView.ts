@@ -1,4 +1,4 @@
-namespace ymovie.view {
+namespace ymovie.web.view {
 	import DOM = util.DOM;
 
 	export class NotificationView extends base.Dialogue<Data> {

@@ -1,7 +1,7 @@
-namespace ymovie.view.catalogue {
+namespace ymovie.web.view.catalogue {
 	export class CatalogueTrigger extends CatalogueItemCustom<type.Catalogue.Trigger> {
-		get selectAction():util.TriggerActionAny {
-			return <util.TriggerActionAny>this.data?.action;
+		get selectAction():util.Trigger.ActionAny {
+			return <util.Trigger.ActionAny>this.data?.action;
 		}
 	}
 }

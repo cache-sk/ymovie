@@ -1,8 +1,7 @@
-/// <reference path="../util/Trigger.ts"/>
 /// <reference path="Nav.ts"/>
 
-namespace ymovie.type.Action {
-	import TriggerAction = util.TriggerAction;
+namespace ymovie.web.type.Action {
+	import TriggerAction = util.Trigger.Action;
 
 	export class GoBack extends TriggerAction<undefined> {
 		constructor() {
@@ -16,7 +15,6 @@ namespace ymovie.type.Action {
 	export class KodiStatusUpdated extends TriggerAction<KodiStatusUpdatedData> {}
 	export class WebshareStatusUpdated extends TriggerAction<enums.Status> {}
 	export class CastStatusUpdates extends TriggerAction<enums.Status> {}
-	export class Search extends TriggerAction<SearchData> {}
 	export class NavChanged extends TriggerAction<NavChangeData> {}
 	export class CatalogueItemSelected extends TriggerAction<CatalogueItemSelectedData> {}
 	export class ResolveStreams extends TriggerAction<ResolveStreamsData> {}
@@ -43,11 +41,6 @@ namespace ymovie.type.Action {
 	export type KodiStatusUpdatedData = {
 		position:number;
 		status:enums.Status;
-	}
-
-	export type SearchData = {
-		query?:string;
-		page?:number;
 	}
 
 	export type ResolveStreamsData = {

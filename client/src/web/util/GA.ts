@@ -1,4 +1,4 @@
-namespace ymovie.util {
+namespace ymovie.web.util {
 	export class GA {
 		constructor(){}
 		

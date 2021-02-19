@@ -1,7 +1,4 @@
-/// <reference path="Catalogue.ts"/>
-/// <reference path="Media.ts"/>
-
-namespace ymovie.type.Nav {
+namespace ymovie.web.type.Nav {
 	export class State {
 		readonly state:StateSource;
 		readonly title:string;

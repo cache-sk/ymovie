@@ -1,4 +1,4 @@
-namespace ymovie.util {
+namespace ymovie.web.util {
 	export class Storage {
 		static get storage() {
 			return window.localStorage;

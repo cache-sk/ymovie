@@ -1,4 +1,4 @@
-namespace ymovie.view.catalogue {
+namespace ymovie.web.view.catalogue {
 	import DOM = util.DOM;
 	import Media = type.Media;
 

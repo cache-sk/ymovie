@@ -1,5 +1,5 @@
-namespace ymovie.view.detail {
-	export class StreamsView extends base.DataComponent<HTMLDivElement, Data> {
+namespace ymovie.web.view.detail {
+	export class StreamsView extends DataComponent<HTMLDivElement, Data> {
 		constructor(){
 			super("div");
 		}

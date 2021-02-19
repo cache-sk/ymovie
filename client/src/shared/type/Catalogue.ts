@@ -8,7 +8,7 @@ namespace ymovie.type.Catalogue {
 			this.label = label;
 		}
 		
-		action?:util.TriggerActionAny;
+		action?:util.Trigger.ActionAny;
 	}
 
 	export class SccLink extends Base {
@@ -35,9 +35,9 @@ namespace ymovie.type.Catalogue {
 
 	export class Trigger extends Base {
 		readonly subtitle:string;
-		readonly action:util.TriggerActionAny;
+		readonly action:util.Trigger.ActionAny;
 
-		constructor(group:ItemType, label:string, subtitle:string, action:util.TriggerActionAny) {
+		constructor(group:ItemType, label:string, subtitle:string, action:util.Trigger.ActionAny) {
 			super(group, label);
 			this.subtitle = subtitle;
 			this.action = action;

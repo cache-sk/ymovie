@@ -1,4 +1,4 @@
-namespace ymovie.util {
+namespace ymovie.web.util {
 	export class Watched {
 		private static KEY_WATCHED_MOVIES = "KEY_WATCHED_MOVIES";
 		private static KEY_WATCHED_SERIES = "KEY_WATCHED_SERIES";

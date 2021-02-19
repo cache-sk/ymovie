@@ -1,5 +1,5 @@
-namespace ymovie.view.discovery {
-	export class DiscoveryView extends base.DataComponent<HTMLDivElement, Data> {
+namespace ymovie.web.view.discovery {
+	export class DiscoveryView extends DataComponent<HTMLDivElement, Data> {
 		catalogue:catalogue.Catalogue;
 		header:DiscoveryHeader;
 

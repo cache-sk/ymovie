@@ -1,3 +1,6 @@
+/// <reference path="../type/Media.ts"/>
+/// <reference path="../type/Catalogue.ts"/>
+
 namespace ymovie.parser {
 	import Media = type.Media;
 	import Catalogue = type.Catalogue;

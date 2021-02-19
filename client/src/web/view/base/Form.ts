@@ -1,4 +1,4 @@
-namespace ymovie.view.base {
+namespace ymovie.web.view.base {
 	export class Form extends Component<HTMLFormElement> {
 		constructor(){
 			super("form");

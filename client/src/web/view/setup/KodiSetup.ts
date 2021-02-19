@@ -1,5 +1,5 @@
-namespace ymovie.view.setup {
-	export class KodiSetup extends base.Component<HTMLDivElement> {
+namespace ymovie.web.view.setup {
+	export class KodiSetup extends Component<HTMLDivElement> {
 		static DEFAULT_URL = "ws://127.0.0.1:9090/jsonrpc?kodi";
 		
 		api:api.Api;
