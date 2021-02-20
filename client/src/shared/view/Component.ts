@@ -5,7 +5,7 @@ namespace ymovie.view {
 	export class Component<TElement extends HTMLElement> {
 		element:TElement;
 
-		constructor(element:ComponentElement) {
+		constructor(element:HTMLElement | string) {
 			this.element = util.Util.isString(element) ? <TElement>DOM.create(<string>element) : <TElement>element;
 			// @ts-ignore
 			this.element.classList.add(this.constructor.name);
@@ -15,7 +15,7 @@ namespace ymovie.view {
 			this.element.dispatchEvent(new CustomEvent(action.type, {bubbles:true, detail:action.data}));
 		}
 		
-		listen<T>(type:Action.Class<T>, listener:Listener<T>) {
+		listen<T>(type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
 			this.element.addEventListener(Action.Base.getType(type), listener);
 		}
 
@@ -31,7 +31,4 @@ namespace ymovie.view {
 			return this.element;
 		}
 	}
-
-	type ComponentElement = HTMLElement | string;
-	type Listener<T> = (event:CustomEvent<T>) => void;
 }

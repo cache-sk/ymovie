@@ -14,7 +14,7 @@ namespace ymovie.type.Action {
 
 		static getType(constructor:Class) {
 			// @ts-ignore
-			return constructor.__type || (constructor.__type = "$Action" + Base.typeId++);
+			return constructor.$type || (constructor.$type = "$Action" + Base.typeId++);
 		}
 	}
 
