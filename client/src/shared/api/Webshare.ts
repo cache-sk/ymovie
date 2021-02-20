@@ -85,9 +85,9 @@ namespace ymovie.api.Webshare {
 				.map(item => this.normalizeItem(item));
 			const pageCount = Math.ceil(total / 100);
 			if(page)
-				result.unshift(new Catalogue.Trigger("folder", title, `${page}/${pageCount}`, new type.Action.Search({query, page:page - 1})));
+				result.unshift(new CatalogueSearch("folder", title, `${page}/${pageCount}`, query, page - 1));
 			if(page + 1 < pageCount)
-				result.push(new Catalogue.Trigger("folder", title, `${page + 2}/${pageCount}`, new type.Action.Search({query, page:page + 1})));
+				result.push(new CatalogueSearch("folder", title, `${page + 2}/${pageCount}`, query, page + 1));
 			return result;
 		}
 		
@@ -147,6 +147,19 @@ namespace ymovie.api.Webshare {
 				result.rating = `${ratingPositive || 0}:${ratingNegative || 0}`;
 			result.size = this.getInt(item, "size");
 			return result;
+		}
+	}
+
+	export class CatalogueSearch extends Catalogue.Base {
+		readonly subtitle:string;
+		readonly query:string;
+		readonly page:number;
+
+		constructor(group:Catalogue.ItemType, label:string, subtitle:string, query:string, page:number) {
+			super(group, label);
+			this.subtitle = subtitle;
+			this.query = query;
+			this.page = page;
 		}
 	}
 

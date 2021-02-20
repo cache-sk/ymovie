@@ -1,14 +1,10 @@
-namespace ymovie.web.util {
-	import Action = type.Action;
+namespace ymovie.web.util.Nav {
 	import Catalogue = ymovie.type.Catalogue;
 	import Media = ymovie.type.Media;
-	import State = type.Nav.State;
-	import StateSource = type.Nav.StateSource;
-	import StateSourceData = type.Nav.StateSourceData;
-	import Trigger = ymovie.util.Trigger;
+	import Scc = ymovie.api.Scc;
 	import Util = ymovie.util.Util;
 
-	export class Nav {
+	export class Manager {
 		static PATH_SETUP = "/setup";
 		static PATH_ABOUT = "/about";
 		
@@ -23,17 +19,14 @@ namespace ymovie.web.util {
 		
 		static PATH_WEBSHARE_SEARCH = "/webshare/search";
 		static PATH_WEBSHARE_VIDEO = "/webshare/video";
+
+		readonly changed = new ymovie.util.Signal.Signal1<ChangeData>();
 		
 		private initialHistoryLength = 0;
 		private currentState:State | undefined;
 		private readonly serializer:Serializer = new Serializer();
 
-		trigger:Trigger.Triggerer;
-		listen:Trigger.Listener;
-		
-		constructor() {
-			Trigger.enhance(this);
-		}
+		constructor() {}
 		
 		init(){
 			this.initialHistoryLength = history.length;
@@ -72,7 +65,7 @@ namespace ymovie.web.util {
 		}
 		
 		go(data:StateSourceData, path:string, title:string, replace?:boolean):void {
-			const dataPage = data instanceof Catalogue.SccLink ? data.page : null;
+			const dataPage = data instanceof Scc.CatalogueLink ? data.page : null;
 			const page = (dataPage && dataPage > 1) ? `/${dataPage}` : '';
 			this.pushState(data, title, `#${path}/${this.safePath(title)}${page}`, replace);
 		}
@@ -97,9 +90,9 @@ namespace ymovie.web.util {
 		
 		triggerChange(state:State):void {
 			const current = this.currentState;
-			const previous = current ? new Action.NavChangeData(current.state, current.title, current.url, current?.url.substr(1)) : undefined;
-			const data = new Action.NavChangeData(state.state, state.title, state.url, state.url.substr(1), previous);
-			this.trigger?.(new Action.NavChanged(data));
+			const previous = current ? new ChangeData(current.state, current.title, current.url, current?.url.substr(1)) : undefined;
+			const data = new ChangeData(state.state, state.title, state.url, state.url.substr(1), previous);
+			this.changed.dispatch(data);
 		}
 		
 		goHome(replace?:boolean):void {
@@ -107,100 +100,100 @@ namespace ymovie.web.util {
 		}
 		
 		goSetup(replace?:boolean):void {
-			this.pushState(undefined, "Setup", `#${Nav.PATH_SETUP}`, replace);
+			this.pushState(undefined, "Setup", `#${Manager.PATH_SETUP}`, replace);
 		}
 		
 		isSetup(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SETUP);
+			return path?.startsWith(Manager.PATH_SETUP);
 		}
 		
 		goAbout(replace?:boolean):void {
-			this.pushState(undefined, "About", `#${Nav.PATH_ABOUT}`, replace);
+			this.pushState(undefined, "About", `#${Manager.PATH_ABOUT}`, replace);
 		}
 		
 		isAbout(path:string):boolean {
-			return path?.startsWith(Nav.PATH_ABOUT);
+			return path?.startsWith(Manager.PATH_ABOUT);
 		}
 		
 		goSccSearch(query:string):void {
-			this.pushState(new type.Nav.StateSccSearch(query), `Search ${query}`, `#${Nav.PATH_SCC_SEARCH}/${this.safePath(query)}`);
+			this.pushState(new StateSccSearch(query), `Search ${query}`, `#${Manager.PATH_SCC_SEARCH}/${this.safePath(query)}`);
 		}
 		
 		isSccSearch(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_SEARCH);
+			return path?.startsWith(Manager.PATH_SCC_SEARCH);
 		}
 		
-		goSccBrowse(data:Catalogue.SccLink):void {
-			this.go(data, Nav.PATH_SCC_BROWSE, data.label);
+		goSccBrowse(data:Scc.CatalogueLink):void {
+			this.go(data, Manager.PATH_SCC_BROWSE, data.label);
 		}
 		
 		isSccBrowse(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_BROWSE);
+			return path?.startsWith(Manager.PATH_SCC_BROWSE);
 		}
 		
 		goSccMovie(data:Media.Movie, replace?:boolean):void {
-			this.go(data, `${Nav.PATH_SCC_MOVIE}/${data.id}`, <string>data.title, replace);
+			this.go(data, `${Manager.PATH_SCC_MOVIE}/${data.id}`, <string>data.title, replace);
 		}
 		
 		isSccMovie(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_MOVIE);
+			return path?.startsWith(Manager.PATH_SCC_MOVIE);
 		}
 		
 		goSccSeries(data:Media.Series):void {
-			this.go(data, `${Nav.PATH_SCC_SERIES}/${data.id}`, <string>data.title);
+			this.go(data, `${Manager.PATH_SCC_SERIES}/${data.id}`, <string>data.title);
 		}
 		
 		isSccSeries(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_SERIES);
+			return path?.startsWith(Manager.PATH_SCC_SERIES);
 		}
 		
 		goSccSeason(data:Media.Season):void {
-			this.go(data, `${Nav.PATH_SCC_SEASON}/${data.id}`, <string>data.longTitle);
+			this.go(data, `${Manager.PATH_SCC_SEASON}/${data.id}`, <string>data.longTitle);
 		}
 		
 		isSccSeason(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_SEASON);
+			return path?.startsWith(Manager.PATH_SCC_SEASON);
 		}
 		
 		goSccEpisode(data:Media.Episode, replace?:boolean):void {
-			this.go(data, `${Nav.PATH_SCC_EPISODE}/${data.id}`, <string>data.longTitle, replace);
+			this.go(data, `${Manager.PATH_SCC_EPISODE}/${data.id}`, <string>data.longTitle, replace);
 		}
 		
 		isSccEpisode(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_EPISODE);
+			return path?.startsWith(Manager.PATH_SCC_EPISODE);
 		}
 		
 		goSccWatchedMovies(relpace?:boolean){
-			this.pushState(undefined, "Watched Movies", `#${Nav.PATH_SCC_WATCHED_MOVIES}`, relpace);
+			this.pushState(undefined, "Watched Movies", `#${Manager.PATH_SCC_WATCHED_MOVIES}`, relpace);
 		}
 		
 		isSccWatchedMovies(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_WATCHED_MOVIES);
+			return path?.startsWith(Manager.PATH_SCC_WATCHED_MOVIES);
 		}
 		
 		goSccWatchedSeries(relpace?:boolean):void {
-			this.pushState(undefined, "Watched Series", `#${Nav.PATH_SCC_WATCHED_SERIES}`, relpace);
+			this.pushState(undefined, "Watched Series", `#${Manager.PATH_SCC_WATCHED_SERIES}`, relpace);
 		}
 		
 		isSccWatchedSeries(path:string):boolean {
-			return path?.startsWith(Nav.PATH_SCC_WATCHED_SERIES);
+			return path?.startsWith(Manager.PATH_SCC_WATCHED_SERIES);
 		}
 		
 		goWebshareSearch(query:string, page:number):void {
-			this.pushState(new type.Nav.StateWebshareSearch(query, page), `Search ${query}`, 
-				`#${Nav.PATH_WEBSHARE_SEARCH}/${this.safePath(query)}` + (page ? `/${page + 1}` : ""));
+			this.pushState(new StateWebshareSearch(query, page), `Search ${query}`, 
+				`#${Manager.PATH_WEBSHARE_SEARCH}/${this.safePath(query)}` + (page ? `/${page + 1}` : ""));
 		}
 		
 		isWebshareSearch(path:string):boolean {
-			return path?.startsWith(Nav.PATH_WEBSHARE_SEARCH);
+			return path?.startsWith(Manager.PATH_WEBSHARE_SEARCH);
 		}
 		
 		goWebshareVideo(data:Media.Webshare, replace?:boolean):void {
-			this.go(data, `${Nav.PATH_WEBSHARE_VIDEO}/${data.id}`, <string>data.title, replace);
+			this.go(data, `${Manager.PATH_WEBSHARE_VIDEO}/${data.id}`, <string>data.title, replace);
 		}
 		
 		isWebshareVideo(path:string):boolean {
-			return path?.startsWith(Nav.PATH_WEBSHARE_VIDEO);
+			return path?.startsWith(Manager.PATH_WEBSHARE_VIDEO);
 		}
 		
 		onWindowPopState(event:PopStateEvent):void {
@@ -214,6 +207,53 @@ namespace ymovie.web.util {
 			const enhancedState = this.serializer.deserialize(state);
 			this.triggerChange(enhancedState);
 			this.currentState = enhancedState;
+		}
+	}
+
+	export class State {
+		readonly state:StateSource;
+		readonly title:string;
+		readonly url:string;
+
+		constructor(state:StateSource, title:string, url:string) {
+			this.state = state;
+			this.title = title;
+			this.url = url;
+		}
+	}
+
+	export abstract class StateSearch {
+		readonly query:string;
+		readonly page:number;
+
+		constructor(query:string, page:number=0) {
+			this.query = query;
+			this.page = page;
+		}
+	}
+
+	export class StateSccSearch extends StateSearch {}
+	export class StateWebshareSearch extends StateSearch {}
+
+	export class StateSource {
+		source:StateSourceData;
+		catalogue:Array<Catalogue.AnyItem> | undefined;
+
+		constructor(source:StateSourceData) {
+			this.source = source;
+		}
+	}
+
+	export type StateSourceData = Catalogue.Base | Media.Base | StateSearch | undefined;
+
+	export class ChangeData extends State {
+		path:string;
+		previous?:ChangeData;
+
+		constructor(state:StateSource, title:string, url:string, path:string, previous?:ChangeData) {
+			super(state, title, url);
+			this.path = path;
+			this.previous = previous;
 		}
 	}
 

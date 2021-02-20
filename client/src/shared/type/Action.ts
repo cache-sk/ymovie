@@ -1,13 +1,22 @@
-/// <reference path="../util/Trigger.ts"/>
-
 namespace ymovie.type.Action {
-	import TriggerAction = util.Trigger.Action;
+	export abstract class Base<T = any> {
+		readonly data:T;
 
-	export class Search extends TriggerAction<SearchData> {}
-	export class WebshareStatusUpdated extends TriggerAction<Status> {}
+		private static typeId:number = 0;
 
-	export type SearchData = {
-		query?:string;
-		page?:number;
+		constructor(data:T) {
+			this.data = data;
+		}
+
+		get type():string {
+			return Base.getType(<Class>this.constructor);
+		}
+
+		static getType(constructor:Class) {
+			// @ts-ignore
+			return constructor.__type || (constructor.__type = "$Action" + Base.typeId++);
+		}
 	}
+
+	export type Class<T = any> = {new (...args:any[]):Base<T>};
 }

@@ -11,7 +11,7 @@ namespace ymovie.web.view.setup {
 		constructor(api:api.Api, position:Position){
 			super();
 			this.api = api;
-			this.api.listen?.(type.Action.KodiStatusUpdated, this.render.bind(this));
+			this.api.kodiStatusChanged.add(this.render.bind(this));
 			this.position = position;
 			this.element.classList.add(`position${position}`);
 			const endpoint = this.api.getKodiEndpoint(this.position);

@@ -1,7 +1,6 @@
 namespace ymovie.web.view.catalogue {
 	import Catalogue = ymovie.type.Catalogue;
-	import DataComponent = ymovie.view.DataComponent
-	import Trigger = ymovie.util.Trigger;
+	import DataComponent = ymovie.view.DataComponent;
 
 	export class CatalogueItem<TData extends Catalogue.AnyItem> extends DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
@@ -9,10 +8,10 @@ namespace ymovie.web.view.catalogue {
 			this.element.classList.add("CatalogueItem");
 			this.data = data;
 			this.element.addEventListener("click", 
-				() => this.trigger?.(this.selectAction));
+				() => this.trigger(this.selectAction));
 		}
 		
-		get selectAction():Trigger.ActionAny {
+		get selectAction():ymovie.type.Action.Base {
 			return new type.Action.CatalogueItemSelected({item:<Catalogue.AnyItem>this.data});
 		}
 	}

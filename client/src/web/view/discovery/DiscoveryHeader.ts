@@ -13,7 +13,7 @@ namespace ymovie.web.view.discovery {
 			this.searchForm = new SearchForm();
 			
 			const home = DOM.span("home", "home");
-			home.addEventListener("click", () => this.trigger?.(new Action.GoHome(false)));
+			home.addEventListener("click", () => this.trigger(new Action.GoHome(false)));
 			
 			const menuButton = DOM.button("menuButton", "menu");
 			menuButton.addEventListener("click", this.toggleMenu.bind(this));
@@ -38,12 +38,12 @@ namespace ymovie.web.view.discovery {
 		
 		onSetupClick(){
 			this.toggleMenu();
-			this.trigger?.(new Action.ShowSetup(false));
+			this.trigger(new Action.ShowSetup(false));
 		}
 		
 		onAboutClick(){
 			this.toggleMenu();
-			this.trigger?.(new Action.ShowSetup(false));
+			this.trigger(new Action.ShowSetup(false));
 		}
 	}
 }

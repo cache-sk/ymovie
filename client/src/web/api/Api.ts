@@ -1,9 +1,8 @@
-/// <reference path="../type/Action.ts"/>
-
 namespace ymovie.web.api {
-	import Action = type.Action;
 	import KodiPosition = type.Player.KodiPosition;
 	import Media = ymovie.type.Media
+	import Signal = ymovie.util.Signal;
+	import Status = ymovie.type.Status;
 	import Storage = ymovie.util.Storage;
 
 	export class Api extends ymovie.api.Api {
@@ -11,6 +10,9 @@ namespace ymovie.web.api {
 		
 		kodi:ApiKodi;
 		cast:ApiCast;
+
+		readonly kodiStatusChanged = new Signal.Signal2<type.Player.KodiPosition, Status>();
+		readonly castStatusChanged = new Signal.Signal1<Status>();
 
 		constructor(){
 			super();
@@ -23,7 +25,7 @@ namespace ymovie.web.api {
 			const list:Array<KodiPosition> = [1, 2];
 			for (let position of list) {
 				const status = this.getKodiEndpoint(position) ? "defined" : "na";
-				this.trigger?.(new Action.KodiStatusUpdated({position, status}));
+				this.kodiStatusChanged.dispatch(position, status);
 			}
 			await super.init();
 		}
@@ -53,15 +55,15 @@ namespace ymovie.web.api {
 			try {
 				this.setKodiEndpoint(position, endpoint);
 				await this.kodi.isAvailable(endpoint);
-				this.trigger?.(new Action.KodiStatusUpdated({position, status:"ok"}));
+				this.kodiStatusChanged.dispatch(position, "ok");
 			} catch(error) {
-				this.trigger?.(new Action.KodiStatusUpdated({position, status:"na"}));
+				this.kodiStatusChanged.dispatch(position, "na");
 				throw error;
 			}
 		}
 		
 		onCastStatus(available:boolean){
-			this.trigger?.(new Action.CastStatusUpdates(available ? "ok" : "na"));
+			this.castStatusChanged.dispatch(available ? "ok" : "na");
 		}
 	}
 }

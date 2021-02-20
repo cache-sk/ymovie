@@ -1,11 +1,11 @@
+/// <reference path="../util/Signal.ts"/>
 /// <reference path="../util/Storage.ts"/>
-/// <reference path="../type/Action.ts"/>
 
 namespace ymovie.api {
-	import Action = type.Action;
 	import Catalogue = type.Catalogue;
 	import Media = type.Media;
 	import Storage = util.Storage;
+	import Signal1 = util.Signal.Signal1;
 
 	export abstract class Api {
 		static KEY_UUID = "UUID";
@@ -14,11 +14,9 @@ namespace ymovie.api {
 		scc:Scc.Api;
 		webshare:Webshare.Api;
 
-		trigger:util.Trigger.Triggerer;
-		listen:util.Trigger.Listener;
+		readonly webshareStatusChanged = new Signal1<type.Status>();
 
 		constructor(){
-			util.Trigger.enhance(this);
 			this.scc = new Scc.Api(this.uuid);
 			this.webshare = new Webshare.Api(this.uuid);
 		}
@@ -116,13 +114,13 @@ namespace ymovie.api {
 			} catch(error) {
 				success = false;
 			}
-			this.trigger?.(new Action.WebshareStatusUpdated(success ? "ok" : "na"));
+			this.webshareStatusChanged.dispatch(success ? "ok" : "na");
 			return success;
 		}
 		
 		logoutWebshare(){
 			this.webshareToken = null;
-			this.trigger?.(new Action.WebshareStatusUpdated("na"));
+			this.webshareStatusChanged.dispatch("na");
 		}
 		
 		async checkWebshareStatus(){
@@ -133,7 +131,7 @@ namespace ymovie.api {
 				success = false;
 				this.webshareToken = null;
 			}
-			this.trigger?.(new Action.WebshareStatusUpdated(success ? "ok" : "na"));
+			this.webshareStatusChanged.dispatch(success ? "ok" : "na");
 			return success;
 		}
 	}

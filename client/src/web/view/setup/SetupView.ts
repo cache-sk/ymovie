@@ -14,7 +14,7 @@ namespace ymovie.web.view.setup {
 		}
 		
 		close() {
-			this.trigger?.(new type.Action.GoBack());
+			this.trigger(new type.Action.GoBack());
 		}
 	}
 }

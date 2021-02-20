@@ -87,9 +87,9 @@ namespace ymovie.api.Scc {
 				.filter(item => item != undefined);
 			const page = data?.pagination;
 			if(page?.prev)
-				result.unshift(new Catalogue.SccLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
+				result.unshift(new CatalogueLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
 			if(page?.next)
-				result.push(new Catalogue.SccLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
+				result.push(new CatalogueLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
 			return result;
 		}
 		
@@ -267,6 +267,19 @@ namespace ymovie.api.Scc {
 			result.hdr = !!source.video.find((item:VideoStream) => item.hdr);
 			result.is3d = !!source.video.find((item:VideoStream) => (<any>item)['3d']);
 			return result;
+		}
+	}
+
+	export class CatalogueLink extends Catalogue.Base {
+		readonly url:string;
+		readonly subtitle?:string;
+		readonly page?:number;
+
+		constructor(group:Catalogue.ItemType, label:string, url:string, subtitle?:string, page?:number) {
+			super(group, label);
+			this.url = url;
+			this.subtitle = subtitle;
+			this.page = page;
 		}
 	}
 

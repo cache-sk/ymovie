@@ -50,7 +50,7 @@ namespace ymovie.web.view.detail {
 			this.translateX = 0;
 			if(data) {
 				this.show();
-				this.trigger?.(new type.Action.ResolveStreams({data:data.detail, callback:this.onStreams.bind(this)}));
+				this.trigger(new type.Action.ResolveStreams({data:data.detail, callback:this.onStreams.bind(this)}));
 			}
 			return super.update(data);
 		}
@@ -98,7 +98,7 @@ namespace ymovie.web.view.detail {
 		showNext(step:number){
 			const item = this.findNext(step);
 			if(item)
-				this.trigger?.(new type.Action.CatalogueItemSelected({item, replace:true}));
+				this.trigger(new type.Action.CatalogueItemSelected({item, replace:true}));
 		}
 		
 		findNext(step:number):Media.Playable | undefined {
@@ -119,7 +119,7 @@ namespace ymovie.web.view.detail {
 		}
 
 		close(){
-			this.trigger?.(new type.Action.GoBack());
+			this.trigger(new type.Action.GoBack());
 		}
 
 		getShowNextStepForTouch():number {

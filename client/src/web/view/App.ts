@@ -1,16 +1,15 @@
 namespace ymovie.web.view {
 	import Action = type.Action;
-	import SharedAction = ymovie.type.Action;
 	import Catalogue = ymovie.type.Catalogue;
 	import DOM = ymovie.util.DOM;
 	import Media = ymovie.type.Media;
-	import Nav = type.Nav;
+	import Nav = util.Nav;
 	import Player = type.Player;
 	import Status = ymovie.type.Status;
 
 	export class App extends ymovie.view.App {
 		api:api.Api | undefined;
-		nav:util.Nav | undefined;
+		nav:Nav.Manager | undefined;
 		ga:util.GA | undefined;
 		setupView:setup.SetupView | undefined;
 		aboutView:AboutView | undefined;
@@ -34,7 +33,7 @@ namespace ymovie.web.view {
 			
 			this.initPWA();
 			this.api = new api.Api();
-			this.nav = new util.Nav();
+			this.nav = new Nav.Manager();
 			this.ga = new util.GA();
 			this.menu.push(new Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)));
 			this.menu.push(new Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav)));
@@ -45,24 +44,24 @@ namespace ymovie.web.view {
 			this.detailView = new detail.DetailView(this.api);
 			this.notificationView = new NotificationView();
 
-			this.listen?.(Action.GoBack, this.nav.goBack.bind(this.nav));
-			this.listen?.(SharedAction.Search, this.search.bind(this));
-			this.listen?.(Action.CatalogueItemSelected, this.selectCatalogueItem.bind(this));
-			this.listen?.(Action.ResolveStreams, this.resolveStreams.bind(this));
-			this.listen?.(Action.ResolveStreamUrl, this.resolveStreamUrl.bind(this));
-			this.listen?.(Action.GoHome, this.nav.goHome.bind(this.nav));
-			this.listen?.(Action.ShowSetup, this.nav.goSetup.bind(this.nav));
-			this.listen?.(Action.ShowAbout, this.nav.goAbout.bind(this.nav));
-			this.listen?.(Action.Play, this.play.bind(this));
+			this.listen(Action.GoBack, this.nav.goBack.bind(this.nav));
+			this.listen(Action.Search, event => this.search(event.detail));
+			this.listen(Action.CatalogueItemSelected, event => this.selectCatalogueItem(event.detail));
+			this.listen(Action.ResolveStreams, event => this.resolveStreams(event.detail));
+			this.listen(Action.ResolveStreamUrl, event => this.resolveStreamUrl(event.detail));
+			this.listen(Action.GoHome, event => this.nav?.goHome(event.detail));
+			this.listen(Action.ShowSetup, event => this.nav?.goSetup(event.detail));
+			this.listen(Action.ShowAbout, event => this.nav?.goAbout(event.detail));
+			this.listen(Action.Play, event => this.play(event.detail));
 			
 			this.ga.init();
 			
-			this.nav.listen?.(Action.NavChanged, this.onNavChange.bind(this));
+			this.nav.changed.add(this.onNavChange.bind(this));
 			this.nav.init();
 			
-			this.api.listen?.(Action.CastStatusUpdates, this.onApiCastStatus.bind(this));
-			this.api.listen?.(Action.KodiStatusUpdated, this.onApiKodiStatus.bind(this));
-			this.api.listen?.(SharedAction.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
+			this.api.castStatusChanged.add(this.onApiCastStatus.bind(this));
+			this.api.kodiStatusChanged.add(this.onApiKodiStatus.bind(this));
+			this.api.webshareStatusChanged.add(this.onApiWebshareStatus.bind(this));
 			await this.api.init();
 			
 			this.render();
@@ -89,7 +88,7 @@ namespace ymovie.web.view {
 				return this.nav.goReplaceMedia(<Media.Base>await this.api.loadMedia(sccMediaId));
 			if(webshareMediaId)
 				return this.nav.goReplaceMedia(await this.api.loadWebshareMedia(webshareMediaId));
-			if(sccLink && sccLink instanceof Catalogue.SccLink)
+			if(sccLink && sccLink instanceof ymovie.api.Scc.CatalogueLink)
 				return this.nav.goSccBrowse(sccLink);
 			
 			if(this.nav.isAbout(path))
@@ -153,7 +152,7 @@ namespace ymovie.web.view {
 			return this.discoveryView?.update({type, catalogue});
 		}
 		
-		search(data:SharedAction.SearchData){
+		search(data:Action.SearchData) {
 			if(!data.query)
 				return this.nav?.goHome();
 			if(this.api?.isWebshareSearchQuery(data.query))
@@ -163,8 +162,12 @@ namespace ymovie.web.view {
 		
 		selectCatalogueItem(data:Action.CatalogueItemSelectedData){
 			const item = data.item;
-			if(item instanceof Catalogue.SccLink) {
+			if(item instanceof ymovie.api.Scc.CatalogueLink) {
 				this.nav?.goSccBrowse(item);
+			} else if(item instanceof ymovie.api.Webshare.CatalogueSearch) {
+				this.search({query:item.query, page:item.page});
+			} else if(item instanceof Catalogue.Callback) {
+				item.callback();
 			} else if(item instanceof Media.Episode) {
 				this.nav?.goSccEpisode(item, data.replace);
 			} else if(item instanceof Media.Movie) {
@@ -177,8 +180,6 @@ namespace ymovie.web.view {
 				this.scrollTop();
 			} else if(item instanceof Media.Webshare) {
 				this.nav?.goWebshareVideo(item, data.replace);
-			} else if(item instanceof Catalogue.Callback) {
-				item.callback();
 			}
 		}
 		
@@ -200,8 +201,8 @@ namespace ymovie.web.view {
 			}
 		}
 		
-		async play(payload:Action.PlayData){
-			const {player, media, url} = payload;
+		async play(data:Action.PlayData){
+			const {player, media, url} = data;
 			const notificationTitle = player instanceof Player.Cast ? "Cast" : "Kodi";
 			try {
 				if(this.api && player instanceof Player.Cast)
@@ -218,12 +219,12 @@ namespace ymovie.web.view {
 			this.toggleApiClass("cast", status);
 		}
 		
-		onApiKodiStatus(data:Action.KodiStatusUpdatedData){
-			const key = "kodi" + (data.position === 1 ? "" : "2");
-			this.toggleApiClass(key, data.status);
+		onApiKodiStatus(position:Player.KodiPosition, status:Status){
+			const key = "kodi" + (position === 1 ? "" : "2");
+			this.toggleApiClass(key, status);
 		}
 		
-		async onNavChange(data:Action.NavChangeData){
+		async onNavChange(data:Nav.ChangeData){
 			if(!this.api || !this.nav || !this.detailView || !this.setupView || !this.aboutView || !this.discoveryView)
 				return;
 
@@ -264,7 +265,7 @@ namespace ymovie.web.view {
 					async () => await this.api?.loadEpisodes((<Media.Episode>state.source).id, data.title));
 			if(nav.isSccBrowse(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadPath(<string>(<Catalogue.SccLink>state.source).url, data.title));
+					async () => await this.api?.loadPath(<string>(<ymovie.api.Scc.CatalogueLink>state.source).url, data.title));
 			
 			this.discoveryView.searchQuery = (<Nav.StateSearch>state.source)?.query || "";
 			if(nav.isSccSearch(path))

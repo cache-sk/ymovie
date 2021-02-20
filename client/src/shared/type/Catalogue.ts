@@ -8,20 +8,7 @@ namespace ymovie.type.Catalogue {
 			this.label = label;
 		}
 		
-		action?:util.Trigger.ActionAny;
-	}
-
-	export class SccLink extends Base {
-		readonly url:string;
-		readonly subtitle?:string;
-		readonly page?:number;
-
-		constructor(group:ItemType, label:string, url:string, subtitle?:string, page?:number) {
-			super(group, label);
-			this.url = url;
-			this.subtitle = subtitle;
-			this.page = page;
-		}
+		action?:Action.Base;
 	}
 
 	export class Callback extends Base {
@@ -30,17 +17,6 @@ namespace ymovie.type.Catalogue {
 		constructor(group:ItemType, label:string, callback:(replace?:boolean) => void) {
 			super(group, label);
 			this.callback = callback;
-		}
-	}
-
-	export class Trigger extends Base {
-		readonly subtitle:string;
-		readonly action:util.Trigger.ActionAny;
-
-		constructor(group:ItemType, label:string, subtitle:string, action:util.Trigger.ActionAny) {
-			super(group, label);
-			this.subtitle = subtitle;
-			this.action = action;
 		}
 	}
 

@@ -32,10 +32,10 @@ namespace ymovie.web.view.catalogue {
 		renderItem(data:TCatalogue.AnyItem, watched:util.WatchedMap){
 			if(data instanceof TCatalogue.Callback)
 				return new CatalogueItemCustom(data).render();
-			if(data instanceof TCatalogue.SccLink)
+			if(data instanceof ymovie.api.Scc.CatalogueLink)
 				return new CatalogueItemCustom(data).render();
-			if(data instanceof TCatalogue.Trigger)
-				return new CatalogueTrigger(data).render();
+			if(data instanceof ymovie.api.Webshare.CatalogueSearch)
+				return new CatalogueItemCustom(data).render();
 			if(data instanceof Media.Base)
 				return new CatalogueMedia(data, watched).render();
 			return undefined;

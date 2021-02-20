@@ -1,5 +1,4 @@
 namespace ymovie.hbbtv.view {
-	import SharedAction = ymovie.type.Action;
 	import Catalogue = ymovie.type.Catalogue
 
 	export class App extends ymovie.view.App {
@@ -16,7 +15,7 @@ namespace ymovie.hbbtv.view {
 
 			this.catalogueView = new CatalogueView();
 
-			this.api.listen?.(SharedAction.WebshareStatusUpdated, this.onApiWebshareStatus.bind(this));
+			this.api.webshareStatusChanged.add(this.onApiWebshareStatus.bind(this));
 			await this.api.init();
 
 			this.render();

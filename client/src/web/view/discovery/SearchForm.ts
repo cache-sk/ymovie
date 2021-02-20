@@ -1,4 +1,5 @@
 namespace ymovie.web.view.discovery {
+	import Action = type.Action;
 	import DOM = ymovie.util.DOM;
 
 	export class SearchForm extends base.Form {
@@ -31,7 +32,7 @@ namespace ymovie.web.view.discovery {
 		async process() {
 			this.clearTimeout();
 			const query = this.input.value;
-			this.trigger?.(new ymovie.type.Action.Search({query}));
+			this.trigger(new Action.Search({query}));
 		}
 		
 		onChange(){

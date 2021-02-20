@@ -64,7 +64,7 @@ namespace ymovie.web.view {
 		}
 		
 		close() {
-			this.trigger?.(new type.Action.GoBack());
+			this.trigger(new type.Action.GoBack());
 		}
 	}
 }

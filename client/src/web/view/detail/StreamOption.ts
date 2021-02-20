@@ -74,7 +74,7 @@ namespace ymovie.web.view.detail {
 		}
 
 		triggerPlay(player:Player.Base){
-			this.trigger?.(new type.Action.Play({player, media:<Media.Playable>this.data?.source, url:<string>this.url}));
+			this.trigger(new type.Action.Play({player, media:<Media.Playable>this.data?.source, url:<string>this.url}));
 		}
 
 		onClipboard(event:MouseEvent){

@@ -12,7 +12,8 @@ namespace ymovie.web.view.catalogue {
 			const data = this.data;
 			this.element.classList.add(<string>data?.group);
 			const name = DOM.span("name", data?.label);
-			const subtitle = data instanceof Catalogue.SccLink && data.subtitle 
+			const subtitle = (data instanceof ymovie.api.Scc.CatalogueLink 
+					|| data instanceof ymovie.api.Webshare.CatalogueSearch) && data.subtitle 
 				? DOM.span("subtitle", data.subtitle) : null;
 			this.append(DOM.span("title", [name, subtitle]));
 			return super.render();
