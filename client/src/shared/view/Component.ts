@@ -16,7 +16,11 @@ namespace ymovie.view {
 		}
 		
 		listen<T>(type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
-			this.element.addEventListener(Action.Base.getType(type), listener);
+			this.listenOn(this.element, type, listener);
+		}
+
+		protected listenOn<T>(element:HTMLElement, type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
+			element.addEventListener(Action.Base.getType(type), listener);
 		}
 
 		append(content:DOM.Content) {

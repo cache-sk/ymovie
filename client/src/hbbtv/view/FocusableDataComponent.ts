@@ -1,7 +1,5 @@
-/// <reference path="Component.ts"/>
-
-namespace ymovie.view {
-	export class DataComponent<TElement extends HTMLElement, TData> extends Component<TElement> {
+namespace ymovie.hbbtv.view {
+	export class FocusableDataComponent<TElement extends HTMLElement, TData> extends FocusableComponent<TElement> {
 		data:TData;
 
 		constructor(element:HTMLElement | string, data:TData) {

@@ -14,7 +14,7 @@ namespace ymovie.web.view.detail {
 		private _onDocumentTouchEnd = this.onDocumentTouchEnd.bind(this);
 
 		constructor(api:api.Api){
-			super(true);
+			super(true, undefined);
 			this.webshareSetup = new setup.WebshareSetup(api);
 			this.streamsView = new StreamsView();
 		}
@@ -43,7 +43,7 @@ namespace ymovie.web.view.detail {
 				this.renderMetadata(),
 				data instanceof Media.PlayableScc ? DOM.p("plot", data.plot) : undefined,
 				this.webshareSetup.render(),
-				this.streamsView.update()];
+				this.streamsView.update(undefined)];
 		}
 		
 		update(data:Data) {
@@ -178,7 +178,7 @@ namespace ymovie.web.view.detail {
 		}
 	}
 
-	type Data = {
+	type Data = undefined | {
 		detail:Media.Playable;
 		list:Array<Catalogue.AnyItem>;
 	}

@@ -5,7 +5,7 @@ namespace ymovie.web.view {
 
 	export class AboutView extends base.Dialogue<any> {
 		constructor(){
-			super(true);
+			super(true, undefined);
 		}
 		
 		defaultRender(){

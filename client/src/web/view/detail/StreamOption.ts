@@ -7,13 +7,12 @@ namespace ymovie.web.view.detail {
 
 	export class StreamOption<TData extends {source?:Media.Playable, url?:string}> extends DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
-			super("div");
-			this.data = data;
+			super("div", data);
 			this.element.classList.add("StreamOption");
 		}
 		
 		get url(){
-			return this.data?.url;
+			return this.data.url;
 		}
 		
 		render(){

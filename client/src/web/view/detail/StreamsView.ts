@@ -4,7 +4,7 @@ namespace ymovie.web.view.detail {
 
 	export class StreamsView extends DataComponent<HTMLDivElement, Data> {
 		constructor(){
-			super("div");
+			super("div", undefined);
 		}
 		
 		render(){
@@ -28,7 +28,7 @@ namespace ymovie.web.view.detail {
 		}
 	}
 
-	type Data = {
+	type Data = undefined | {
 		data:Media.Playable;
 		streams:Array<Media.Stream>;
 	}

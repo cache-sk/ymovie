@@ -7,7 +7,7 @@ namespace ymovie.web.view.discovery {
 		header:DiscoveryHeader;
 
 		constructor(){
-			super("div");
+			super("div", undefined);
 			
 			this.catalogue = new catalogue.Catalogue();
 			this.catalogue.element.addEventListener("touchstart", this.onCatalogueTouchStart.bind(this));
@@ -35,7 +35,7 @@ namespace ymovie.web.view.discovery {
 		}
 		
 		update(data:Data) {
-			this.catalogue.update(data.catalogue);
+			this.catalogue.update(data?.catalogue);
 			return super.update(data);
 		}
 		
@@ -46,7 +46,7 @@ namespace ymovie.web.view.discovery {
 		}
 	}
 
-	type Data = {
+	type Data = undefined | {
 		type?:string;
 		catalogue:Array<Catalogue.AnyItem> | Error | undefined;
 	}

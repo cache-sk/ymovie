@@ -1,10 +1,10 @@
 namespace ymovie.hbbtv.util.Focus {
 	export class Manager {
+		components:Array<IFocusable> = [];
+
 		focusedComponentChanged:((component:IFocusable) => void) | undefined;
 
 		private _focusedComponent:IFocusable | undefined;
-		private readonly components:Array<IFocusable> = [];
-
 		private virtualXOffset:number = 0;
 		private virtualYOffset:number = 0;
 
@@ -19,10 +19,9 @@ namespace ymovie.hbbtv.util.Focus {
 
 			this._focusedComponent = value;
 
-			if(this._focusedComponent != null) {
-				this.addComponent(this._focusedComponent);
+			if(this._focusedComponent != null)
 				this._focusedComponent.focus();
-			}
+
 			this.virtualXOffset = 0;
 			this.virtualYOffset = 0;
 
@@ -59,17 +58,6 @@ namespace ymovie.hbbtv.util.Focus {
 			}
 
 			return false;
-		}
-
-		addComponent(view:IFocusable) {
-			if(this.components.indexOf(view) == -1)
-				this.components.push(view);
-		}
-
-		removeComponent(view:IFocusable) {
-			const index = this.components.indexOf(view, 0);
-			if (index > -1)
-				this.components.splice(index, 1);
 		}
 
 		getNearest(component:IFocusable, event:Event):IFocusable | undefined {
@@ -178,20 +166,20 @@ namespace ymovie.hbbtv.util.Focus {
 
 	export type Event = {
 		readonly action:Action;
-		readonly repeated:boolean;
+		readonly repeated?:boolean;
 	}
 
 	export interface IFocusable {
 		focus():void;
 		blur():void;
 		getBoundingRect():Rect;
-		getFocusLayer():String;
+		getFocusLayer():string;
 		executeFocusEvent(event:Event):boolean;
 		modifyFocusEvent(event:Event):Event;
 		allowHorizontalCirculation(event:Event):boolean;
 	}
 
-	class Rect {
+	export class Rect {
 		readonly x:number;
 		readonly y:number;
 		readonly width:number;

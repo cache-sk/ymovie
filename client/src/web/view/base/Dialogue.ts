@@ -11,8 +11,8 @@ namespace ymovie.web.view.base {
 		private scrollable:boolean;
 		private _onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
 
-		constructor(scrollable:boolean=false) {
-			super("div");
+		constructor(scrollable:boolean, data:TData) {
+			super("div", data);
 
 			this.scrollable = scrollable;
 

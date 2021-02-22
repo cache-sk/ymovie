@@ -4,15 +4,14 @@ namespace ymovie.web.view.catalogue {
 
 	export class CatalogueItem<TData extends Catalogue.AnyItem> extends DataComponent<HTMLDivElement, TData> {
 		constructor(data:TData){
-			super("div");
+			super("div", data);
 			this.element.classList.add("CatalogueItem");
-			this.data = data;
 			this.element.addEventListener("click", 
 				() => this.trigger(this.selectAction));
 		}
 		
 		get selectAction():ymovie.type.Action.Base {
-			return new type.Action.CatalogueItemSelected({item:<Catalogue.AnyItem>this.data});
+			return new type.Action.CatalogueItemSelected({item:this.data});
 		}
 	}
 }

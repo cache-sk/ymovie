@@ -7,7 +7,7 @@ namespace ymovie.web.view.catalogue {
 
 	export class Catalogue extends DataComponent<HTMLDivElement, Array<TCatalogue.AnyItem> | Error | undefined> {
 		constructor(){
-			super("div");
+			super("div", undefined);
 		}
 
 		render(){

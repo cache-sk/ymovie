@@ -6,7 +6,7 @@ namespace ymovie.web.view {
 		message:HTMLParagraphElement;
 
 		constructor(){
-			super();
+			super(false, undefined);
 			this.title = DOM.h1();
 			this.message = DOM.p();
 			DOM.append(this.content, [this.title, this.message, this.closeButton]);
@@ -32,7 +32,7 @@ namespace ymovie.web.view {
 		}
 	}
 
-	type Data = {
+	type Data = undefined | {
 		title:string;
 		message:string;
 	}
