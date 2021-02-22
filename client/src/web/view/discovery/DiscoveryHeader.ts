@@ -43,7 +43,7 @@ namespace ymovie.web.view.discovery {
 		
 		onAboutClick(){
 			this.toggleMenu();
-			this.trigger(new Action.ShowSetup(false));
+			this.trigger(new Action.ShowAbout(false));
 		}
 	}
 }
