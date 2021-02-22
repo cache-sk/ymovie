@@ -12,7 +12,11 @@ namespace ymovie.view {
 		}
 		
 		trigger<T>(action:Action.Base<T>):T {
-			this.element.dispatchEvent(new CustomEvent(action.type, {bubbles:true, detail:action.data}));
+			return this.triggerOn(this.element, action);
+		}
+
+		protected triggerOn<T>(element:HTMLElement, action:Action.Base<T>):T {
+			element.dispatchEvent(new CustomEvent(action.type, {bubbles:true, detail:action.data}));
 			return action.data;
 		}
 		

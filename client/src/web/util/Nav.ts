@@ -88,7 +88,7 @@ namespace ymovie.web.util.Nav {
 			history.replaceState(this.serializer.serialize(enhancedState), enhancedState.title, enhancedState.url);
 		}
 		
-		triggerChange(state:State):void {
+		private triggerChange(state:State):void {
 			const current = this.currentState;
 			const previous = current ? new ChangeData(current.state, current.title, current.url, current?.url.substr(1)) : undefined;
 			const data = new ChangeData(state.state, state.title, state.url, state.url.substr(1), previous);

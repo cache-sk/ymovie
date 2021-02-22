@@ -6,6 +6,7 @@ namespace ymovie.type.Media {
 		longTitle?:string;
 		rating?:string;
 		poster?:string;
+		fanart?:string;
 
 		constructor(id:string) {
 			this.id = id;
@@ -15,6 +16,7 @@ namespace ymovie.type.Media {
 	export abstract class Scc extends Base {
 		isCZSK?:boolean;
 		year?:string;
+		plot?:string;
 	}
 
 	export class Season extends Scc {
@@ -26,7 +28,6 @@ namespace ymovie.type.Media {
 	export class Series extends Scc {}
 
 	export abstract class PlayableScc extends Scc {
-		plot?:string;
 		trailers?:Array<string>;
 		mpaa?:number;
 		studio?:string;

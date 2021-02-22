@@ -7,26 +7,40 @@ namespace ymovie.hbbtv.view.media {
 	import Thumbnail = ymovie.util.Thumbnail;
 
 	export class Row extends DataComponent<HTMLDivElement, RowData> {
-		constructor(data?:RowData) {
+		private firstItem:Item | undefined;
+
+		constructor(data:RowData) {
 			super("div", data);
+		}
+
+		getFirstItem():Item | undefined {
+			return this.firstItem;
 		}
 
 		render() {
 			this.clean();
-			this.append(this.data?.map(this.renderItem));
+			const items = this.data.map(this.createItem.bind(this));
+			this.firstItem = items.length ? items[0] : undefined;
+			this.append(items.map(item => item.render()));
 			return super.render();
 		}
 
-		renderItem(data:ItemData) {
-			return new Item(data).render();
+		createItem(data:RowItemData) {
+			const result = new Item(data);
+			result.listen(Action.CatalogueItemFocused, () => this.highlight(result));
+			return result;
+		}
+
+		highlight(item:Item) {
+			this.element.style.transform = `translateX(${-item.element.offsetLeft}px)`;
 		}
 	}
 
-	type ItemData = Catalogue.AnyItem;
-	export type RowData = Array<ItemData> | undefined;
+	export type RowItemData = Catalogue.AnyItem;
+	export type RowData = Array<RowItemData>;
 
-	class Item extends FocusableDataComponent<HTMLDivElement, ItemData> {
-		constructor(data:ItemData) {
+	class Item extends FocusableDataComponent<HTMLDivElement, RowItemData> {
+		constructor(data:RowItemData) {
 			super("div", data);
 		}
 
@@ -39,6 +53,11 @@ namespace ymovie.hbbtv.view.media {
 				this.element.style.backgroundImage = poster ? `url(${poster})` : 'none';
 			}
 			return super.render();
+		}
+
+		focus() {
+			super.focus();
+			this.trigger(new Action.CatalogueItemFocused(this.data));
 		}
 
 		executeFocusEvent(event:Focus.Event) {

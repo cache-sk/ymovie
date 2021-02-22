@@ -126,10 +126,12 @@ namespace ymovie.api.Scc {
 			else
 				return undefined;
 			
-			result.poster = this.resolvePoster(source.i18n_info_labels);
+			result.poster = this.resolveArtItem(source.i18n_info_labels, "poster");
+			result.fanart = this.resolveArtItem(source.i18n_info_labels, "fanart");
 			if(info2.title) result.title = info2.title;
 			if(!result.longTitle) result.longTitle = result.title;
 			if(info.year) result.year = (info.year + "") || undefined;
+			if(info2.plot) result.plot = info2.plot;
 			this.normalizeRating(source, result);
 			this.normalizeLanguage(source, result);
 			return result;
@@ -146,10 +148,10 @@ namespace ymovie.api.Scc {
 			return <Info2>result;
 		}
 		
-		private static resolvePoster(list:Array<I18>):string | undefined {
+		private static resolveArtItem(list:Array<I18>, key:keyof Art):string | undefined {
 			const missing = /^https:\/\/img.csfd.cz\/assets\/b[0-9]+\/images\/poster-free\.png$/;
 			for(const info of list){
-				const url = info?.art?.poster;
+				const url = info?.art?.[key];
 				if(url && !url?.match(missing))
 					return url;
 			}
@@ -158,9 +160,7 @@ namespace ymovie.api.Scc {
 		
 		private static normalizePlayable(source:Source, result:Media.PlayableScc):void {
 			const info = source.info_labels;
-			const info2 = source.info2;
 			const trailers = source.i18n_info_labels.map(item => item.trailer).filter(item => !!item);
-			if(info2.plot) result.plot = info2.plot;
 			if(trailers.length) result.trailers = trailers;
 			if(info.mpaa) result.mpaa = info.mpaa;
 			if(info.studio) result.studio = info.studio.constructor === Array ? info.studio.join(", ") : <string>info.studio;
@@ -366,6 +366,7 @@ namespace ymovie.api.Scc {
 
 	type Art = {
 		poster?:string;
+		fanart?:string;
 	}
 
 	type AvailableStreams = {
