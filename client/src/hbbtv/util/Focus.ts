@@ -1,7 +1,5 @@
 namespace ymovie.hbbtv.util.Focus {
 	export class Manager {
-		components:Array<IFocusable> = [];
-
 		focusedComponentChanged:((component:IFocusable) => void) | undefined;
 
 		private _focusedComponent:IFocusable | undefined;
@@ -36,7 +34,7 @@ namespace ymovie.hbbtv.util.Focus {
 			return this._focusedComponent ? this._focusedComponent.getBoundingRect().centerY + this.virtualYOffset : 0;
 		}
 
-		executeEvent(event:Event):boolean {
+		executeEvent(components:Array<IFocusable>, event:Event):boolean {
 			const focusedComponent = this._focusedComponent;
 			if(!focusedComponent)
 				return false;
@@ -48,7 +46,7 @@ namespace ymovie.hbbtv.util.Focus {
 			if(!this.isDirection(customEvent.action))
 				return false;
 
-			var nearest = this.getNearest(focusedComponent, customEvent);
+			var nearest = this.getNearest(components, focusedComponent, customEvent);
 			if(nearest != null) {
 				var x = this.virtualX;
 				var y = this.virtualY;
@@ -60,40 +58,40 @@ namespace ymovie.hbbtv.util.Focus {
 			return false;
 		}
 
-		getNearest(component:IFocusable, event:Event):IFocusable | undefined {
+		getNearest(components:Array<IFocusable>, component:IFocusable, event:Event):IFocusable | undefined {
 			const action = event.action;
 			const virtualX = this.virtualX;
 			const virtualY = this.virtualY;
 
 			let rect = new Rect(virtualX, virtualY, 0, 0);
-			let result = this.getNearestForRect(component, rect, virtualX, virtualY, action);
+			let result = this.getNearestForRect(components, component, rect, virtualX, virtualY, action);
 			if(result != null)
 				return result;
 
 			const componentRect = component.getBoundingRect();
-			result = this.getNearestForRect(component, componentRect, virtualX, virtualY, action);
+			result = this.getNearestForRect(components, component, componentRect, virtualX, virtualY, action);
 			if(result)
 				return result;
 
 			if(action == "left" && component.allowHorizontalCirculation(event)) {
 				rect = new Rect(Number.MAX_SAFE_INTEGER, componentRect.y, componentRect.width, componentRect.height);
-				return this.getNearestForRect(component, rect, Number.MAX_SAFE_INTEGER, virtualY, action);
+				return this.getNearestForRect(components, component, rect, Number.MAX_SAFE_INTEGER, virtualY, action);
 			}
 
 			if(action == "right" && component.allowHorizontalCirculation(event)) {
 				rect = new Rect(Number.MIN_SAFE_INTEGER, componentRect.y, componentRect.width, componentRect.height);
-				return this.getNearestForRect(component, rect, Number.MIN_SAFE_INTEGER, virtualY, action);
+				return this.getNearestForRect(components, component, rect, Number.MIN_SAFE_INTEGER, virtualY, action);
 			}
 
 			return undefined;
 		}
 
-		private getNearestForRect(component:IFocusable, componentRect:Rect, virtualX:number, virtualY:number,
+		private getNearestForRect(components:Array<IFocusable>, component:IFocusable, componentRect:Rect, virtualX:number, virtualY:number,
 			action:Action):IFocusable | undefined {
 			let result:IFocusable | undefined;
 			var resultDistanceX = Number.POSITIVE_INFINITY;
 			var resultDistanceY = Number.POSITIVE_INFINITY;
-			for(let item of this.components) {
+			for(let item of components) {
 				if(component == item || component.getFocusLayer() != item.getFocusLayer())
 					continue;
 
@@ -162,7 +160,7 @@ namespace ymovie.hbbtv.util.Focus {
 		}
 	}
 
-	export type Action = "left" | "right" | "up" | "down";
+	export type Action = "left" | "right" | "up" | "down" | "submit";
 
 	export type Event = {
 		readonly action:Action;

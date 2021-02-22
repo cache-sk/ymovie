@@ -7,8 +7,6 @@ namespace ymovie.type.Catalogue {
 			this.group = group;
 			this.label = label;
 		}
-		
-		action?:Action.Base;
 	}
 
 	export class Callback extends Base {

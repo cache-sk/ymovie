@@ -42,6 +42,13 @@
 			"script": "compile-web",
 			"problemMatcher": ["$tsc"],
 			"group": "build"
+		},
+		{
+			"label": "Prepare Client",
+			"type": "npm",
+			"script": "prepare-client",
+			"problemMatcher": ["$tsc"],
+			"group": "build"
 		}
 	]
 }

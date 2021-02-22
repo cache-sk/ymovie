@@ -1,12 +1,15 @@
 namespace ymovie.hbbtv.view {
 	import Action = type.Action;
+	import Catalogue = ymovie.type.Catalogue;
 	import Focus = util.Focus;
+	import Media = ymovie.type.Media;
+	import Scc = ymovie.api.Scc;
 
 	export class App extends ymovie.view.App {
 		api = new api.Api();
 		focus = new Focus.Manager();
 		header = new Header();
-		menuView = new Menu(this.menu);
+		mediaScreen = new media.MediaScreen(this.menu);
 
 		static async init(){
 			const result = new App();
@@ -15,7 +18,10 @@ namespace ymovie.hbbtv.view {
 
 		async init():Promise<any> {
 			this.api.webshareStatusChanged.add(this.onApiWebshareStatus.bind(this));
-			await this.api.init();
+
+			this.listen(Action.CatalogueItemSelected, event => this.selectCatalogueItem(event.detail));
+
+			//await this.api.init();
 
 			this.render();
 			this.element.classList.toggle("initializing", false);
@@ -27,8 +33,17 @@ namespace ymovie.hbbtv.view {
 
 		render(){
 			this.append([this.header.render(), 
-				this.menuView.render()]);
+				this.mediaScreen.render()]);
 			return super.render();
+		}
+
+		async selectCatalogueItem(item:Catalogue.AnyItem) {
+			if(item instanceof Scc.CatalogueLink)
+				return this.mediaScreen.appendCatalogue(await this.api.loadPath(item.url));
+			if(item instanceof Media.Series)
+				return this.mediaScreen.appendCatalogue(await this.api.loadSeasons(item.id));
+			if(item instanceof Media.Season)
+				return this.mediaScreen.appendCatalogue(await this.api.loadEpisodes(item.id));
 		}
 
 		onDocumentKeyDown(event:KeyboardEvent) {
@@ -41,13 +56,14 @@ namespace ymovie.hbbtv.view {
 				action = "up";
 			else if(event.key == "ArrowDown")
 				action = "down";
+			else if(event.key == "Enter")
+				action = "submit";
 			if(!action)
 				return;
-
-			const register = new Action.RegisterFocusable();
-			this.trigger(register);
-			this.focus.components = register.data;
-			this.focus.executeEvent({action});
+			const components = this.trigger(new Action.RegisterFocusable());
+			const result = this.focus.executeEvent(components, {action});
+			if(result)
+				event.preventDefault();
 		}
 	}
 }

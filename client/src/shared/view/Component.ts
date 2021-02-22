@@ -11,8 +11,9 @@ namespace ymovie.view {
 			this.element.classList.add(this.constructor.name);
 		}
 		
-		trigger(action:Action.Base) {
+		trigger<T>(action:Action.Base<T>):T {
 			this.element.dispatchEvent(new CustomEvent(action.type, {bubbles:true, detail:action.data}));
+			return action.data;
 		}
 		
 		listen<T>(type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {

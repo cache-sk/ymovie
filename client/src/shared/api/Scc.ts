@@ -82,15 +82,19 @@ namespace ymovie.api.Scc {
 		}
 
 		static toCatalogue(data:Response, title:string):Array<Catalogue.AnyItem> {
-			const result:Array<Catalogue.AnyItem> = <Array<Catalogue.AnyItem>>data.data
-				.map(item => this.toItem(item))
-				.filter(item => item != undefined);
+			const result:Array<Catalogue.AnyItem> = Parser.toMedia(data);
 			const page = data?.pagination;
 			if(page?.prev)
 				result.unshift(new CatalogueLink("folder", title, page.prev, `${page.page - 1}/${page.pageCount}`, page.page - 1))
 			if(page?.next)
 				result.push(new CatalogueLink("folder", title, page.next, `${page.page + 1}/${page.pageCount}`, page.page + 1));
 			return result;
+		}
+
+		static toMedia(data:Response):Array<Media.Scc> {
+			return <Array<Media.Scc>>data.data
+				.map(item => this.toItem(item))
+				.filter(item => item != undefined);
 		}
 		
 		static idsToCatalogue(data:Response, ids:Array<string>, title:string):Array<Catalogue.AnyItem> {

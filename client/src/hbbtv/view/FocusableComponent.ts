@@ -28,7 +28,7 @@ namespace ymovie.hbbtv.view {
 			return "main";
 		}
 
-		executeFocusEvent():boolean {
+		executeFocusEvent(_event:Focus.Event):boolean {
 			return false;
 		}
 
@@ -36,12 +36,13 @@ namespace ymovie.hbbtv.view {
 			return event;
 		}
 
-		allowHorizontalCirculation():boolean {
+		allowHorizontalCirculation(_event:Focus.Event):boolean {
 			return false;
 		}
 
 		onRegister(event:CustomEvent<Array<Focus.IFocusable>>) {
-			event.detail.push(this);
+			if ((<HTMLElement>event.target).contains(this.element))
+				event.detail.push(this);
 		}
 	}
 }

@@ -259,13 +259,13 @@ namespace ymovie.web.view {
 				return this.detailView.update({detail:<Media.Playable>state.source, list:<Array<Catalogue.AnyItem>>this.discoveryView.data?.catalogue});
 			if(nav.isSccSeries(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadSeasons((<Media.Series>state.source).id, data.title));
+					async () => await this.api?.loadSeasonsToCatalogue((<Media.Series>state.source).id, data.title));
 			if(nav.isSccSeason(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadEpisodes((<Media.Episode>state.source).id, data.title));
+					async () => await this.api?.loadEpisodesToCatalogue((<Media.Episode>state.source).id, data.title));
 			if(nav.isSccBrowse(path))
 				return await this.loadCatalogue(state?.catalogue,
-					async () => await this.api?.loadPath(<string>(<ymovie.api.Scc.CatalogueLink>state.source).url, data.title));
+					async () => await this.api?.loadPathToCatalogue(<string>(<ymovie.api.Scc.CatalogueLink>state.source).url, data.title));
 			
 			this.discoveryView.searchQuery = (<Nav.StateSearch>state.source)?.query || "";
 			if(nav.isSccSearch(path))

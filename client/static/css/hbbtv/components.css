@@ -1,4 +1,24 @@
-.Header .Item {
-	float: left;
-	
+.Header {
+	white-space: nowrap;
+
 }
+
+.Header .Item {
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.MediaScreen .Row {
+	white-space: nowrap;
+}
+
+.MediaScreen .Row .Item {
+	width: 140px;
+	height: 210px;
+	background: #222 no-repeat center/cover;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
