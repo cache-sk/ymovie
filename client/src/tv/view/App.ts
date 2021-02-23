@@ -106,17 +106,17 @@ namespace ymovie.tv.view {
 
 		onDocumentKeyDown(event:KeyboardEvent) {
 			let action:Focus.Action | undefined;
-			if(event.key == "ArrowLeft")
+			if(event.key == "ArrowLeft" || event.code == "Digit4")
 				action = "left";
-			else if(event.key == "ArrowRight")
+			else if(event.key == "ArrowRight" || event.code == "Digit6")
 				action = "right";
-			else if(event.key == "ArrowUp")
+			else if(event.key == "ArrowUp" || event.code == "Digit2")
 				action = "up";
-			else if(event.key == "ArrowDown")
+			else if(event.key == "ArrowDown" || event.code == "Digit8")
 				action = "down";
-			else if(event.key == "Enter")
+			else if(event.key == "Enter" || event.code == "Digit5")
 				action = "submit";
-			else if(event.key == "Escape")
+			else if(event.key == "Escape" || event.code == "Digit0")
 				action = "back";
 			else if(event.key == "Backspace")
 				action = "back";

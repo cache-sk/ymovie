@@ -56,7 +56,7 @@ namespace ymovie.tv.view.media {
 		render() {
 			this.clean();
 			if(this.data instanceof Scc.CatalogueLink) {
-				this.append(this.data.label);
+				this.append(DOM.span("label", this.data.label));
 				this.element.classList.add(this.data.group);
 			} else if(this.data instanceof Media.Base) {
 				this.append(this.renderPoster(this.data.poster));

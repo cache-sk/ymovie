@@ -21,10 +21,13 @@ namespace ymovie.tv.view.media {
 
 		render() {
 			this.clean();
-			if(this.data instanceof Media.Base)
-				this.append([this.background, this.renderBase(this.data), this.streams.render()]);
-			else
-				this.background.style.backgroundImage = "none";
+			if(this.data instanceof Media.Base) {
+				if(this.data.fanart) {
+					this.background.style.backgroundImage = `url(${this.data.fanart})`;
+					this.append(this.background);
+				}
+				this.append([this.renderBase(this.data), this.streams.render()]);
+			}
 			return super.render();
 		}
 
@@ -34,7 +37,6 @@ namespace ymovie.tv.view.media {
 		}
 
 		renderBase(data:Media.Base) {
-			this.background.style.backgroundImage = data.fanart ? `url(${data.fanart})` : "none";
 			return [DOM.h1(data.longTitle),
 				data.rating ? DOM.div("rating", data.rating) : undefined,
 				data instanceof Media.Scc && data.year ? DOM.div("year", data.year) : undefined,
