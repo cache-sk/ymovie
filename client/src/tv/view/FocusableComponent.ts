@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.view {
+namespace ymovie.tv.view {
 	import Component = ymovie.view.Component;
 	import Focus = util.Focus;
 

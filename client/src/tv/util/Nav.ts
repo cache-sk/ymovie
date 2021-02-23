@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.util.Nav {
+namespace ymovie.tv.util.Nav {
 	export class Manager {
 		static PATH_ABOUT = "/about";
 		static PATH_SEARCH = "/search";

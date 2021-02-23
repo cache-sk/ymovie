@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.view.media {
+namespace ymovie.tv.view.media {
 	import Action = type.Action;
 	import Catalogue = ymovie.type.Catalogue;
 	import DataComponent = ymovie.view.DataComponent;
@@ -7,32 +7,33 @@ namespace ymovie.hbbtv.view.media {
 	import Thumbnail = ymovie.util.Thumbnail;
 
 	export class Row extends DataComponent<HTMLDivElement, RowData> {
-		private firstItem:Item | undefined;
+		private first:Item | undefined;
 
 		constructor(data:RowData) {
 			super("div", data);
+
+			this.listen(Action.CatalogueItemFocused, this.onCatalogueItemFocused.bind(this));
 		}
 
-		getFirstItem():Item | undefined {
-			return this.firstItem;
+		getFirst():Item | undefined {
+			return this.first;
 		}
 
 		render() {
 			this.clean();
-			const items = this.data.map(this.createItem.bind(this));
-			this.firstItem = items.length ? items[0] : undefined;
-			this.append(items.map(item => item.render()));
+			this.first = undefined;
+			for(const data of this.data) {
+				const item = new Item(data);
+				if(!this.first) this.first = item;
+				this.append(item.render());
+			}
 			return super.render();
 		}
 
-		createItem(data:RowItemData) {
-			const result = new Item(data);
-			result.listen(Action.CatalogueItemFocused, () => this.highlight(result));
-			return result;
-		}
 
-		highlight(item:Item) {
-			this.element.style.transform = `translateX(${-item.element.offsetLeft}px)`;
+		onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {
+			const element = event.detail.element;
+			this.element.style.transform = `translateX(${-element.offsetLeft}px)`;
 		}
 	}
 
@@ -57,7 +58,7 @@ namespace ymovie.hbbtv.view.media {
 
 		focus() {
 			super.focus();
-			this.trigger(new Action.CatalogueItemFocused(this.data));
+			this.trigger(new Action.CatalogueItemFocused({data:this.data, component:this, element:this.element}));
 		}
 
 		executeFocusEvent(event:Focus.Event) {
@@ -66,6 +67,12 @@ namespace ymovie.hbbtv.view.media {
 				return true;
 			}
 			return false;
+		}
+
+		modifyFocusEvent(event:Focus.Event):Focus.Event {
+			if(event.action === "back")
+				return {action:"up", repeated:event.repeated};
+			return event;
 		}
 	}
 }

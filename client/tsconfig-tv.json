@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"target": "ES5",
 		"lib": ["ES2015", "DOM"],
-		"outFile": "../dist/client/js/hbbtv.js"
+		"outFile": "../dist/client/js/tv.js"
 	},
-	"include": ["src/shared", "src/hbbtv"]
+	"include": ["src/shared", "src/tv"]
 }

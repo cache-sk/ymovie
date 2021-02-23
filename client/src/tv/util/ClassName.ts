@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.util {
+namespace ymovie.tv.util {
 	export class ClassName {
 		static updateType(element:HTMLElement, type:String, value:String){
 			var prefix = type + "-";

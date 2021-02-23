@@ -8,9 +8,9 @@
 	"main": "server/index.js",
 	"scripts": {
 		"build": "node build/prepare.js && npm run build-client && npm run build-server",
-		"build-client": "npm run prepare-client && npm run compile-hbbtv && npm run compile-web",
+		"build-client": "npm run prepare-client && npm run compile-tv && npm run compile-web",
 		"build-server": "node server/build/prepare.js",
-		"compile-hbbtv": "tsc --project client/tsconfig-hbbtv.json",
+		"compile-tv": "tsc --project client/tsconfig-tv.json",
 		"compile-web": "tsc --project client/tsconfig-web.json",
 		"prepare-client": "node client/build/prepare.js",
 		"start": "npm run build && node dist/server/index.js",

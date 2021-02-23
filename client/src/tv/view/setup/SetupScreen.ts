@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.view.setup {
+namespace ymovie.tv.view.setup {
 	import DOM = ymovie.util.DOM;
 
 	export class SetupScreen extends Screen {

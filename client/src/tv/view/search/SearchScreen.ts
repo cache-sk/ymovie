@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.view.search {
+namespace ymovie.tv.view.search {
 	import DOM = ymovie.util.DOM;
 
 	export class SearchScreen extends Screen {

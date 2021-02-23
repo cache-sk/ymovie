@@ -170,6 +170,7 @@ namespace ymovie.api.Scc {
 			if(info.genre?.length) result.genres = info.genre.join(", ");
 			if(info.director?.length) result.directors = info.director.join(", ");
 			if(source.cast?.length) result.cast = source.cast.map(item => item.name).join(", ");
+			if(source.stream_info?.video?.duration) result.duration = source.stream_info.video.duration;
 		}
 		
 		private static normalizeRating(source:Source, result:Media.Base):void {
@@ -339,6 +340,7 @@ namespace ymovie.api.Scc {
 	type StreamInfo = {
 		audio?:Audio;
 		subtitles?:Subtitles;
+		video?:Video;
 	}
 
 	type Audio = {
@@ -347,6 +349,10 @@ namespace ymovie.api.Scc {
 
 	type Subtitles = {
 		language:string;
+	}
+
+	type Video = {
+		duration:number;
 	}
 
 	type RootInfo = {

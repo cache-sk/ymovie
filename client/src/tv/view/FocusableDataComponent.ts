@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.view {
+namespace ymovie.tv.view {
 	export class FocusableDataComponent<TElement extends HTMLElement, TData> extends FocusableComponent<TElement> {
 		data:TData;
 

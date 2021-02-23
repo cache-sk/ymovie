@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.util.Focus {
+namespace ymovie.tv.util.Focus {
 	export class Manager {
 		focusedComponentChanged:((component:IFocusable) => void) | undefined;
 
@@ -160,7 +160,7 @@ namespace ymovie.hbbtv.util.Focus {
 		}
 	}
 
-	export type Action = "left" | "right" | "up" | "down" | "submit";
+	export type Action = "left" | "right" | "up" | "down" | "submit" | "back";
 
 	export type Event = {
 		readonly action:Action;

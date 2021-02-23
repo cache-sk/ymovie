@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.view.about {
+namespace ymovie.tv.view.about {
 	import DOM = ymovie.util.DOM;
 
 	export class AboutScreen extends Screen {

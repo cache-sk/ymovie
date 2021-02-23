@@ -30,9 +30,9 @@
 			"group": "build"
 		},
 		{
-			"label": "Compile HbbTV",
+			"label": "Compile TV",
 			"type": "npm",
-			"script": "compile-hbbtv",
+			"script": "compile-tv",
 			"problemMatcher": ["$tsc"],
 			"group": "build"
 		},

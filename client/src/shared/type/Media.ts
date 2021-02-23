@@ -37,6 +37,7 @@ namespace ymovie.type.Media {
 		genres?:string;
 		directors?:string;
 		cast?:string;
+		duration?:number;
 	}
 
 	export class Movie extends PlayableScc {}

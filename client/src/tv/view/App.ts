@@ -1,4 +1,4 @@
-namespace ymovie.hbbtv.view {
+namespace ymovie.tv.view {
 	import Action = type.Action;
 	import Catalogue = ymovie.type.Catalogue;
 	import Focus = util.Focus;
@@ -70,6 +70,8 @@ namespace ymovie.hbbtv.view {
 				return this.appendCatalogue(await this.api.loadSeasons(item.id));
 			if(item instanceof Media.Season)
 				return this.appendCatalogue(await this.api.loadEpisodes(item.id));
+			if(item instanceof Media.PlayableScc)
+				return this.trigger(new Action.StreamsLoaded({item, streams:await this.api.loadStreams(item)}));
 		}
 
 		appendCatalogue(data:Array<Catalogue.AnyItem>) {
@@ -118,6 +120,10 @@ namespace ymovie.hbbtv.view {
 				action = "down";
 			else if(event.key == "Enter")
 				action = "submit";
+			else if(event.key == "Escape")
+				action = "back";
+			else if(event.key == "Backspace")
+				action = "back";
 			if(!action)
 				return;
 			const components = this.trigger(new Action.RegisterFocusable());
