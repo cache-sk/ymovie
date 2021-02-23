@@ -74,7 +74,7 @@ namespace ymovie.api {
 			return Scc.Parser.toItem({_id:id, _source:await this.scc.loadMedia(id)});
 		}
 		
-		async loadPath(url:string):Promise<Array<Catalogue.AnyItem>> {
+		async loadPath(url:string):Promise<Array<Media.Scc>> {
 			return Scc.Parser.toMedia(await this.scc.loadPath(url));
 		}
 

@@ -8,7 +8,7 @@ namespace ymovie.tv.view {
 		constructor(element:HTMLElement | string) {
 			super(element);
 
-			this.listenOn(document.body, type.Action.RegisterFocusable, this.onRegister.bind(this));
+			this.listenGlobal(type.Action.RegisterFocusable, this.onRegister.bind(this));
 		}
 
 		focus():void {

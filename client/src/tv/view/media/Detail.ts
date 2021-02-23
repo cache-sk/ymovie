@@ -16,7 +16,7 @@ namespace ymovie.tv.view.media {
 			this.background = DOM.div("background");
 			this.streams = new Streams();
 
-			this.listenOn(document.body, Action.StreamsLoaded, event => event.detail.item === this.data && this.onStreamsLoaded(event.detail.streams));
+			this.listenGlobal(Action.StreamsLoaded, this.onStreamsLoaded.bind(this));
 		}
 
 		render() {
@@ -44,11 +44,10 @@ namespace ymovie.tv.view.media {
 			];
 		}
 
-		onStreamsLoaded(streams:Array<Media.Stream>) {
-			const sortedStreams = streams
+		onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {
+			const streams = event.detail.streams
 				.sort((a, b) => ((a.width || 0) - (b.width || 0)) || ((a.size || 0) - (b.size || 0)));
-
-			this.streams.update(sortedStreams);
+			this.streams.update(streams);
 			const first = this.streams.getFirst();
 			if(first)
 				this.trigger(new Action.RequestFocus(first));

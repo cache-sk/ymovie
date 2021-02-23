@@ -1,6 +1,5 @@
 namespace ymovie.tv.view {
 	import Action = type.Action;
-	import Catalogue = ymovie.type.Catalogue;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
 	import Nav = util.Nav;
@@ -25,7 +24,7 @@ namespace ymovie.tv.view {
 		async init():Promise<any> {
 			this.api.webshareStatusChanged.add(this.onApiWebshareStatus.bind(this));
 
-			this.listen(Action.CatalogueItemSelected, event => this.selectCatalogueItem(event.detail));
+			this.listen(Action.CatalogueItemSelected, this.onCatalogueItemSelected.bind(this));
 			this.listen(Action.RequestFocus, event => this.requestFocus(event.detail));
 			this.listen(Action.ShowScreen, event => this.showScreen(event.detail));
 
@@ -35,8 +34,8 @@ namespace ymovie.tv.view {
 			this.nav.init();
 
 			this.render();
+			this.mediaScreen.appendCatalogue(this.menu);
 			this.initDeeplink();
-			this.appendCatalogue(this.menu);
 			this.element.classList.toggle("initializing", false);
 
 			document.addEventListener("keydown", this.onDocumentKeyDown.bind(this));
@@ -63,20 +62,17 @@ namespace ymovie.tv.view {
 			return super.render();
 		}
 
-		async selectCatalogueItem(item:Catalogue.AnyItem) {
-			if(item instanceof Scc.CatalogueLink)
-				return this.appendCatalogue(await this.api.loadPath(item.url));
-			if(item instanceof Media.Series)
-				return this.appendCatalogue(await this.api.loadSeasons(item.id));
-			if(item instanceof Media.Season)
-				return this.appendCatalogue(await this.api.loadEpisodes(item.id));
-			if(item instanceof Media.PlayableScc)
-				return this.trigger(new Action.StreamsLoaded({item, streams:await this.api.loadStreams(item)}));
-		}
-
-		appendCatalogue(data:Array<Catalogue.AnyItem>) {
-			if(data.length)
-				this.mediaScreen.appendCatalogue(data);
+		async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
+			const {data} = event.detail;
+			if(data instanceof Scc.CatalogueLink)
+				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadPath(data.url)}));
+			if(data instanceof Media.Series)
+				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadSeasons(data.id)}));
+			if(data instanceof Media.Season)
+				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadEpisodes(data.id)}));
+			if(data instanceof Media.PlayableScc)
+				return this.trigger(new Action.StreamsLoaded({media:data, streams:await this.api.loadStreams(data)}));
+			return;
 		}
 
 		requestFocus(component:Focus.IFocusable) {

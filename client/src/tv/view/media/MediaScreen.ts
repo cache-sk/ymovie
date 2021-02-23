@@ -17,6 +17,8 @@ namespace ymovie.tv.view.media {
 			this.listen(Action.CatalogueItemFocused, this.onCatalogueItemFocused.bind(this));
 			this.listen(Action.StreamFocused, this.onStreamFocused.bind(this));
 			this.listen(Action.BlurStreams, this.onBlurStreams.bind(this));
+			this.listen(Action.CatalogueItemSelected, this.onCatalogueItemSelected.bind(this));
+			this.listenGlobal(Action.SccMediaLoaded, this.onSccMediaLoaded.bind(this));
 		}
 
 		render() {
@@ -26,30 +28,28 @@ namespace ymovie.tv.view.media {
 
 		appendCatalogue(data:RowData) {
 			const row = new Row(data);
-			row.listen(Action.CatalogueItemSelected, () => this.onItemSelected(row));
 			DOM.append(this.rowContainer, row.render());
-
 			const item = row.getFirst();
 			if(item)
 				this.trigger(new Action.RequestFocus(item));
 		}
 
-		updateActiveFocus(value:ActiveFocus) {
+		private updateActiveFocus(value:ActiveFocus) {
 			ClassName.updateType(this.element, "focus", value);
 		}
 
-		onItemSelected(row:Row) {
+		private onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
+			const element = event.detail.element;
 			const container = this.rowContainer;
-			while(container.lastChild && container.lastChild != row.element)
+			while(container.lastChild && !container.lastChild.contains(element))
 				container.lastChild.remove();
 		}
 
-		onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {
+		private onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {
+			const {data, element} = event.detail;
 			this.lastFocusedCatalogue = event.detail;
 			this.updateActiveFocus("rows");
-			const {data, element} = event.detail;
 			this.detail.update(data instanceof Media.Base ? data : undefined);
-
 			const container = this.rowContainer;
 			let className = "up";
 			for(let child = container.firstElementChild; child; child = child.nextElementSibling) {
@@ -65,13 +65,17 @@ namespace ymovie.tv.view.media {
 			}
 		}
 
-		onStreamFocused() {
+		private onStreamFocused() {
 			this.updateActiveFocus("stream");
 		}
 
-		onBlurStreams() {
+		private onBlurStreams() {
 			if(this.lastFocusedCatalogue)
 				this.trigger(new Action.RequestFocus(this.lastFocusedCatalogue.component));
+		}
+
+		private onSccMediaLoaded(event:CustomEvent<Action.SccMediaLoadedData>) {
+			this.appendCatalogue(event.detail.media);
 		}
 	}
 

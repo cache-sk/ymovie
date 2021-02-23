@@ -15,7 +15,11 @@ namespace ymovie.view {
 			return this.triggerOn(this.element, action);
 		}
 
-		protected triggerOn<T>(element:HTMLElement, action:Action.Base<T>):T {
+		triggerGlobal<T>(action:Action.Base<T>):T {
+			return this.triggerOn(document.body, action);
+		}
+
+		private triggerOn<T>(element:HTMLElement, action:Action.Base<T>):T {
 			element.dispatchEvent(new CustomEvent(action.type, {bubbles:true, detail:action.data}));
 			return action.data;
 		}
@@ -24,7 +28,11 @@ namespace ymovie.view {
 			this.listenOn(this.element, type, listener);
 		}
 
-		protected listenOn<T>(element:HTMLElement, type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
+		listenGlobal<T>(type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
+			this.listenOn(document.body, type, listener);
+		}
+
+		private listenOn<T>(element:HTMLElement, type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
 			element.addEventListener(Action.Base.getType(type), listener);
 		}
 

@@ -11,17 +11,24 @@ namespace ymovie.tv.type.Action {
 		}
 	}
 
-	export class CatalogueItemSelected extends Base<Catalogue.AnyItem> {}
+	export class CatalogueItemSelected extends Base<CatalogueItemSelectedData> {}
 	export class CatalogueItemFocused extends Base<CatalogueItemFocusedData> {}
 	export class StreamFocused extends Base<StreamFocusedData> {}
 	
 	export class RequestFocus extends Base<Focus.IFocusable> {}
 	export class ShowScreen extends Base<ScreenId> {}
+	export class SccMediaLoaded extends Base<SccMediaLoadedData> {}
 	export class StreamsLoaded extends Base<StreamsLoadedData> {}
 	export class BlurStreams extends Base<undefined> {
 		constructor() {
 			super(undefined);
 		}
+	}
+
+	export type CatalogueItemSelectedData = {
+		readonly data:Catalogue.AnyItem;
+		readonly component:Focus.IFocusable;
+		readonly element:HTMLElement;
 	}
 
 	export type CatalogueItemFocusedData = {
@@ -36,8 +43,13 @@ namespace ymovie.tv.type.Action {
 		readonly element:HTMLElement;
 	}
 
-	type StreamsLoadedData = {
-		readonly item:Media.PlayableScc;
+	export type SccMediaLoadedData = {
+		readonly item:Catalogue.AnyItem;
+		readonly media:Array<Media.Scc>;
+	}
+
+	export type StreamsLoadedData = {
+		readonly media:Media.PlayableScc;
 		readonly streams:Array<Media.Stream>;
 	}
 }
