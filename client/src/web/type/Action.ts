@@ -19,6 +19,7 @@ namespace ymovie.web.type.Action {
 	export class ResolveStreams extends Base<ResolveStreamsData> {}
 	export class ResolveStreamUrl extends Base<ResolveStreamUrlData> {}
 	export class Play extends Base<PlayData> {}
+	export class ShowNotification extends Base<ShowNotificationData> {}
 
 	export type SearchData = {
 		query?:string;
@@ -44,5 +45,11 @@ namespace ymovie.web.type.Action {
 	export type CatalogueItemSelectedData = {
 		item:Catalogue.AnyItem;
 		replace?:boolean;
+	}
+
+	type ShowNotificationData = {
+		title:string;
+		message:string;
+		html:boolean;
 	}
 }

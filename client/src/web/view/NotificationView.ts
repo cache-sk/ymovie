@@ -23,8 +23,12 @@ namespace ymovie.web.view {
 			DOM.clean(this.message);
 			if(this.data?.title)
 				DOM.append(this.title, this.data.title);
-			if(this.data?.message)
-				DOM.append(this.message, this.data.message);
+			if(this.data?.message) {
+				if(this.data.html)
+					this.message.innerHTML = this.data.message;
+				else
+					DOM.append(this.message, this.data.message);
+			}
 			return super.render();
 		}
 
@@ -35,5 +39,6 @@ namespace ymovie.web.view {
 	type Data = undefined | {
 		title:string;
 		message:string;
+		html:boolean;
 	}
 }

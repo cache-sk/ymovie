@@ -1,4 +1,5 @@
 .WebshareSetup input[type=text],
+.TVSetup input[type=text],
 .KodiSetup input[type=text],
 .WebshareSetup input[type=password],
 .KodiSetup input[type=password] {
@@ -6,6 +7,7 @@
 }
 
 .WebshareSetup input[type=submit],
+.TVSetup input[type=submit],
 .KodiSetup input[type=submit] {
 	background-image: var(--image-play);
 	background-position: center;
@@ -41,17 +43,20 @@
 }
 
 .WebshareSetup p,
+.TVSetup p,
 .KodiSetup p {
 	color: #999;
 	margin: 10px 0 0 0;
 }
 
 .WebshareSetup p strong,
+.TVSetup p strong,
 .KodiSetup p strong {
 	white-space: nowrap;
 }
 
-.WebshareSetup {
+.WebshareSetup,
+.TVSetup {
 	margin: 0 0 30px 0;
 }
 
@@ -85,9 +90,20 @@
 	line-height: 2.2em;
 }
 
+.TVSetup input[type=text],
 .KodiSetup input[type=text] {
 	width: calc(100% - 40px);
 	margin-right: 10px;
+}
+
+.TVSetup.disabled input,
+.TVSetup.disabled p {
+	display: none;
+}
+
+.TVSetup.disabled::after {
+	color: #999;
+	content: "Available after Websher authentication.";
 }
 
 .DiscoveryHeader {

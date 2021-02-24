@@ -13,8 +13,11 @@
 		"compile-tv": "tsc --project client/tsconfig-tv.json",
 		"compile-web": "tsc --project client/tsconfig-web.json",
 		"prepare-client": "node client/build/prepare.js",
-		"start": "npm run build && node dist/server/index.js",
-		"start-debug": "npm run build && node --inspect dist/server/index.js debug"
+		"run": "node dist/server/index.js",
+		"run-debug": "node --inspect dist/server/index.js debug",
+		"start": "npm run build && npm run run",
+		"start-debug": "npm run build && npm run run-debug",
+		"build-run-server-debug": "npm run build-server && npm run run-debug"
 	},
 	"license": "MIT",
 	"dependencies": {

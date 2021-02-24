@@ -30,6 +30,13 @@
 			"group": "build"
 		},
 		{
+			"label": "Build & Run Server",
+			"type": "npm",
+			"script": "build-run-server-debug",
+			"problemMatcher": ["$tsc"],
+			"group": "build"
+		},
+		{
 			"label": "Compile TV",
 			"type": "npm",
 			"script": "compile-tv",

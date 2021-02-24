@@ -52,6 +52,7 @@ namespace ymovie.web.view {
 			this.listen(Action.GoHome, event => this.nav?.goHome(event.detail));
 			this.listen(Action.ShowSetup, event => this.nav?.goSetup(event.detail));
 			this.listen(Action.ShowAbout, event => this.nav?.goAbout(event.detail));
+			this.listen(Action.ShowNotification, event => this.showNotification(event.detail.title, event.detail.message, event.detail.html));
 			this.listen(Action.Play, event => this.play(event.detail));
 			
 			this.ga.init();
@@ -124,8 +125,8 @@ namespace ymovie.web.view {
 			this.toggleClass("loading", toggle);
 		}
 		
-		showNotification(title:string, message:string) {
-			this.notificationView?.update({title, message});
+		showNotification(title:string, message:string, html:boolean=false) {
+			this.notificationView?.update({title, message, html});
 		}
 
 		async loadCatalogue(data:Array<Catalogue.AnyItem> | undefined, command:() => Promise<Array<Catalogue.AnyItem> | undefined>, type?:string):Promise<any> {

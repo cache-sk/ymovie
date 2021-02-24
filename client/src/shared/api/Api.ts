@@ -11,12 +11,14 @@ namespace ymovie.api {
 		static KEY_UUID = "UUID";
 		static KEY_WEBSHARE_TOKEN = "WEBSHARE_TOKEN";
 		
-		scc:Scc.Api;
-		webshare:Webshare.Api;
+		private ymovie:YMovie.Api;
+		private scc:Scc.Api;
+		private webshare:Webshare.Api;
 
 		readonly webshareStatusChanged = new Signal1<type.Status>();
 
 		constructor(){
+			this.ymovie = new YMovie.Api();
 			this.scc = new Scc.Api(this.uuid);
 			this.webshare = new Webshare.Api(this.uuid);
 		}
@@ -25,7 +27,7 @@ namespace ymovie.api {
 			await this.checkWebshareStatus();
 		}
 		
-		get uuid(){
+		private get uuid(){
 			const result = Storage.get(Api.KEY_UUID);
 			if(result)
 				return result;
@@ -35,7 +37,7 @@ namespace ymovie.api {
 			return uuid;
 		}
 		
-		set uuid(value){
+		private set uuid(value){
 			if(value === null)
 				Storage.remove(Api.KEY_UUID);
 			else
@@ -115,8 +117,8 @@ namespace ymovie.api {
 			return Webshare.Parser.fileInfoToStreams(ident, await this.webshare.fileInfo(ident));
 		}
 		
-		async resolveStreamUrl(stream:Media.Stream){
-			return await this.webshare.getLink(stream.ident, <string>this.webshareToken);
+		resolveStreamUrl(stream:Media.Stream){
+			return this.webshare.getLink(stream.ident, <string>this.webshareToken);
 		}
 		
 		async loginWebshare(username:string, password:string) {
@@ -145,6 +147,10 @@ namespace ymovie.api {
 			}
 			this.webshareStatusChanged.dispatch(success ? "ok" : "na");
 			return success;
+		}
+
+		pair(token:string, deviceId:string) {
+			return this.ymovie.pair(token, deviceId);
 		}
 	}
 }
