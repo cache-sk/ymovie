@@ -1,6 +1,6 @@
 namespace ymovie.tv.util.Focus {
 	export class Manager {
-		focusedComponentChanged:((component:IFocusable) => void) | undefined;
+		focusedComponentChanged:((component:IFocusable | undefined) => void) | undefined;
 
 		private _focusedComponent:IFocusable | undefined;
 		private virtualXOffset:number = 0;
@@ -8,7 +8,11 @@ namespace ymovie.tv.util.Focus {
 
 		constructor() {}
 
-		set focusedComponent(value:IFocusable) {
+		get focusedComponent():IFocusable | undefined {
+			return this._focusedComponent;
+		}
+
+		set focusedComponent(value:IFocusable | undefined) {
 			if(this._focusedComponent == value)
 				return;
 			

@@ -7,14 +7,15 @@ namespace ymovie.tv.view {
 	import ScreenId = type.ScreenId;
 
 	export class App extends ymovie.view.App {
-		api = new api.Api();
-		nav = new Nav.Manager();
-		focus = new Focus.Manager();
-		header = new Header();
-		mediaScreen = new media.MediaScreen();
-		searchScreen = new search.SearchScreen();
-		setupScreen = new setup.SetupScreen();
-		aboutScreen = new about.AboutScreen();
+		readonly api = new api.Api();
+		readonly nav = new Nav.Manager();
+		readonly focus = new Focus.Manager();
+		readonly header = new Header();
+		readonly context:type.Context = {deviceId:this.api.deviceId, menu:this.menu};
+		readonly mediaScreen = new media.MediaScreen(this.context);
+		readonly searchScreen = new search.SearchScreen(this.context);
+		readonly setupScreen = new setup.SetupScreen(this.context);
+		readonly aboutScreen = new about.AboutScreen(this.context);
 
 		static async init(){
 			const result = new App();
@@ -28,13 +29,12 @@ namespace ymovie.tv.view {
 			this.listen(Action.RequestFocus, event => this.requestFocus(event.detail));
 			this.listen(Action.ShowScreen, event => this.showScreen(event.detail));
 
-			//await this.api.init();
+			await this.api.init();
 
 			this.nav.changed.add(this.onNavChange.bind(this));
 			this.nav.init();
 
 			this.render();
-			this.mediaScreen.appendCatalogue(this.menu);
 			this.initDeeplink();
 			this.element.classList.toggle("initializing", false);
 
@@ -75,6 +75,11 @@ namespace ymovie.tv.view {
 			return;
 		}
 
+		ensureFocus(component:Focus.IFocusable) {
+			if(!this.focus.focusedComponent)
+				this.requestFocus(component);
+		}
+
 		requestFocus(component:Focus.IFocusable) {
 			this.focus.focusedComponent = component;
 		}
@@ -94,12 +99,23 @@ namespace ymovie.tv.view {
 			const nav = this.nav;
 			const path = data.path;
 			let screenId:ScreenId = "media";
-			if(nav.isAbout(path))
+			if(nav.isAbout(path)) {
 				screenId = "about";
-			else if(nav.isSearch(path))
+				this.aboutScreen.activate(!this.focus.focusedComponent);
+				this.ensureFocus(this.header.about);
+			} else if(nav.isSearch(path)) {
 				screenId = "search";
-			else if(nav.isSetup(path))
+				this.searchScreen.activate(!this.focus.focusedComponent);
+				this.ensureFocus(this.header.search);
+			} else if(nav.isSetup(path)) {
 				screenId = "setup";
+				this.setupScreen.activate(!this.focus.focusedComponent);
+				this.ensureFocus(this.header.setup);
+			} else {
+				screenId = "media";
+				this.mediaScreen.activate(!this.focus.focusedComponent);
+				this.ensureFocus(this.header.media);
+			}
 
 			util.ClassName.updateType(this.element, "screen", screenId);
 		}

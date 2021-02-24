@@ -1,9 +1,8 @@
 namespace ymovie.tv.view.setup {
-	import DOM = ymovie.util.DOM;
-
 	export class SetupScreen extends Screen {
 		render() {
-			this.append(DOM.h1("Setup"));
+			this.clean();
+			this.append(new Pair(this.context.deviceId).render());
 			return super.render();
 		}
 	}

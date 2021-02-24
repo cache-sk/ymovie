@@ -1,16 +1,18 @@
 namespace ymovie.tv.view.media {
 	import Action = type.Action;
 	import ClassName = util.ClassName;
+	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
 	import Media = ymovie.type.Media;
 
 	export class MediaScreen extends Screen {
-		private rowContainer:HTMLDivElement;
-		private detail = new Detail();
+		private readonly rowContainer:HTMLDivElement;
+		private readonly detail:Detail;
 		private lastFocusedCatalogue:Action.CatalogueItemFocusedData | undefined;
 
-		constructor() {
-			super();
+		constructor(context:Context) {
+			super(context);
+			this.detail = new Detail(context);
 			this.rowContainer = DOM.div("rows");
 			this.updateActiveFocus("rows");
 
@@ -21,16 +23,23 @@ namespace ymovie.tv.view.media {
 			this.listenGlobal(Action.SccMediaLoaded, this.onSccMediaLoaded.bind(this));
 		}
 
+		activate(requestFocus:boolean) {
+			super.activate(requestFocus);
+
+			if(!this.rowContainer.children.length)
+				this.appendCatalogue(this.context.menu, requestFocus);
+		}
+
 		render() {
 			this.append([this.detail.render(), this.rowContainer]);
 			return super.render();
 		}
 
-		appendCatalogue(data:RowData) {
+		private appendCatalogue(data:RowData, requestFocus:boolean) {
 			const row = new Row(data);
 			DOM.append(this.rowContainer, row.render());
 			const item = row.getFirst();
-			if(item)
+			if(requestFocus && item)
 				this.trigger(new Action.RequestFocus(item));
 		}
 
@@ -75,7 +84,7 @@ namespace ymovie.tv.view.media {
 		}
 
 		private onSccMediaLoaded(event:CustomEvent<Action.SccMediaLoadedData>) {
-			this.appendCatalogue(event.detail.media);
+			this.appendCatalogue(event.detail.media, true);
 		}
 	}
 

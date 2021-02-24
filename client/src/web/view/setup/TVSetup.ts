@@ -37,9 +37,9 @@ namespace ymovie.web.view.setup {
 		async process() {
 			const deviceId = this.input.value;
 			if(this.api.webshareToken && deviceId) {
-				await this.api.pair(this.api.webshareToken, deviceId);
+				await this.api.pairPut(this.api.webshareToken, deviceId);
 				const title = `Pair TV Success`;
-				const message = `Webshare authentication now is available for TV <strong>${deviceId}</strong>.`;
+				const message = `Webshare authentication is now available for TV <strong>${deviceId}</strong>.`;
 				this.trigger(new Action.ShowNotification({title, message, html:true}));
 			}
 		}

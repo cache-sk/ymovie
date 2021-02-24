@@ -1,11 +1,6 @@
-.Header,
-.Screen,
-.Detail {
+.Header {
 	position: absolute;
 	padding: 5vh 5vw;
-}
-
-.Header {
 	white-space: nowrap;
 }
 
@@ -31,6 +26,8 @@
 }
 
 .Screen {
+	position: absolute;
+	padding: 14vh 5vw;
 	display: none;
 	left: 0;
 	top: 0;
@@ -158,7 +155,6 @@
 	top: 0;
 	right: 0;
 	bottom: 0;
-	padding-top: 14vh;
 	padding-right: 40%;
 }
 
@@ -195,7 +191,7 @@
 .Detail .Streams {
 	position: absolute;
 	left: calc(60% + 20px);
-	top: 100px;
+	top: 14vh;
 	right: 5%;
 	transition: transform .5s;
 	backface-visibility: hidden;
@@ -235,4 +231,112 @@
 
 .Detail .Stream .extra {
 	font-size: .8em;
+}
+
+.SetupScreen {
+	padding-top: 25vh;
+}
+
+@keyframes pair-blink {
+	50% {opacity: .5;}
+}
+
+.Pair {
+	position: relative;
+}
+
+.Pair::before {
+	content: "";
+	position: absolute;
+	width: 9em;
+	height: 9em;
+	left: calc(50% - 4.5em);
+	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;"><path fill="%23ffffff" d="M302.933,42.667h-51.2c-7.074,0-12.8,5.726-12.8,12.8s5.726,12.8,12.8,12.8h51.2c7.074,0,12.8-5.726,12.8-12.8 S310.007,42.667,302.933,42.667z"/><path fill="%23ffffff" d="M358.4,0H153.6c-28.228,0-51.2,22.972-51.2,51.2v409.6c0,28.228,22.972,51.2,51.2,51.2h204.8 c28.228,0,51.2-22.972,51.2-51.2V51.2C409.6,22.972,386.628,0,358.4,0z M384,460.8c0,14.14-11.46,25.6-25.6,25.6H153.6 c-14.14,0-25.6-11.46-25.6-25.6V51.2c0-14.14,11.46-25.6,25.6-25.6h204.8c14.14,0,25.6,11.46,25.6,25.6V460.8z"/><circle fill="%23ffffff" cx="256" cy="443.733" r="25.6"/><circle fill="%23ffffff" cx="209.067" cy="55.467" r="12.8"/></svg>') no-repeat center 0 / contain;
+	animation: 1s pair-blink infinite;
+}
+
+.webshare-ok .Pair::before {
+	animation: none;
+	opacity: .5;
+}
+
+.Pair h1 {
+	position: relative;
+	top: 0;
+	text-align: left;
+	display: inline-block;
+	background: #00000099;
+	padding: .1em .2em;
+	margin: 2em 0 1.5em 50%;
+}
+
+.Pair h1::before {
+	content: "TV id:\00000a";
+	white-space: nowrap;
+	font-size: 1rem;
+	position: absolute;
+	top: -1.2em;
+	left: 0;
+	background: white;
+	padding: .1em .2em;
+	line-height: 1em;
+	font-weight: normal;
+	color: black;
+}
+
+.Pair p {
+	text-align: center;
+	width: 50%;
+	margin: 1em auto 0 auto;
+	background: #00000099;
+	padding: .1em .2em;
+}
+
+.webshare-ok .Pair p {
+	color: #ffffff66;
+}
+
+.webshare-ok .Pair p::before {
+	content: "TV successfully paired.";
+	color: white;
+	display: block;
+	font-weight: bold;
+	font-size: 2em;
+}
+
+.Pair p a {
+	color: inherit;
+	text-decoration-style: dotted;
+}
+
+.webshare-ok .Detail .Pair {
+	display: none;
+}
+
+body:not(.webshare-ok) .Detail .Streams {
+	top: calc(14vh + 6em);
+}
+
+body:not(.webshare-ok) .Detail .Stream {
+	opacity: .5;
+}
+
+.Detail .Pair {
+	margin-top: -6em;
+}
+
+.Detail .Pair::before {
+	width: 4em;
+	height: 4em;
+}
+
+.Detail .Pair h1 {
+	font-size: 1em;
+	margin-bottom: 1em;
+}
+
+.Detail .Pair p {
+	width: initial;
+	background: none;
+	margin: 0 0 1em 0;
 }

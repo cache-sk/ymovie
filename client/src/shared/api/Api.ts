@@ -8,12 +8,12 @@ namespace ymovie.api {
 	import Signal1 = util.Signal.Signal1;
 
 	export abstract class Api {
-		static KEY_UUID = "UUID";
-		static KEY_WEBSHARE_TOKEN = "WEBSHARE_TOKEN";
+		static readonly KEY_UUID = "UUID";
+		static readonly KEY_WEBSHARE_TOKEN = "WEBSHARE_TOKEN";
 		
-		private ymovie:YMovie.Api;
-		private scc:Scc.Api;
-		private webshare:Webshare.Api;
+		protected readonly ymovie:YMovie.Api;
+		protected readonly scc:Scc.Api;
+		protected readonly webshare:Webshare.Api;
 
 		readonly webshareStatusChanged = new Signal1<type.Status>();
 
@@ -149,8 +149,8 @@ namespace ymovie.api {
 			return success;
 		}
 
-		pair(token:string, deviceId:string) {
-			return this.ymovie.pair(token, deviceId);
+		pairPut(token:string, deviceId:string) {
+			return this.ymovie.pairPut(token, deviceId);
 		}
 	}
 }

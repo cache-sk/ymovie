@@ -1,6 +1,7 @@
 namespace ymovie.tv.view.media {
 	import Action = type.Action;
 	import DataComponent = ymovie.view.DataComponent;
+	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
@@ -10,11 +11,11 @@ namespace ymovie.tv.view.media {
 		private readonly background:HTMLDivElement;
 		private readonly streams:Streams;
 
-		constructor() {
+		constructor(context:Context) {
 			super("div", undefined);
 
 			this.background = DOM.div("background");
-			this.streams = new Streams();
+			this.streams = new Streams(context);
 
 			this.listenGlobal(Action.StreamsLoaded, this.onStreamsLoaded.bind(this));
 		}
@@ -60,10 +61,11 @@ namespace ymovie.tv.view.media {
 
 	class Streams extends DataComponent<HTMLDivElement, StreamsData> {
 		private first:Stream | undefined;
+		private readonly pair:Pair;
 
-		constructor() {
+		constructor(context:Context) {
 			super("div", undefined);
-
+			this.pair = new Pair(context.deviceId)
 			this.listen(Action.StreamFocused, this.onStreamFocused.bind(this));
 		}
 
@@ -75,6 +77,7 @@ namespace ymovie.tv.view.media {
 			this.clean();
 			this.first = undefined;
 			this.element.style.transform = "none";
+			this.append(this.pair.render());
 			if(this.data)
 				for(const item of this.data) {
 					const stream = new Stream(item);

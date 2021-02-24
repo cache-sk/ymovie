@@ -1,10 +1,14 @@
 namespace ymovie.tv.view {
 	import Action = type.Action;
 	import Component = ymovie.view.Component;
-	import Focus = util.Focus;
 	import ScreenId = type.ScreenId;
 
 	export class Header extends Component<HTMLDivElement> {
+		readonly media = new Item("media", "Media");
+		readonly search = new Item("search", "Search");
+		readonly setup = new Item("setup", "Setup");
+		readonly about = new Item("about", "About");
+
 		constructor() {
 			super("div");
 		}
@@ -12,12 +16,10 @@ namespace ymovie.tv.view {
 		render() {
 			this.clean();
 			this.append([
-				new Item("media", "Media").render(),
-				new Item("search", "Search").render(),
-				new Item("setup", "Setup").render(),
-				new Item("about", "About").render()
-			]);
-
+				this.media.render(),
+				this.search.render(),
+				this.setup.render(),
+				this.about.render()]);
 			return super.render();
 		}
 	}
@@ -39,12 +41,9 @@ namespace ymovie.tv.view {
 			return super.render();
 		}
 
-		executeFocusEvent(event:Focus.Event):boolean {
-			if(event.action == "submit") {
-				this.trigger(new Action.ShowScreen(this.id));
-				return true;
-			}
-			return false;
+		focus() {
+			super.focus();
+			this.trigger(new Action.ShowScreen(this.id));
 		}
 	}
 }
