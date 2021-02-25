@@ -60,10 +60,16 @@ namespace ymovie.util.Util {
 	}
 
 	export function formatDuration(value:number | undefined):string | undefined {
-		if(!value)
-			return undefined;
-		const iso = new Date(value  * 1000).toISOString().substr(11, 5);
-		return iso[0] === "0" ? iso.substr(1) : iso;
+		let seconds = value ? value | 0 : 0;
+		let minutes = (seconds / 60) | 0;
+		seconds %= 60;
+		let hours = (minutes / 60) | 0;
+		minutes %= 60;
+		return `${hours}:${pad(minutes)}:${pad(seconds)}`;
+	}
+
+	function pad(value:number):string {
+		return value < 10 ? `0${value}` : value + "";
 	}
 
 	export function containsExtension(url:string):boolean {

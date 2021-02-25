@@ -4,6 +4,7 @@ namespace ymovie.tv.view.player {
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
+	import Util = ymovie.util.Util;
 
 	export class PlayerScreen extends Screen {
 		private data:PlayerScreenData;
@@ -183,7 +184,7 @@ namespace ymovie.tv.view.player {
 
 		render() {
 			this.thumb.style.left = `${(this.data.currentTime / this.data.duration * 100)}%`;
-			this.time.innerHTML = `${this.formatTime(this.data.currentTime)} / ${this.formatTime(this.data.duration)}`;
+			this.time.innerHTML = `${Util.formatDuration(this.data.currentTime)} / ${Util.formatDuration(this.data.duration)}`;
 			return super.render();
 		}
 
@@ -201,19 +202,6 @@ namespace ymovie.tv.view.player {
 				return true;
 			}
 			return false;
-		}
-
-		formatTime(value:number):string {
-			let seconds = value | 0;
-			let minutes = (seconds / 60) | 0;
-			seconds %= 60;
-			let hours = (minutes / 60) | 0;
-			minutes %= 60;
-			return `${hours}:${this.pad(minutes)}:${this.pad(seconds)}`;
-		}
-
-		pad(value:number):string {
-			return value < 10 ? `0${value}` : value + "";
 		}
 	}
 
