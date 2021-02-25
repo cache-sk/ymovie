@@ -45,6 +45,7 @@ namespace ymovie.tv.view.player {
 			this.update();
 			if(this.previousFocus)
 				this.trigger(new Action.RequestFocus(this.previousFocus));
+			this.previousFocus = undefined;
 		}
 
 		render() {

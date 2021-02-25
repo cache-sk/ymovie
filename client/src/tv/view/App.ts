@@ -90,7 +90,7 @@ namespace ymovie.tv.view {
 		activateScreen(screen:Screen, focus?:Focus.IFocusable) {
 			const screens:Array<Screen> = [this.aboutScreen, this.mediaScreen, this.playerScreen, this.searchScreen, this.setupScreen];
 			for(const item of screens)
-				if(item != screen)
+				if(item != screen && item.isActive)
 					item.deactivate();
 			screen.activate(this.focus.focusedComponent);
 			if(focus)

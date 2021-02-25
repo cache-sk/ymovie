@@ -5,6 +5,7 @@ namespace ymovie.tv.view {
 
 	export abstract class Screen extends Component<HTMLDivElement> {
 		protected readonly context:Context;
+		private active:boolean = false;
 
 		constructor(context:Context) {
 			super("div");
@@ -12,8 +13,16 @@ namespace ymovie.tv.view {
 			this.element.classList.add("Screen");
 		}
 
-		activate(_currentFocus:Focus.IFocusable | undefined) {}
+		get isActive() {
+			return this.active;
+		}
 
-		deactivate() {}
+		activate(_currentFocus:Focus.IFocusable | undefined) {
+			this.active = true;
+		}
+
+		deactivate() {
+			this.active = false;
+		}
 	}
 }
