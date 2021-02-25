@@ -99,6 +99,7 @@ namespace ymovie.tv.view.media {
 	class Stream extends FocusableDataComponent<HTMLDivElement, StreamData> {
 		constructor(data:StreamData) {
 			super("div", data);
+			this.element.addEventListener("click", this.onClick.bind(this));
 		}
 
 		getFocusLayer():string {
@@ -110,12 +111,16 @@ namespace ymovie.tv.view.media {
 			this.trigger(new Action.StreamFocused({data:this.data.stream, component:this, element:this.element}));
 		}
 
+		submit() {
+			this.trigger(new Action.Play(this.data));
+		}
+
 		executeFocusEvent(event:Focus.Event):boolean {
 			if(event.action === "back" || event.action === "left") {
 				this.trigger(new Action.BlurStreams());
 				return true;
 			} else if(event.action === "submit") {
-				this.trigger(new Action.Play(this.data));
+				this.submit();
 				return true;
 			}
 			return false;
@@ -138,6 +143,11 @@ namespace ymovie.tv.view.media {
 
 		add(className:string, value:string | undefined | null):DOM.Content {
 			return value ? DOM.span(className, value) : undefined;
+		}
+
+		onClick() {
+			this.focus();
+			this.submit();
 		}
 	}
 

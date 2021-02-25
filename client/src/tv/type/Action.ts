@@ -21,6 +21,8 @@ namespace ymovie.tv.type.Action {
 	export class StreamsLoaded extends Base<StreamsLoadedData> {}
 	export class Play extends Base<PlayData> {}
 	export class SeekBy extends Base<number> {}
+	export class SeekTo extends Base<number> {}
+	export class EmulateFocusAction extends Base<Focus.Action> {}
 	export class TogglePlay extends Base<undefined> {
 		constructor() {
 			super(undefined);
@@ -48,6 +50,7 @@ namespace ymovie.tv.type.Action {
 		readonly data:Catalogue.AnyItem;
 		readonly component:Focus.IFocusable;
 		readonly element:HTMLElement;
+		readonly scroll:boolean;
 	}
 
 	export type StreamFocusedData = {

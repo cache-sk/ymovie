@@ -18,7 +18,9 @@ namespace ymovie.tv.view.player {
 			super(context);
 
 			this.listen(Action.SeekBy, this.onSeekBy.bind(this));
+			this.listen(Action.SeekTo, this.onSeekTo.bind(this));
 			this.listen(Action.TogglePlay, this.onTogglePlay.bind(this));
+			this.element.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
 
 		private set idle(value:boolean) {
@@ -29,9 +31,14 @@ namespace ymovie.tv.view.player {
 			this.element.classList.toggle("idle", value);
 		}
 
+		private set loading(value:boolean) {
+			this.element.classList.toggle("loading", value);
+		}
+
 		update(data?:PlayerScreenData):HTMLElement {
 			this.data = data;
 			this.idle = false;
+			this.controls.update({duration:0, currentTime:0});
 			return this.render();
 		}
 
@@ -51,8 +58,7 @@ namespace ymovie.tv.view.player {
 
 		render() {
 			this.clean();
-
-			this.element.classList.toggle("loading", !!this.data);
+			this.loading = !!this.data;
 
 			if(this.video) {
 				this.video.pause();
@@ -90,6 +96,19 @@ namespace ymovie.tv.view.player {
 
 			this.element.classList.toggle("paused", this.video.paused);
 		}
+		
+		private seek(time:number) {
+			if(!this.video?.duration)
+				return;
+
+			const duration = this.video.duration;
+			const currentTime = Math.max(0, Math.min(duration, time));
+			this.controls.update({duration, currentTime});
+
+			clearTimeout(this.seekTimer);
+			this.seekTimer = setTimeout(this.onApplySeek.bind(this), 1000);
+			this.idle = false;
+		}
 
 		private onVideoTimeUpdate() {
 			this.updateControls();
@@ -105,22 +124,22 @@ namespace ymovie.tv.view.player {
 
 		private onVideoSeeking() {
 			this.updateControls();
-			this.element.classList.toggle("loading", true);
+			this.loading = true;
 		}
 
 		private onVideoSeeked() {
 			this.updateControls();
-			this.element.classList.toggle("loading", false);
+			this.loading = false;
 		}
 
 		private onVideoPlaying() {
 			this.updateControls();
-			this.element.classList.toggle("loading", false);
+			this.loading = false;
 		}
 
 		private onVideoWaiting() {
 			this.updateControls();
-			this.element.classList.toggle("loading", true);
+			this.loading = true;
 		}
 
 		private onVideoPlay() {
@@ -143,24 +162,22 @@ namespace ymovie.tv.view.player {
 		}
 
 		private onSeekBy(event:CustomEvent<number>) {
-			if(!this.video?.duration)
-				return;
-			const delta = event.detail;
-			const duration = this.video.duration;
-			const currentTime = Math.max(0, Math.min(duration, this.controls.data.currentTime + delta));
-			this.controls.update({duration, currentTime});
+			this.seek(this.controls.data.currentTime + event.detail);
+		}
 
-			clearTimeout(this.seekTimer);
-			this.seekTimer = setTimeout(this.onApplySeek.bind(this), 1000);
-			this.idle = false;
+		private onSeekTo(event:CustomEvent<number>) {
+			this.seek(event.detail);
 		}
 
 		private onApplySeek() {
 			clearTimeout(this.seekTimer);
 			this.seekTimer = undefined;
-			if(!this.video?.duration)
-				return;
-			this.video.currentTime = this.controls.data.currentTime;
+			if(this.video)
+				this.video.currentTime = this.controls.data.currentTime;
+		}
+
+		private onMouseMove() {
+			this.idle = false;
 		}
 	}
 
@@ -180,12 +197,18 @@ namespace ymovie.tv.view.player {
 			this.thumb = DOM.div("thumb");
 			this.time = DOM.div("time");
 			this.append([this.thumb, this.time]);
+			this.thumb.addEventListener("click", this.onThumbClick.bind(this));
+			this.element.addEventListener("click", this.onClick.bind(this));
 		}
 
 		render() {
 			this.thumb.style.left = `${(this.data.currentTime / this.data.duration * 100)}%`;
 			this.time.innerHTML = `${Util.formatDuration(this.data.currentTime)} / ${Util.formatDuration(this.data.duration)}`;
 			return super.render();
+		}
+
+		submit() {
+			this.trigger(new Action.TogglePlay());
 		}
 
 		executeFocusEvent(event:Focus.Event):boolean {
@@ -198,10 +221,21 @@ namespace ymovie.tv.view.player {
 				return true;
 			}
 			if(event.action === "submit") {
-				this.trigger(new Action.TogglePlay());
+				this.submit();
 				return true;
 			}
 			return false;
+		}
+
+		onThumbClick(event:MouseEvent) {
+			event.stopImmediatePropagation();
+			this.submit();
+		}
+
+		onClick(event:MouseEvent) {
+			const rect = this.element.getBoundingClientRect();
+			const time = (event.clientX - rect.x) / rect.width * this.data.duration;
+			this.trigger(new Action.SeekTo(time));
 		}
 	}
 

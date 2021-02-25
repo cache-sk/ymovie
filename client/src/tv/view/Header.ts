@@ -33,6 +33,7 @@ namespace ymovie.tv.view {
 			this.id = id;
 			this.label = label;
 			this.element.classList.add(id);
+			this.element.addEventListener("click", this.onClick.bind(this));
 		}
 
 		render() {
@@ -44,6 +45,10 @@ namespace ymovie.tv.view {
 		focus() {
 			super.focus();
 			this.trigger(new Action.ShowScreen(this.id));
+		}
+
+		onClick() {
+			this.trigger(new Action.RequestFocus(this));
 		}
 	}
 }

@@ -30,6 +30,7 @@ namespace ymovie.tv.view {
 			this.listen(Action.RequestFocus, event => this.requestFocus(event.detail));
 			this.listen(Action.ShowScreen, event => this.showScreen(event.detail));
 			this.listen(Action.Play, this.onPlay.bind(this));
+			this.listen(Action.EmulateFocusAction, event => this.executeFocusAction(event.detail));
 
 			await this.api.init();
 
@@ -97,6 +98,13 @@ namespace ymovie.tv.view {
 				this.ensureFocus(focus);
 		}
 
+		executeFocusAction(action:Focus.Action) {
+			const components = this.trigger(new Action.RegisterFocusable());
+			const result = this.focus.executeEvent(components, {action});
+			if(!result && action === "back")
+				this.nav.goBack();
+		}
+
 		async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
 			const {data} = event.detail;
 			if(data instanceof Scc.CatalogueLink)
@@ -141,6 +149,7 @@ namespace ymovie.tv.view {
 		}
 
 		onDocumentKeyDown(event:KeyboardEvent) {
+			event.preventDefault();
 			let action:Focus.Action | undefined;
 			if(event.key == "ArrowLeft" || event.code == "Digit4")
 				action = "left";
@@ -156,14 +165,8 @@ namespace ymovie.tv.view {
 				action = "back";
 			else if(event.key == "Backspace")
 				action = "back";
-			if(!action)
-				return;
-			const components = this.trigger(new Action.RegisterFocusable());
-			const result = this.focus.executeEvent(components, {action});
-			event.preventDefault();
-			if(!result && action === "back")
-				this.nav.goBack();
-
+			if(action)
+				this.executeFocusAction(action);
 		}
 	}
 }
