@@ -191,6 +191,13 @@
 .Detail p {
 	clear: both;
 	margin-top: .5rem;
+	-webkit-mask: linear-gradient(to bottom,white 6rem, transparent 8rem);
+	mask: linear-gradient(to bottom,white 6rem, transparent 8rem);
+}
+
+.focus-stream .Detail p {
+	-webkit-mask: linear-gradient(to bottom,white 16rem, transparent 18rem);
+	mask: linear-gradient(to bottom,white 16rem, transparent 18rem);
 }
 
 .Detail .Streams {
