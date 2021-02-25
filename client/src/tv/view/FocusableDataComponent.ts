@@ -7,7 +7,7 @@ namespace ymovie.tv.view {
 			this.data = data;
 		}
 
-		update(data:TData):HTMLElement {
+		update(data:TData):TElement {
 			this.data = data;
 			return this.render();
 		}

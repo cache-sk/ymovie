@@ -25,6 +25,10 @@
 	color: black;
 }
 
+.screen-player .Header {
+	display: none;
+}
+
 .Screen {
 	position: absolute;
 	padding: 4rem 2.5rem;
@@ -37,6 +41,7 @@
 
 .screen-about .AboutScreen,
 .screen-media .MediaScreen,
+.screen-player .PlayerScreen,
 .screen-search .SearchScreen,
 .screen-setup .SetupScreen {
 	display: block;
@@ -356,4 +361,92 @@ body:not(.webshare-ok) .Detail .Stream {
 	background: none;
 	margin: 0 0 1rem 0;
 	padding: 0;
+}
+
+.PlayerScreen {
+	background: black;
+}
+
+.PlayerScreen.loading::after {
+	content: "";
+	position: absolute;
+	width: 4rem;
+	height: 4rem;
+	left: calc(50% - 2rem);
+	top: calc(50% - 2rem);
+	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') no-repeat center / 100%;
+}
+
+.PlayerScreen video {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.PlayerScreen .Track {
+	position: absolute;
+	background: #ffffff66;
+	left: 50%;
+	width: 80%;
+	height: .5rem;
+	bottom: 8rem;
+	transform: translateX(-50%);
+}
+
+.PlayerScreen .Track.focused {
+	outline: none;
+}
+
+.PlayerScreen .Track .thumb {
+	position: absolute;
+	background: white;
+	width: 1rem;
+	height: 1rem;
+	color: white;
+	border-radius: 100%;
+	top: -.25rem;
+	transform: translateX(-50%);
+}
+
+.PlayerScreen .Track.focused .thumb {
+	border: .2rem solid #fec401;
+	top: -.45rem;
+	width: 1.4rem;
+	height: 1.4rem;
+}
+
+.PlayerScreen .Track .time {
+	position: absolute;
+	right: 0;
+	top: -1.5rem;
+}
+
+.PlayerScreen .PlayButton {
+	position: absolute;
+	left: 50%;
+	bottom: 4rem;
+	transform: translateX(-50%);
+	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.6 409.6"><path fill="%23ffffff" d="M204.8,0C91.648,0,0,91.648,0,204.8s91.648,204.8,204.8,204.8s204.8-91.648,204.8-204.8S317.952,0,204.8,0z M182.272,256c0,12.8-10.24,22.528-22.528,22.528c-12.8,0-22.528-10.24-22.528-22.528V153.6c-0.512-12.288,9.728-22.528,22.016-22.528c12.8,0,23.04,10.24,23.04,22.528V256zM272.896,256c0,12.8-10.24,22.528-22.528,22.528c-12.8,0-22.528-10.24-22.528-22.528V153.6c-0.512-12.288,9.728-22.528,22.016-22.528c12.8,0,23.04,10.24,23.04,22.528V256z"/></svg>') no-repeat center / 2rem;
+	width: 2rem;
+	height: 2rem;
+	overflow: hidden;
+	text-indent: 4rem;
+	border: none;
+}
+
+.PlayerScreen .PlayButton.paused {
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffffff" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 18v-12l10 6-10 6z"/></svg>');
+}
+
+.PlayerScreen .PlayButton.focused {
+	outline: none;
+	border: .2rem solid #fec401;
+	border-radius: 100%;
+	width: 2.3rem;
+	height: 2.3rem;
+	bottom: 3.85rem;
 }

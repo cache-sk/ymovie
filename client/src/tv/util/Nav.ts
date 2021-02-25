@@ -1,6 +1,7 @@
 namespace ymovie.tv.util.Nav {
 	export class Manager {
 		static PATH_ABOUT = "/about";
+		static PATH_PLAYER = "/player";
 		static PATH_SEARCH = "/search";
 		static PATH_SETUP = "/setup";
 
@@ -30,6 +31,14 @@ namespace ymovie.tv.util.Nav {
 
 		goHome() {
 			this.pushState(undefined, "");
+		}
+
+		goPlayer() {
+			this.pushState(undefined, "Player", `#${Manager.PATH_PLAYER}`);
+		}
+
+		isPlayer(path:string):boolean {
+			return path.startsWith(Manager.PATH_PLAYER);
 		}
 
 		goSearch() {

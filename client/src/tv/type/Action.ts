@@ -19,10 +19,17 @@ namespace ymovie.tv.type.Action {
 	export class ShowScreen extends Base<ScreenId> {}
 	export class SccMediaLoaded extends Base<SccMediaLoadedData> {}
 	export class StreamsLoaded extends Base<StreamsLoadedData> {}
+	export class Play extends Base<PlayData> {}
+	export class SeekBy extends Base<number> {}
 	export class BlurStreams extends Base<undefined> {
 		constructor() {
 			super(undefined);
 		}
+	}
+
+	export type PlayData = {
+		media:Media.Playable;
+		stream:Media.Stream;
 	}
 
 	export type CatalogueItemSelectedData = {

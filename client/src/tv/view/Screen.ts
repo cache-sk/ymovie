@@ -12,5 +12,7 @@ namespace ymovie.tv.view {
 		}
 
 		activate(_requestFocus:boolean) {}
+
+		deactivate() {}
 	}
 }

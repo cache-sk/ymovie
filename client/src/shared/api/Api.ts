@@ -117,7 +117,7 @@ namespace ymovie.api {
 			return Webshare.Parser.fileInfoToStreams(ident, await this.webshare.fileInfo(ident));
 		}
 		
-		resolveStreamUrl(stream:Media.Stream){
+		resolveStreamUrl(stream:Media.Stream):Promise<string> {
 			return this.webshare.getLink(stream.ident, <string>this.webshareToken);
 		}
 		

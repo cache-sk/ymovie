@@ -51,7 +51,7 @@ namespace ymovie.tv.view.media {
 		onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {
 			const streams = event.detail.streams
 				.sort((a, b) => ((a.width || 0) - (b.width || 0)) || ((a.size || 0) - (b.size || 0)));
-			this.streams.update(streams);
+			this.streams.update({media:event.detail.media, streams});
 			const first = this.streams.getFirst();
 			if(first)
 				this.trigger(new Action.RequestFocus(first));
@@ -80,8 +80,8 @@ namespace ymovie.tv.view.media {
 			this.element.style.transform = "none";
 			this.append(this.pair.render());
 			if(this.data)
-				for(const item of this.data) {
-					const stream = new Stream(item);
+				for(const item of this.data.streams) {
+					const stream = new Stream({media:this.data.media, stream:item});
 					if(!this.first) this.first = stream;
 					this.append(stream.render());
 				}
@@ -94,10 +94,10 @@ namespace ymovie.tv.view.media {
 		}
 	}
 
-	type StreamsData = Array<Media.Stream> | undefined;
+	type StreamsData = {media:Media.Playable, streams:Array<Media.Stream>} | undefined;
 
-	class Stream extends FocusableDataComponent<HTMLDivElement, Media.Stream> {
-		constructor(data:Media.Stream) {
+	class Stream extends FocusableDataComponent<HTMLDivElement, StreamData> {
+		constructor(data:StreamData) {
 			super("div", data);
 		}
 
@@ -107,19 +107,22 @@ namespace ymovie.tv.view.media {
 
 		focus() {
 			super.focus();
-			this.trigger(new Action.StreamFocused({data:this.data, component:this, element:this.element}));
+			this.trigger(new Action.StreamFocused({data:this.data.stream, component:this, element:this.element}));
 		}
 
 		executeFocusEvent(event:Focus.Event):boolean {
 			if(event.action === "back" || event.action === "left") {
 				this.trigger(new Action.BlurStreams());
 				return true;
+			} else if(event.action === "submit") {
+				this.trigger(new Action.Play(this.data));
+				return true;
 			}
 			return false;
 		}
 
 		render() {
-			const data = this.data;
+			const data = this.data.stream;
 			this.clean();
 			this.append([
 				this.add("resolution", `${data.width}x${data.height}`),
@@ -137,4 +140,6 @@ namespace ymovie.tv.view.media {
 			return value ? DOM.span(className, value) : undefined;
 		}
 	}
+
+	type StreamData = {media:Media.Playable, stream:Media.Stream};
 }

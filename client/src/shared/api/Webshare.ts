@@ -41,7 +41,7 @@ namespace ymovie.api.Webshare {
 			}
 		}
 		
-		async loadValue(path:string, body:string, param:any){
+		async loadValue(path:string, body:string, param:any):Promise<string> {
 			const xml = await this.load(path, body);
 			return xml.getElementsByTagName(param)[0].textContent;
 		}
@@ -62,7 +62,7 @@ namespace ymovie.api.Webshare {
 			return await this.loadValue(Api.PATH_USER_DATA, body, "username");
 		}
 		
-		async getLink(ident:string, token:string){
+		async getLink(ident:string, token:string):Promise<string> {
 			const body = `ident=${encodeURIComponent(ident)}&wst=${encodeURIComponent(token)}&device_uuid=${encodeURIComponent(this.uuid)}`;
 			return await this.loadValue(Api.PATH_FILE_LINK, body, "link");
 		}

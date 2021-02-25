@@ -44,7 +44,7 @@ namespace ymovie.view {
 			DOM.clean(this.element);
 		}
 		
-		render():HTMLElement {
+		render():TElement {
 			return this.element;
 		}
 	}

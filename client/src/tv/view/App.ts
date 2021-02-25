@@ -16,6 +16,7 @@ namespace ymovie.tv.view {
 		readonly searchScreen = new search.SearchScreen(this.context);
 		readonly setupScreen = new setup.SetupScreen(this.context);
 		readonly aboutScreen = new about.AboutScreen(this.context);
+		readonly playerScreen = new player.PlayerScreen(this.context);
 
 		static async init(){
 			const result = new App();
@@ -28,6 +29,7 @@ namespace ymovie.tv.view {
 			this.listen(Action.CatalogueItemSelected, this.onCatalogueItemSelected.bind(this));
 			this.listen(Action.RequestFocus, event => this.requestFocus(event.detail));
 			this.listen(Action.ShowScreen, event => this.showScreen(event.detail));
+			this.listen(Action.Play, this.onPlay.bind(this));
 
 			await this.api.init();
 
@@ -58,21 +60,9 @@ namespace ymovie.tv.view {
 				this.searchScreen.render(),
 				this.setupScreen.render(),
 				this.aboutScreen.render(),
+				this.playerScreen.render(),
 				this.header.render()]);
 			return super.render();
-		}
-
-		async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
-			const {data} = event.detail;
-			if(data instanceof Scc.CatalogueLink)
-				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadPath(data.url)}));
-			if(data instanceof Media.Series)
-				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadSeasons(data.id)}));
-			if(data instanceof Media.Season)
-				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadEpisodes(data.id)}));
-			if(data instanceof Media.PlayableScc)
-				return this.trigger(new Action.StreamsLoaded({media:data, streams:await this.api.loadStreams(data)}));
-			return;
 		}
 
 		ensureFocus(component:Focus.IFocusable) {
@@ -88,11 +78,42 @@ namespace ymovie.tv.view {
 			const nav = this.nav;
 			if(id === "about")
 				return nav.goAbout();
+			if(id === "player")
+				return nav.goPlayer();
 			if(id === "search")
 				return nav.goSearch();
 			if(id === "setup")
 				return nav.goSetup();
 			return nav.goHome();
+		}
+
+		activateScreen(screen:Screen, focus?:Focus.IFocusable) {
+			const screens:Array<Screen> = [this.aboutScreen, this.mediaScreen, this.playerScreen, this.searchScreen, this.setupScreen];
+			for(const item of screens)
+				if(item != screen)
+					item.deactivate();
+			screen.activate(!this.focus.focusedComponent);
+			if(focus)
+				this.ensureFocus(focus);
+		}
+
+		async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
+			const {data} = event.detail;
+			if(data instanceof Scc.CatalogueLink)
+				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadPath(data.url)}));
+			if(data instanceof Media.Series)
+				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadSeasons(data.id)}));
+			if(data instanceof Media.Season)
+				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadEpisodes(data.id)}));
+			if(data instanceof Media.PlayableScc)
+				return this.trigger(new Action.StreamsLoaded({media:data, streams:await this.api.loadStreams(data)}));
+			return;
+		}
+
+		async onPlay(event:CustomEvent<Action.PlayData>) {
+			const url = await this.api.resolveStreamUrl(event.detail.stream);
+			this.playerScreen.update({media:event.detail.media, stream:event.detail.stream, url});
+			this.showScreen("player");
 		}
 
 		onNavChange(data:Nav.ChangeData) {
@@ -101,20 +122,19 @@ namespace ymovie.tv.view {
 			let screenId:ScreenId = "media";
 			if(nav.isAbout(path)) {
 				screenId = "about";
-				this.aboutScreen.activate(!this.focus.focusedComponent);
-				this.ensureFocus(this.header.about);
+				this.activateScreen(this.aboutScreen, this.header.about);
+			} else if(nav.isPlayer(path)) {
+				screenId = "player";
+				this.activateScreen(this.playerScreen);
 			} else if(nav.isSearch(path)) {
 				screenId = "search";
-				this.searchScreen.activate(!this.focus.focusedComponent);
-				this.ensureFocus(this.header.search);
+				this.activateScreen(this.searchScreen, this.header.search);
 			} else if(nav.isSetup(path)) {
 				screenId = "setup";
-				this.setupScreen.activate(!this.focus.focusedComponent);
-				this.ensureFocus(this.header.setup);
+				this.activateScreen(this.setupScreen, this.header.setup);
 			} else {
 				screenId = "media";
-				this.mediaScreen.activate(!this.focus.focusedComponent);
-				this.ensureFocus(this.header.media);
+				this.activateScreen(this.mediaScreen, this.header.media);
 			}
 
 			util.ClassName.updateType(this.element, "screen", screenId);
