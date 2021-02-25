@@ -92,7 +92,7 @@ namespace ymovie.tv.view {
 			for(const item of screens)
 				if(item != screen)
 					item.deactivate();
-			screen.activate(!this.focus.focusedComponent);
+			screen.activate(this.focus.focusedComponent);
 			if(focus)
 				this.ensureFocus(focus);
 		}
@@ -160,8 +160,10 @@ namespace ymovie.tv.view {
 				return;
 			const components = this.trigger(new Action.RegisterFocusable());
 			const result = this.focus.executeEvent(components, {action});
-			if(result)
-				event.preventDefault();
+			event.preventDefault();
+			if(!result && action === "back")
+				this.nav.goBack();
+
 		}
 	}
 }

@@ -21,6 +21,12 @@ namespace ymovie.tv.type.Action {
 	export class StreamsLoaded extends Base<StreamsLoadedData> {}
 	export class Play extends Base<PlayData> {}
 	export class SeekBy extends Base<number> {}
+	export class TogglePlay extends Base<undefined> {
+		constructor() {
+			super(undefined);
+		}
+	}
+	
 	export class BlurStreams extends Base<undefined> {
 		constructor() {
 			super(undefined);

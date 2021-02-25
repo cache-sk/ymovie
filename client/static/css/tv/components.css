@@ -285,7 +285,7 @@
 	top: 0;
 	text-align: left;
 	display: inline-block;
-	background: #00000099;
+	background: rgba(0, 0, 0, .6);
 	padding: .1rem .2rem;
 	margin: 4rem 0 3rem 50%;
 }
@@ -308,12 +308,12 @@
 	text-align: center;
 	width: 50%;
 	margin: 1rem auto 0 auto;
-	background: #00000099;
+	background: rgba(0, 0, 0, .6);
 	padding: .1rem .2em;
 }
 
 .webshare-ok .Pair p {
-	color: #ffffff66;
+	color: rgba(255, 255, 255, .4);
 }
 
 .webshare-ok .Pair p::before {
@@ -383,70 +383,53 @@ body:not(.webshare-ok) .Detail .Stream {
 	top: 0;
 	right: 0;
 	bottom: 0;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 }
 
-.PlayerScreen .Track {
+.PlayerScreen .Controls {
 	position: absolute;
-	background: #ffffff66;
+	background: rgba(255, 255, 255, .4);
 	left: 50%;
 	width: 80%;
 	height: .5rem;
-	bottom: 8rem;
+	bottom: 5rem;
 	transform: translateX(-50%);
+	transition: opacity .5s;
 }
 
-.PlayerScreen .Track.focused {
+.PlayerScreen.idle .Controls {
+	opacity: 0;
+}
+
+.PlayerScreen .Controls.focused {
 	outline: none;
 }
 
-.PlayerScreen .Track .thumb {
+.PlayerScreen .Controls .thumb {
 	position: absolute;
-	background: white;
-	width: 1rem;
-	height: 1rem;
-	color: white;
-	border-radius: 100%;
-	top: -.25rem;
-	transform: translateX(-50%);
-}
-
-.PlayerScreen .Track.focused .thumb {
-	border: .2rem solid #fec401;
-	top: -.45rem;
-	width: 1.4rem;
-	height: 1.4rem;
-}
-
-.PlayerScreen .Track .time {
-	position: absolute;
-	right: 0;
-	top: -1.5rem;
-}
-
-.PlayerScreen .PlayButton {
-	position: absolute;
-	left: 50%;
-	bottom: 4rem;
-	transform: translateX(-50%);
-	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409.6 409.6"><path fill="%23ffffff" d="M204.8,0C91.648,0,0,91.648,0,204.8s91.648,204.8,204.8,204.8s204.8-91.648,204.8-204.8S317.952,0,204.8,0z M182.272,256c0,12.8-10.24,22.528-22.528,22.528c-12.8,0-22.528-10.24-22.528-22.528V153.6c-0.512-12.288,9.728-22.528,22.016-22.528c12.8,0,23.04,10.24,23.04,22.528V256zM272.896,256c0,12.8-10.24,22.528-22.528,22.528c-12.8,0-22.528-10.24-22.528-22.528V153.6c-0.512-12.288,9.728-22.528,22.016-22.528c12.8,0,23.04,10.24,23.04,22.528V256z"/></svg>') no-repeat center / 2rem;
+	background: black url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffffff" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 18v-12l10 6-10 6z"/></svg>') no-repeat center / 2rem;
 	width: 2rem;
 	height: 2rem;
-	overflow: hidden;
-	text-indent: 4rem;
-	border: none;
-}
-
-.PlayerScreen .PlayButton.paused {
-	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffffff" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 18v-12l10 6-10 6z"/></svg>');
-}
-
-.PlayerScreen .PlayButton.focused {
-	outline: none;
-	border: .2rem solid #fec401;
 	border-radius: 100%;
+	top: -.75rem;
+	transform: translateX(-50%);
+}
+
+.PlayerScreen.paused .Controls .thumb {
+	background-image: url('data:image/svg+xml;utf8,<svg height="512" viewBox="0 0 565.648 565.648" width="512" xmlns="http://www.w3.org/2000/svg"><path fill="%23ffffff" d="m282.824 0c-155.947 0-282.824 126.877-282.824 282.824s126.877 282.824 282.824 282.824 282.824-126.877 282.824-282.824-126.877-282.824-282.824-282.824zm-35.353 388.883h-70.706v-212.118h70.706zm141.412 0h-70.706v-212.118h70.706z"/></svg>');
+}
+
+.PlayerScreen .Controls.focused .thumb {
+	border: .2rem solid #fec401;
+	top: -.9rem;
 	width: 2.3rem;
 	height: 2.3rem;
 	bottom: 3.85rem;
+}
+
+.PlayerScreen .Controls .time {
+	position: absolute;
+	right: 0;
+	top: -1.5rem;
 }

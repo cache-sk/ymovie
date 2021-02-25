@@ -1,6 +1,7 @@
 namespace ymovie.tv.view {
 	import Component = ymovie.view.Component;
 	import Context = ymovie.tv.type.Context;
+	import Focus = ymovie.tv.util.Focus;
 
 	export abstract class Screen extends Component<HTMLDivElement> {
 		protected readonly context:Context;
@@ -11,7 +12,7 @@ namespace ymovie.tv.view {
 			this.element.classList.add("Screen");
 		}
 
-		activate(_requestFocus:boolean) {}
+		activate(_currentFocus:Focus.IFocusable | undefined) {}
 
 		deactivate() {}
 	}

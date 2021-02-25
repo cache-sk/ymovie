@@ -8,31 +8,43 @@ namespace ymovie.tv.view.player {
 	export class PlayerScreen extends Screen {
 		private data:PlayerScreenData;
 		private video?:HTMLVideoElement;
-		private playButton = new PlayButton();
-		private track = new Track();
+		private controls = new Controls();
 		private seekTimer?:number;
+		private idleTimer?:number;
+		private previousFocus:Focus.IFocusable | undefined;
 
 		constructor(context:Context) {
 			super(context);
 
-			this.playButton.element.addEventListener("click", this.onPlayButtonclick.bind(this));
-
 			this.listen(Action.SeekBy, this.onSeekBy.bind(this));
+			this.listen(Action.TogglePlay, this.onTogglePlay.bind(this));
+		}
+
+		private set idle(value:boolean) {
+			clearTimeout(this.idleTimer);
+			this.idleTimer = undefined;
+			if(!value) 
+				this.idleTimer = setTimeout(() => this.idle = true, 2000);
+			this.element.classList.toggle("idle", value);
 		}
 
 		update(data?:PlayerScreenData):HTMLElement {
 			this.data = data;
+			this.idle = false;
 			return this.render();
 		}
 
-		activate(requestFocus:boolean) {
-			super.activate(requestFocus);
-			this.trigger(new Action.RequestFocus(this.playButton));
+		activate(currentFocus:Focus.IFocusable | undefined) {
+			this.previousFocus = currentFocus;
+			super.activate(currentFocus);
+			this.trigger(new Action.RequestFocus(this.controls));
 		}
 
 		deactivate() {
 			super.deactivate();
 			this.update();
+			if(this.previousFocus)
+				this.trigger(new Action.RequestFocus(this.previousFocus));
 		}
 
 		render() {
@@ -50,6 +62,7 @@ namespace ymovie.tv.view.player {
 			if(this.data) {
 				this.video = <HTMLVideoElement>DOM.create("video");
 				this.video.src = this.data.url;
+				this.video.autoplay = true;
 				this.video.addEventListener("timeupdate", this.onVideoTimeUpdate.bind(this));
 				this.video.addEventListener("loadeddata", this.onVideoLoadedData.bind(this));
 				this.video.addEventListener("loadedmetadata", this.onVideoLoadedMetadata.bind(this));
@@ -59,64 +72,64 @@ namespace ymovie.tv.view.player {
 				this.video.addEventListener("waiting", this.onVideoWaiting.bind(this));
 				this.video.addEventListener("play", this.onVideoPlay.bind(this));
 				this.video.addEventListener("pause", this.onVideoPause.bind(this));
-				this.append([this.video, this.playButton.render(), this.track.render()]);
+				this.append([this.video, this.controls.render()]);
 			}
 
 			return super.render();
 		}
 
-		updateControls() {
+		private updateControls() {
 			if(!this.video)
 				return;
 			
 			const duration = this.video.duration;
-			const currentTime = this.seekTimer ? this.track.data.currentTime : this.video.currentTime;
-			this.track.update({duration, currentTime});
+			const currentTime = this.seekTimer ? this.controls.data.currentTime : this.video.currentTime;
+			this.controls.update({duration, currentTime});
 
-			this.playButton.update(this.video.paused);
+			this.element.classList.toggle("paused", this.video.paused);
 		}
 
-		onVideoTimeUpdate() {
+		private onVideoTimeUpdate() {
 			this.updateControls();
 		}
 
-		onVideoLoadedData() {
+		private onVideoLoadedData() {
 			this.updateControls();
 		}
 
-		onVideoLoadedMetadata() {
+		private onVideoLoadedMetadata() {
 			this.updateControls();
 		}
 
-		onVideoSeeking() {
-			this.updateControls();
-			this.element.classList.toggle("loading", true);
-		}
-
-		onVideoSeeked() {
-			this.updateControls();
-			this.element.classList.toggle("loading", false);
-		}
-
-		onVideoPlaying() {
-			this.updateControls();
-			this.element.classList.toggle("loading", false);
-		}
-
-		onVideoWaiting() {
+		private onVideoSeeking() {
 			this.updateControls();
 			this.element.classList.toggle("loading", true);
 		}
 
-		onVideoPlay() {
+		private onVideoSeeked() {
+			this.updateControls();
+			this.element.classList.toggle("loading", false);
+		}
+
+		private onVideoPlaying() {
+			this.updateControls();
+			this.element.classList.toggle("loading", false);
+		}
+
+		private onVideoWaiting() {
+			this.updateControls();
+			this.element.classList.toggle("loading", true);
+		}
+
+		private onVideoPlay() {
 			this.updateControls();
 		}
 
-		onVideoPause() {
+		private onVideoPause() {
 			this.updateControls();
 		}
 
-		onPlayButtonclick() {
+		private onTogglePlay() {
 			if(!this.video)
 				return;
 
@@ -124,25 +137,28 @@ namespace ymovie.tv.view.player {
 				this.video.play();
 			else
 				this.video.pause();
+			this.idle = false;
 		}
 
-		onSeekBy(event:CustomEvent<number>) {
+		private onSeekBy(event:CustomEvent<number>) {
 			if(!this.video?.duration)
 				return;
 			const delta = event.detail;
 			const duration = this.video.duration;
-			const currentTime = Math.max(0, Math.min(duration, this.track.data.currentTime + delta));
-			this.track.update({duration, currentTime});
+			const currentTime = Math.max(0, Math.min(duration, this.controls.data.currentTime + delta));
+			this.controls.update({duration, currentTime});
 
 			clearTimeout(this.seekTimer);
 			this.seekTimer = setTimeout(this.onApplySeek.bind(this), 1000);
+			this.idle = false;
 		}
 
-		onApplySeek() {
+		private onApplySeek() {
+			clearTimeout(this.seekTimer);
 			this.seekTimer = undefined;
 			if(!this.video?.duration)
 				return;
-			this.video.currentTime = this.track.data.currentTime;
+			this.video.currentTime = this.controls.data.currentTime;
 		}
 	}
 
@@ -152,31 +168,7 @@ namespace ymovie.tv.view.player {
 		url:string;
 	}
 
-	class PlayButton extends FocusableDataComponent<HTMLButtonElement, boolean> {
-		constructor() {
-			super("button", false);
-		}
-
-		render() {
-			this.element.classList.toggle("paused", this.data);
-			this.element.innerHTML = this.data ? "Play" : "Pause";
-			return super.render();
-		}
-
-		update(data:boolean) {
-			return data === this.data ? this.element : super.update(data);
-		}
-
-		executeFocusEvent(event:Focus.Event):boolean {
-			if(event.action === "submit") {
-				this.element.click();
-				return true;
-			}
-			return false;
-		}
-	}
-
-	class Track extends FocusableDataComponent<HTMLDivElement, TrackData> {
+	class Controls extends FocusableDataComponent<HTMLDivElement, ConstrolsData> {
 		private readonly thumb:HTMLDivElement;
 		private readonly time:HTMLDivElement;
 
@@ -203,17 +195,17 @@ namespace ymovie.tv.view.player {
 				this.trigger(new Action.SeekBy(-30));
 				return true;
 			}
+			if(event.action === "submit") {
+				this.trigger(new Action.TogglePlay());
+				return true;
+			}
 			return false;
 		}
 
 		formatTime(value:number):string {
 			let seconds = value | 0;
-			if(seconds < 60)
-				return seconds + "";
 			let minutes = (seconds / 60) | 0;
 			seconds %= 60;
-			if(minutes < 60)
-				return `${minutes}:${this.pad(seconds)}`;
 			let hours = (minutes / 60) | 0;
 			minutes %= 60;
 			return `${hours}:${this.pad(minutes)}:${this.pad(seconds)}`;
@@ -224,7 +216,7 @@ namespace ymovie.tv.view.player {
 		}
 	}
 
-	type TrackData = {
+	type ConstrolsData = {
 		duration:number;
 		currentTime:number;
 	}

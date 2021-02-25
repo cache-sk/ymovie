@@ -57,6 +57,10 @@ namespace ymovie.tv.util.Nav {
 			return path.startsWith(Manager.PATH_SETUP);
 		}
 
+		goBack():void {
+			history.back();
+		}
+
 		private pushState(source:StateSource, title:string, path?:string):void {
 			const url = document.location.pathname + (path || "");
 			const state = {source, title, url};

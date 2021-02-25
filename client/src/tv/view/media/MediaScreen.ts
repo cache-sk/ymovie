@@ -3,6 +3,7 @@ namespace ymovie.tv.view.media {
 	import ClassName = util.ClassName;
 	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
+	import Focus = ymovie.tv.util.Focus;
 	import Media = ymovie.type.Media;
 
 	export class MediaScreen extends Screen {
@@ -23,11 +24,11 @@ namespace ymovie.tv.view.media {
 			this.listenGlobal(Action.SccMediaLoaded, this.onSccMediaLoaded.bind(this));
 		}
 
-		activate(requestFocus:boolean) {
-			super.activate(requestFocus);
+		activate(currentFocus:Focus.IFocusable) {
+			super.activate(currentFocus);
 
 			if(!this.rowContainer.children.length)
-				this.appendCatalogue(this.context.menu, requestFocus);
+				this.appendCatalogue(this.context.menu, !currentFocus);
 		}
 
 		render() {
