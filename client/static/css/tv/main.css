@@ -2,7 +2,7 @@ html {
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	font-size: 25px;
+	font-size: 2vw;
 }
 
 body {
@@ -37,5 +37,5 @@ p {
 }
 
 .focused {
-	outline: 6px solid #fec401;
+	outline: .2rem solid #fec401;
 }

@@ -39,10 +39,11 @@ namespace ymovie.tv.view.media {
 
 		renderBase(data:Media.Base) {
 			return [DOM.h1(data.longTitle),
-				data.rating ? DOM.div("rating", data.rating) : undefined,
-				data instanceof Media.Scc && data.year ? DOM.div("year", data.year) : undefined,
-				data instanceof Media.PlayableScc && data.duration ? DOM.div("duration", Util.formatDuration(data.duration)) : undefined,
-				data instanceof Media.PlayableScc && data.genres ? DOM.div("genres", data.genres) : undefined,
+				DOM.div("extra", [
+					data.rating ? DOM.span("rating", data.rating) : undefined,
+					data instanceof Media.Scc && data.year ? DOM.span("year", data.year) : undefined,
+					data instanceof Media.PlayableScc && data.duration ? DOM.span("duration", Util.formatDuration(data.duration)) : undefined,
+					data instanceof Media.PlayableScc && data.genres ? DOM.span("genres", data.genres) : undefined]),
 				data instanceof Media.Scc ? DOM.p("plot", data.plot) : undefined
 			];
 		}
