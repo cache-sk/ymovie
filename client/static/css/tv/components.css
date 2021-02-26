@@ -1,6 +1,7 @@
 .Header {
 	position: absolute;
-	padding: 1.5rem 2.5rem;
+	top: 1.5rem;
+	left: 2.5rem;
 	white-space: nowrap;
 }
 
@@ -47,7 +48,7 @@
 	display: block;
 }
 
-.MediaScreen .rows {
+.MediaScreenBase .rows {
 	position: absolute;
 	top: calc(100vh - 11rem);
 	transition: transform .5s;
@@ -55,7 +56,7 @@
 	will-change: transform;
 }
 
-.MediaScreen .Row {
+.MediaScreenBase .Row {
 	white-space: nowrap;
 	transition: transform .5s, opacity .5s;
 	backface-visibility: hidden;
@@ -63,13 +64,13 @@
 	margin-bottom: 1rem;
 }
 
-.MediaScreen .Row.up,
-.MediaScreen .Row.down {
+.MediaScreenBase .Row.up,
+.MediaScreenBase .Row.down {
 	opacity: 0;
 	pointer-events: none;
 }
 
-.MediaScreen .Row .Item {
+.MediaScreenBase .Row .Item {
 	width: 5rem;
 	height: 7.5rem;
 	background: linear-gradient(180deg, #222 50%, #000 100%);
@@ -80,46 +81,46 @@
 	position: relative;
 }
 
-.MediaScreen .Row .Item:not(.loading).movie,
-.MediaScreen .Row .Item:not(.loading).series,
-.MediaScreen .Row .Item:not(.loading).concert,
-.MediaScreen .Row .Item:not(.loading).fairyTale,
-.MediaScreen .Row .Item:not(.loading).animated,
-.MediaScreen .Row .Item:not(.loading).popular {
+.MediaScreenBase .Row .Item:not(.loading).movie,
+.MediaScreenBase .Row .Item:not(.loading).series,
+.MediaScreenBase .Row .Item:not(.loading).concert,
+.MediaScreenBase .Row .Item:not(.loading).fairyTale,
+.MediaScreenBase .Row .Item:not(.loading).animated,
+.MediaScreenBase .Row .Item:not(.loading).popular {
 	background: no-repeat center 35% / 50%, 100%;
 }
 
-.MediaScreen .Row .Item:not(.loading).movie {
+.MediaScreenBase .Row .Item:not(.loading).movie {
 	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 332.804 332.804" ><path fill="%23fec401" d="M330.804,171.002c-3.6-6.4-12-8.8-18.8-4.8l-45.6,26.4l-11.6,6.8v63.2l10.8,6.4c0.4,0,0.4,0.4,0.8,0.4l44.8,26 c2,1.6,4.8,2.4,7.6,2.4c7.6,0,13.6-6,13.6-13.6v-53.6l0.4-52.8C332.804,175.402,332.404,173.002,330.804,171.002z"/><path fill="%23fec401" d="M64.404,150.602c35.6,0,64.4-28.8,64.4-64.4c0-35.6-28.8-64.4-64.4-64.4s-64.4,28.8-64.4,64.4 C-0.396,121.802,28.804,150.602,64.404,150.602z M64.404,59.802c14.8,0,26.4,12,26.4,26.4c0,14.8-12,26.4-26.4,26.4 c-14.4,0-26.4-12-26.4-26.4C37.604,71.402,49.604,59.802,64.404,59.802z"/><path fill="%23fec401" d="M227.604,154.202c-10.4,5.2-22,8.4-34.4,8.4c-15.2,0-29.6-4.4-41.6-12.4h-45.6c-12,8-26.4,12.4-41.6,12.4 c-12.4,0-24-2.8-34.4-8.4c-9.2,5.2-15.6,15.6-15.6,26.8v97.6c0,18,14.8,32.4,32.4,32.4h164.4c18,0,32.4-14.8,32.4-32.4v-97.6 C243.204,169.802,236.804,159.402,227.604,154.202z"/><path fill="%23fec401" d="M193.204,150.602c35.6,0,64.4-28.8,64.4-64.4c0-35.6-28.8-64.4-64.4-64.4c-35.6,0-64.4,28.8-64.4,64.4 C128.804,121.802,157.604,150.602,193.204,150.602z M193.204,59.802c14.8,0,26.4,12,26.4,26.4c0,14.8-12,26.4-26.4,26.4 c-14.4,0-26.4-12-26.4-26.4C166.804,71.402,178.404,59.802,193.204,59.802z"/></svg>'), 
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
 
-.MediaScreen .Row .Item:not(.loading):not(.loading).series {
+.MediaScreenBase .Row .Item:not(.loading):not(.loading).series {
 	background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path fill=\"%23fec401\" d=\"M22 4v12h-20v-12h20zm2-2h-24v16h24v-16zm-7 18h-10v2h10v-2z\"/></svg>'),
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
 
-.MediaScreen .Row .Item:not(.loading).concert {
+.MediaScreenBase .Row .Item:not(.loading).concert {
 	background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"512\" height=\"512\" viewBox=\"0 0 512 512\"><path fill=\"%23fec401\" d=\"m506.25 3.191406c-3.632812-2.84375-8.367188-3.859375-12.847656-2.753906l-112.683594 27.832031c-6.699219 1.65625-11.40625 7.664063-11.40625 14.566407v42.421874c0 3.980469 1.582031 7.792969 4.394531 10.609376l-84.851562 84.851562 42.425781 42.425781 84.851562-84.851562c2.816407 2.8125 6.628907 4.394531 10.609376 4.394531 3.976562 0 7.792968-1.582031 10.605468-4.394531l70.257813-70.261719c2.816406-2.8125 4.394531-6.625 4.394531-10.605469v-42.425781c0-4.613281-2.121094-8.964844-5.75-11.808594zm0 0\"/><path fill=\"%23fec401\" d=\"m244.660156 178.949219c-3.335937-3.335938-8.054687-4.910157-12.726562-4.242188-4.675782.667969-8.761719 3.496094-11.03125 7.636719l-10.964844 19.996094c-.667969.148437-2.542969-.046875-4.421875-1.921875-4.773437-4.773438-12.148437-5.773438-18.015625-2.433594l-169.792969 96.515625c-11.636719 6.613281-18.398437 19.019531-17.6523435 32.382812.7500005 13.363282 8.8593745 24.941407 21.1601565 30.210938l93.582031 40.109375 40.105469 93.582031c5.273437 12.300782 16.847656 20.410156 30.210937 21.15625.675781.039063 1.34375.058594 2.007813.058594 12.589844 0 24.097656-6.65625 30.378906-17.707031l96.515625-169.792969c3.335937-5.871094 2.339844-13.246094-2.433594-18.019531-1.878906-1.878907-2.070312-3.753907-1.921875-4.417969l19.992188-10.964844c4.140625-2.269531 6.96875-6.359375 7.636718-11.03125.667969-4.675781-.902343-9.390625-4.242187-12.730468zm-40.660156 192.6875c-2.925781 2.929687-6.765625 4.394531-10.605469 4.394531-3.835937 0-7.675781-1.464844-10.605469-4.394531l-42.425781-42.425781c-5.859375-5.859376-5.859375-15.355469 0-21.214844 5.855469-5.855469 15.355469-5.855469 21.210938 0l42.429687 42.429687c5.855469 5.855469 5.855469 15.355469-.003906 21.210938zm42.429688-42.425781c-2.929688 2.929687-6.769532 4.394531-10.605469 4.394531-3.839844 0-7.679688-1.464844-10.609375-4.394531l-42.425782-42.425782c-5.855468-5.859375-5.855468-15.355468 0-21.214844 5.859376-5.855468 15.355469-5.855468 21.214844 0l42.425782 42.425782c5.855468 5.859375 5.855468 15.355468 0 21.214844zm0 0\"/></svg>'),
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
 
-.MediaScreen .Row .Item:not(.loading).fairyTale {
+.MediaScreenBase .Row .Item:not(.loading).fairyTale {
 	background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 493.46 493.46\"><path fill=\"%23fec401\" d=\"M397.564,62.201c0-1.62-1.084-3.03-2.656-3.434L254.697,22.856V8.294c0-4.584-3.707-8.294-8.293-8.294 c-4.585,0-8.292,3.718-8.292,8.294l0.015,125.786h-5.799c-1.961,0-3.548,1.588-3.548,3.539v38.398H197.68V137.62 c0-1.952-1.588-3.539-3.549-3.539h-28.152c-1.959,0-3.547,1.588-3.547,3.539v38.398h-13.719h-17.381V137.62 c0-1.952-1.588-3.539-3.547-3.539H99.632c-1.959,0-3.547,1.588-3.547,3.539v38.398v16.117v16.83V237.7 c0,8.86,7.175,16.036,16.036,16.036h23.407L96.149,474.606c-0.842,4.673,0.438,9.476,3.482,13.112 c3.047,3.636,7.55,5.742,12.295,5.742h268.955c4.745,0,9.248-2.105,12.294-5.742c3.044-3.637,4.324-8.44,3.481-13.112 L357.28,253.736h23.405c8.862,0,16.038-7.176,16.038-16.036v-28.735v-16.83v-16.117V137.62c0-1.952-1.588-3.539-3.548-3.539h-28.152 c-1.961,0-3.547,1.588-3.547,3.539v38.398h-17.38h-13.722V137.62c0-1.952-1.586-3.539-3.547-3.539h-28.152 c-1.961,0-3.548,1.588-3.548,3.539v38.398h-31.1V137.62c0-1.952-1.588-3.539-3.547-3.539h-5.768l-0.017-32.534l140.211-35.911 C396.48,65.231,397.564,63.821,397.564,62.201z M284.6,333.917v69.434h-76.375v-69.434c0-21.09,17.09-38.186,38.195-38.186 C267.51,295.73,284.6,312.827,284.6,333.917z\"/></svg>'),
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
 
-.MediaScreen .Row .Item:not(.loading).animated {
+.MediaScreenBase .Row .Item:not(.loading).animated {
 	background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 60 60\"><path fill=\"%23fec401\" d=\"M10.282,36.791V22.13c1.23-0.532,2.767-1.421,4.196-2.885c1.407,0.73,4.807,2.158,10.707,2.729l0.565,0.055l0.337-0.457 c0.028-0.039,2.953-3.899,10.351-3.899c1.022,0,2.095,0.075,3.194,0.224c0.663,1.147,2.59,3.776,6.349,3.776 c1.346,0,2.787-0.35,4.301-1.042V36.35l1.698-1.654c0.233-0.227,5.698-5.684,4.292-15.853c-0.563-4.082-2.323-7.605-4.825-9.668 c-0.644-0.531-1.116-1.365-1.402-2.479c-0.827-3.209-3.847-5.451-7.694-5.714c-2.152-0.146-3.992,0.515-6.028,1.331 c-0.102,0.041-0.256,0.007-0.277-0.05C35.495,0.804,34.117,0,32.163,0c-3.021,0-6.896,1.86-10.129,4.811 c0.006-0.889,0.192-1.685,0.695-1.937l1.685-0.843l-1.642-0.923c-0.074-0.042-1.842-1.021-4.162-1.021 c-1.94,0-3.681,0.661-5.172,1.966c-1.237,1.081-2.136,2.595-2.599,4.377c-0.095,0.364-0.191,0.755-0.277,1.139 c-0.043,0.189-0.219,0.24-0.306,0.24c-0.103,0-0.157-0.052-0.224-0.132c-0.458-0.559-1.13-0.88-1.844-0.88 c-0.932,0-1.739,0.53-2.107,1.385c-1.987,4.612-5.728,16.421,2.425,26.43L10.282,36.791z\"/><path fill=\"%23fec401\" d=\"M48.282,41.09V23.414c-0.784,0.172-1.553,0.259-2.301,0.259c-3.98,0-6.344-2.295-7.509-3.898 c-0.698-0.067-1.38-0.102-2.034-0.102c-6.22,0-8.663,2.989-8.764,3.116l-0.987,1.34l-1.694-0.164 c-4.868-0.471-8.166-1.509-10.139-2.34c-0.795,0.673-1.654,1.26-2.572,1.756v19.032l-4-4.911v13.477c0,2.757,2.243,5,5,5h3v1.694 c0,1.271,1.034,2.306,2.306,2.306h23.389c1.271,0,2.306-1.034,2.306-2.306v-1.694h3c2.757,0,5-2.243,5-5V37.193L48.282,41.09z M17.423,35.07c-0.91-0.795-1.535-1.807-1.808-2.924c-0.181-0.739-0.144-1.234-0.113-1.438C15.713,28.591,17.353,27,19.331,27 c0.972,0,1.867,0.366,2.546,1.006C22.571,27.371,23.49,27,24.467,27c1.977,0,3.617,1.591,3.829,3.708 c0.031,0.204,0.068,0.699-0.113,1.439c-0.272,1.116-0.898,2.128-1.809,2.925l-3.855,3.321c-0.188,0.161-0.42,0.242-0.653,0.242 c-0.235,0-0.471-0.083-0.659-0.248L17.423,35.07z M30.976,53.5c-5.79,0-10.5-4.71-10.5-10.5c0-0.553,0.448-1,1-1h19 c0.552,0,1,0.447,1,1C41.476,48.79,36.766,53.5,30.976,53.5z M46.183,32.147c-0.272,1.116-0.898,2.128-1.809,2.925l-3.855,3.321 c-0.188,0.161-0.42,0.242-0.653,0.242c-0.235,0-0.471-0.083-0.659-0.248l-3.785-3.317c-0.91-0.795-1.535-1.807-1.808-2.924 c-0.181-0.739-0.144-1.234-0.113-1.438C33.713,28.591,35.353,27,37.331,27c0.972,0,1.867,0.366,2.546,1.006 C40.571,27.371,41.49,27,42.467,27c1.977,0,3.617,1.591,3.829,3.708C46.327,30.912,46.364,31.407,46.183,32.147z\"/></svg>'),
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
 
-.MediaScreen .Row .Item:not(.loading).popular {
+.MediaScreenBase .Row .Item:not(.loading).popular {
 	background-image: url('data:image/svg+xml;utf8,<svg width=\"512\" height=\"512\" viewBox=\"0 0 512 512\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"%23fec401\" d=\"m374.686 190.48-27.697-43.868-51.839-2.053c-12.398-.491-18.879-15.03-10.941-24.576l33.161-39.898-14.067-49.937c-3.363-11.941 8.46-22.601 19.992-18l48.192 19.209 43.146-28.81c10.321-6.889 24.107 1.062 23.298 13.451l-3.377 51.77 40.732 32.132c9.742 7.686 6.438 23.255-5.593 26.314l-50.28 12.786-17.972 48.667c-4.286 11.61-20.107 13.34-26.755 2.813z\"/><path fill=\"%23fec401\" d=\"m91.011 422.022c8.284 0 15 6.716 15 15v60c0 8.284-6.716 15-15 15h-76c-8.28 0-15-6.72-15-15v-60c0-8.28 6.72-15 15-15z\"/><path fill=\"%23fec401\" d=\"m226.011 362.022c8.284 0 15 6.716 15 15v120c0 8.284-6.716 15-15 15h-75c-8.284 0-15-6.716-15-15v-120c0-8.28 6.72-15 15-15z\"/><path fill=\"%23fec401\" d=\"m361.011 302.022c8.284 0 15 6.716 15 15v180c0 8.284-6.716 15-15 15h-75c-8.284 0-15-6.716-15-15v-180c0-8.28 6.72-15 15-15z\"/><path fill=\"%23fec401\" d=\"m512.011 497.022c0 8.284-6.716 15-15 15h-76c-8.284 0-15-6.716-15-15v-240c0-8.284 6.716-15 15-15h76c8.284 0 15 6.716 15 15z\"/><path fill=\"%23fec401\" d=\"m76.011 332.022c-8.284 0-15-6.716-15-15 0-24.813 20.187-45 45-45h60c8.271 0 15-6.729 15-15 0-24.813 20.187-45 45-45h60c8.271 0 15-6.729 15-15 0-8.284 6.716-15 15-15s15 6.716 15 15c0 24.813-20.187 45-45 45h-60c-8.271 0-15 6.729-15 15 0 24.813-20.187 45-45 45h-60c-8.271 0-15 6.729-15 15 0 8.285-6.716 15-15 15z\"/></svg>'),
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
 
-.MediaScreen .Row .Item.loading::after {
+.MediaScreenBase .Row .Item.loading::after {
 	content: "";
 	position: absolute;
 	left: 0;
@@ -129,12 +130,12 @@
 	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') no-repeat center 40% / 3rem;
 }
 
-.MediaScreen.focus-stream .Row {
+.MediaScreenBase.focus-stream .Row {
 	opacity: 0;
 	pointer-events: none;
 }
 
-.MediaScreen .Row .Item .label {
+.MediaScreenBase .Row .Item .label {
 	position: absolute;
 	bottom: .5rem;
 	left: .5rem;
@@ -144,7 +145,7 @@
 	white-space: initial;
 }
 
-.MediaScreen .Row .Item img {
+.MediaScreenBase .Row .Item img {
 	position: absolute;
 	width: 100%;
 	left: 50%;
@@ -152,8 +153,8 @@
 	transform: translate(-50%,-50%);
 }
 
-.MediaScreen .Row .Item img.missing,
-.MediaScreen .Row .Item img.error {
+.MediaScreenBase .Row .Item img.missing,
+.MediaScreenBase .Row .Item img.error {
 	width: 50%;
 }
 
@@ -163,6 +164,7 @@
 	right: 0;
 	bottom: 0;
 	padding-right: 40%;
+	transition: opacity .5s;
 }
 
 .Detail .background {
@@ -438,8 +440,8 @@ body:not(.webshare-ok) .Detail .Stream {
 
 .OSK {
 	position: absolute;
-	left: 12.5rem;
 	top: 7rem;
+	transition: opacity .5s;
 }
 
 .OSK .Key {
@@ -450,7 +452,6 @@ body:not(.webshare-ok) .Detail .Stream {
 	float: left;
 	padding: .3rem;
 	text-align: center;
-	font-size: 1rem;
 	font-weight: bold;
 }
 
@@ -468,12 +469,22 @@ body:not(.webshare-ok) .Detail .Stream {
 .SearchScreen input {
 	position: absolute;
 	width: 24.5rem;
-	left: 12.5rem;
 	height: 1rem;
 	background: rgba(0, 0, 0, .6);
 	border: none;
-	border-bottom: 1px solid #666;
+	border-bottom: 1px dashed #666;
 	color: white;
 	font-size: 1rem;
 	padding: 1rem;
+}
+
+.SearchScreen:not(.focus-osk) .OSK,
+.SearchScreen:not(.focus-osk) input {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.SearchScreen.focus-osk .Detail {
+	opacity: 0;
+	pointer-events: none;
 }

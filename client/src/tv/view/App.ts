@@ -31,6 +31,7 @@ namespace ymovie.tv.view {
 			this.listen(Action.ShowScreen, event => this.showScreen(event.detail));
 			this.listen(Action.Play, this.onPlay.bind(this));
 			this.listen(Action.EmulateFocusAction, event => this.executeFocusAction(event.detail));
+			this.listen(Action.Search, this.onSearch.bind(this));
 
 			await this.api.init();
 
@@ -108,14 +109,18 @@ namespace ymovie.tv.view {
 		async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
 			const {data} = event.detail;
 			if(data instanceof Scc.CatalogueLink)
-				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadPath(data.url)}));
+				return this.trigger(new Action.CatalogueLoaded({item:data, catalogue:await this.api.loadPath(data.url, "more")}));
 			if(data instanceof Media.Series)
-				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadSeasons(data.id)}));
+				return this.trigger(new Action.CatalogueLoaded({item:data, catalogue:await this.api.loadSeasons(data.id, "more")}));
 			if(data instanceof Media.Season)
-				return this.trigger(new Action.SccMediaLoaded({item:data, media:await this.api.loadEpisodes(data.id)}));
+				return this.trigger(new Action.CatalogueLoaded({item:data, catalogue:await this.api.loadEpisodes(data.id, "more")}));
 			if(data instanceof Media.PlayableScc)
 				return this.trigger(new Action.StreamsLoaded({media:data, streams:await this.api.loadStreams(data)}));
 			return;
+		}
+
+		async onSearch(event:CustomEvent<string>) {
+			return this.trigger(new Action.SearchCatalogueLoaded(await this.api.searchScc(event.detail, "more")));
 		}
 
 		async onPlay(event:CustomEvent<Action.PlayData>) {
@@ -149,7 +154,10 @@ namespace ymovie.tv.view {
 		}
 
 		onDocumentKeyDown(event:KeyboardEvent) {
-			event.preventDefault();
+			this.trigger(new Action.GlobalKeyDown(event));
+			if(event.defaultPrevented)
+				return;
+
 			let action:Focus.Action | undefined;
 			if(event.key == "ArrowLeft" || event.code == "Digit4")
 				action = "left";
@@ -165,8 +173,10 @@ namespace ymovie.tv.view {
 				action = "back";
 			else if(event.key == "Backspace")
 				action = "back";
-			if(action)
+			if(action) {
+				event.preventDefault();
 				this.executeFocusAction(action);
+			}
 		}
 	}
 }

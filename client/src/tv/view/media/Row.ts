@@ -49,7 +49,7 @@ namespace ymovie.tv.view.media {
 
 		constructor(data:RowItemData) {
 			super("div", data);
-			this.listenGlobal(Action.SccMediaLoaded, this.onSccMediaLoaded.bind(this));
+			this.listenGlobal(Action.CatalogueLoaded, this.onCatalogueLoaded.bind(this));
 			this.listenGlobal(Action.StreamsLoaded, this.onStreamsLoaded.bind(this));
 			this.element.addEventListener("click", this.onClick.bind(this));
 			this.element.addEventListener("wheel", this.onWheel.bind(this));
@@ -108,7 +108,7 @@ namespace ymovie.tv.view.media {
 			image.classList.add("error");
 		}
 
-		onSccMediaLoaded(event:CustomEvent<Action.SccMediaLoadedData>) {
+		onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
 			if(this.data === event.detail.item)
 				this.element.classList.remove("loading");
 		}

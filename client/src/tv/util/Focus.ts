@@ -55,7 +55,7 @@ namespace ymovie.tv.util.Focus {
 				var x = this.virtualX;
 				var y = this.virtualY;
 				this.focusedComponent = nearest;
-				this.optimizeVirtualPosition(customEvent.action, x, y, focusedComponent.getBoundingRect());
+				this.optimizeVirtualPosition(customEvent.action, x, y, this.focusedComponent.getBoundingRect());
 				return true;
 			}
 
@@ -66,24 +66,19 @@ namespace ymovie.tv.util.Focus {
 			const action = event.action;
 			const virtualX = this.virtualX;
 			const virtualY = this.virtualY;
-
-			let rect = new Rect(virtualX, virtualY, 0, 0);
-			let result = this.getNearestForRect(components, component, rect, virtualX, virtualY, action);
-			if(result != null)
-				return result;
-
 			const componentRect = component.getBoundingRect();
-			result = this.getNearestForRect(components, component, componentRect, virtualX, virtualY, action);
+
+			const result = this.getNearestForRect(components, component, componentRect, virtualX, virtualY, action);
 			if(result)
 				return result;
 
 			if(action == "left" && component.allowHorizontalCirculation(event)) {
-				rect = new Rect(Number.MAX_SAFE_INTEGER, componentRect.y, componentRect.width, componentRect.height);
+				const rect = new Rect(Number.MAX_SAFE_INTEGER, componentRect.y, componentRect.width, componentRect.height);
 				return this.getNearestForRect(components, component, rect, Number.MAX_SAFE_INTEGER, virtualY, action);
 			}
 
 			if(action == "right" && component.allowHorizontalCirculation(event)) {
-				rect = new Rect(Number.MIN_SAFE_INTEGER, componentRect.y, componentRect.width, componentRect.height);
+				const rect = new Rect(Number.MIN_SAFE_INTEGER, componentRect.y, componentRect.width, componentRect.height);
 				return this.getNearestForRect(components, component, rect, Number.MIN_SAFE_INTEGER, virtualY, action);
 			}
 

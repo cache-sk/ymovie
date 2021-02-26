@@ -17,13 +17,17 @@ namespace ymovie.tv.type.Action {
 	
 	export class RequestFocus extends Base<Focus.IFocusable> {}
 	export class ShowScreen extends Base<ScreenId> {}
-	export class SccMediaLoaded extends Base<SccMediaLoadedData> {}
+	export class CatalogueLoaded extends Base<CatalogueLoadedData> {}
+	export class SearchCatalogueLoaded extends Base<Array<Catalogue.AnyItem>> {}
 	export class StreamsLoaded extends Base<StreamsLoadedData> {}
 	export class Play extends Base<PlayData> {}
 	export class SeekBy extends Base<number> {}
 	export class SeekTo extends Base<number> {}
 	export class EmulateFocusAction extends Base<Focus.Action> {}
-	export class OSKKey extends Base<OSKKeyData> {}
+	export class OSKKeyFocus extends Base<OSKKeyData> {}
+	export class OSKKeySubmit extends Base<OSKKeyData> {}
+	export class GlobalKeyDown extends Base<KeyboardEvent> {}
+	export class Search extends Base<string> {}
 	export class TogglePlay extends Base<undefined> {
 		constructor() {
 			super(undefined);
@@ -60,9 +64,9 @@ namespace ymovie.tv.type.Action {
 		readonly element:HTMLElement;
 	}
 
-	export type SccMediaLoadedData = {
+	export type CatalogueLoadedData = {
 		readonly item:Catalogue.AnyItem;
-		readonly media:Array<Media.Scc>;
+		readonly catalogue:Array<Catalogue.AnyItem>;
 	}
 
 	export type StreamsLoadedData = {

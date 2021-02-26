@@ -55,7 +55,7 @@ namespace ymovie.api {
 				Storage.set(Api.KEY_WEBSHARE_TOKEN, value);
 		}
 		
-		async searchScc(query:string, title:string) {
+		async searchScc(query:string, title:string):Promise<Array<Catalogue.AnyItem>> {
 			return Scc.Parser.toCatalogue(await this.scc.search(query.trim()), title);
 		}
 		
@@ -76,31 +76,19 @@ namespace ymovie.api {
 			return Scc.Parser.toItem({_id:id, _source:await this.scc.loadMedia(id)});
 		}
 		
-		async loadPath(url:string):Promise<Array<Media.Scc>> {
-			return Scc.Parser.toMedia(await this.scc.loadPath(url));
-		}
-
-		async loadPathToCatalogue(url:string, title:string):Promise<Array<Catalogue.AnyItem>> {
+		async loadPath(url:string, title:string):Promise<Array<Catalogue.AnyItem>> {
 			return Scc.Parser.toCatalogue(await this.scc.loadPath(url), title);
 		}
 		
 		async loadIds(ids:Array<string>, title:string):Promise<Array<Catalogue.AnyItem>> {
 			return ids.length ? Scc.Parser.idsToCatalogue(await this.scc.loadIds(ids), ids, title) : [];
 		}
-		
-		async loadSeasons(id:string) {
-			return Scc.Parser.toMedia(await this.scc.loadSeasons(id));
-		}
 
-		async loadSeasonsToCatalogue(id:string, title:string) {
+		async loadSeasons(id:string, title:string) {
 			return Scc.Parser.toCatalogue(await this.scc.loadSeasons(id), title);
 		}
-		
-		async loadEpisodes(id:string) {
-			return Scc.Parser.toMedia(await this.scc.loadEpisodes(id));
-		}
 
-		async loadEpisodesToCatalogue(id:string, title:string) {
+		async loadEpisodes(id:string, title:string) {
 			return Scc.Parser.toCatalogue(await this.scc.loadEpisodes(id), title);
 		}
 		

@@ -21,6 +21,17 @@ body {
 	box-sizing: inherit;
 }
 
+input::placeholder {
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+	opacity: .5;
+}
+
+button {
+	font-size: inherit;
+}
+
 h1 {
 	font-size: 2em;
 	margin: 0 0 .2em 0;

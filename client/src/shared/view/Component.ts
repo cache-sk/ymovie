@@ -36,6 +36,18 @@ namespace ymovie.view {
 			element.addEventListener(Action.Base.getType(type), listener);
 		}
 
+		unlisten<T>(type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
+			this.unlistenOn(this.element, type, listener);
+		}
+
+		unlistenGlobal<T>(type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
+			this.unlistenOn(document.body, type, listener);
+		}
+
+		private unlistenOn<T>(element:HTMLElement, type:Action.Class<T>, listener:(event:CustomEvent<T>) => void) {
+			element.removeEventListener(Action.Base.getType(type), listener);
+		}
+
 		append(content:DOM.Content) {
 			DOM.append(this.element, content);
 		}

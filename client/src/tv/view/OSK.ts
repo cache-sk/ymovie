@@ -20,14 +20,26 @@ namespace ymovie.tv.view {
 
 	class Key extends FocusableComponent<HTMLButtonElement> {
 		readonly action:string;
+		readonly type:OSKAction;
 
 		constructor(action:string) {
 			super("button");
 
 			this.action = action;
+			this.type = "insert";
+			if(this.action === "SPACE")
+				this.type = "space";
+			if(this.action === "DEL")
+				this.type = "del";
+
 			this.element.textContent = action;
 			this.element.classList.add(`action-${action}`);
 			this.element.addEventListener("click", this.onClick.bind(this));
+		}
+
+		focus():void {
+			super.focus();
+			this.trigger(new Action.OSKKeyFocus({value:this.action, type:this.type}));
 		}
 
 		executeFocusEvent(event:Focus.Event):boolean {
@@ -38,13 +50,12 @@ namespace ymovie.tv.view {
 			return false;
 		}
 
+		allowHorizontalCirculation(_event:Focus.Event):boolean {
+			return true;
+		}
+
 		private submit() {
-			let type:OSKAction = "insert";
-			if(this.action === "SPACE")
-				type = "space";
-			if(this.action === "DEL")
-				type = "del";
-			this.trigger(new Action.OSKKey({value:this.action, type}));
+			this.trigger(new Action.OSKKeySubmit({value:this.action, type:this.type}));
 		}
 
 		private onClick() {
