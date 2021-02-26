@@ -23,6 +23,7 @@ namespace ymovie.tv.type.Action {
 	export class SeekBy extends Base<number> {}
 	export class SeekTo extends Base<number> {}
 	export class EmulateFocusAction extends Base<Focus.Action> {}
+	export class OSKKey extends Base<OSKKeyData> {}
 	export class TogglePlay extends Base<undefined> {
 		constructor() {
 			super(undefined);
@@ -67,5 +68,10 @@ namespace ymovie.tv.type.Action {
 	export type StreamsLoadedData = {
 		readonly media:Media.PlayableScc;
 		readonly streams:Array<Media.Stream>;
+	}
+
+	export type OSKKeyData = {
+		readonly type:OSKAction;
+		readonly value:string;
 	}
 }
