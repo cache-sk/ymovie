@@ -59,7 +59,7 @@ namespace ymovie.web.api {
 		}
 
 		private toMetadata(media:Media.Playable, url:string):chrome.cast.media.IMetadata {
-			const poster = Thumbnail.fromOriginal(media.poster);
+			const poster = Thumbnail.smallPoster(media.poster);
 			const result = new chrome.cast.media.MediaInfo(url, "video/mp4");
 			if(media instanceof Media.Episode)
 				result.metadata = this.fromEpisode(media) 

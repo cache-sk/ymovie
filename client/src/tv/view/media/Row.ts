@@ -68,7 +68,7 @@ namespace ymovie.tv.view.media {
 		}
 
 		renderPoster(poster:string | undefined) {
-			const url = Thumbnail.fromOriginal(poster) || Item.DEFAULT_POSTER_URL;
+			const url = Thumbnail.smallPoster(poster) || Item.DEFAULT_POSTER_URL;
 			const result = DOM.img(undefined, url);
 			result.width = 100; // mute consoloe warning
 			result.loading = "lazy";

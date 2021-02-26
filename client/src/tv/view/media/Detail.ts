@@ -5,6 +5,7 @@ namespace ymovie.tv.view.media {
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
+	import Thumbnail = ymovie.util.Thumbnail;
 	import Util = ymovie.util.Util;
 
 	export class Detail extends DataComponent<HTMLDivElement, DetailData> {
@@ -22,7 +23,7 @@ namespace ymovie.tv.view.media {
 			this.clean();
 			if(this.data instanceof Media.Base) {
 				if(this.data.fanart) {
-					this.background.style.backgroundImage = `url(${this.data.fanart})`;
+					this.background.style.backgroundImage = `url(${Thumbnail.largeBackground(this.data.fanart)})`;
 					this.append(this.background);
 				}
 				this.append([this.renderBase(this.data), this.streams.render()]);

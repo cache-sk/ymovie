@@ -39,7 +39,7 @@ namespace ymovie.web.view.catalogue {
 		}
 		
 		renderPoster() {
-			const poster = Thumbnail.fromOriginal(this.data?.poster);
+			const poster = Thumbnail.smallPoster(this.data?.poster);
 			const url = poster || CatalogueMedia.DEFAULT_POSTER_URL;
 			const result = DOM.img(undefined, url);
 			result.width = 100; // mute consoloe warning

@@ -149,10 +149,11 @@ namespace ymovie.api.Scc {
 		}
 		
 		private static resolveArtItem(list:Array<I18>, key:keyof Art):string | undefined {
-			const missing = /^https:\/\/img.csfd.cz\/assets\/b[0-9]+\/images\/poster-free\.png$/;
+			const missing1 = "https://image.tmdb.org/t/p/originalnull";
+			const missing2 = /^https:\/\/img.csfd.cz\/assets\/b[0-9]+\/images\/poster-free\.png$/;
 			for(const info of list){
 				const url = info?.art?.[key];
-				if(url && !url?.match(missing))
+				if(url && url != missing1 && !url?.match(missing2))
 					return url;
 			}
 			return undefined;
