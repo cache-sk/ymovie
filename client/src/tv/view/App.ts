@@ -27,7 +27,7 @@ namespace ymovie.tv.view {
 			this.api.webshareStatusChanged.add(this.onApiWebshareStatus.bind(this));
 
 			this.listen(Action.CatalogueItemSelected, this.onCatalogueItemSelected.bind(this));
-			this.listen(Action.RequestFocus, event => this.requestFocus(event.detail));
+			this.listen(Action.RequestFocus, event => this.requestFocus(event.detail?.component));
 			this.listen(Action.ShowScreen, event => this.showScreen(event.detail));
 			this.listen(Action.Play, this.onPlay.bind(this));
 			this.listen(Action.EmulateFocusAction, event => this.executeFocusAction(event.detail));
@@ -72,7 +72,7 @@ namespace ymovie.tv.view {
 				this.requestFocus(component);
 		}
 
-		requestFocus(component:Focus.IFocusable) {
+		requestFocus(component:Focus.IFocusable | undefined) {
 			this.focus.focusedComponent = component;
 		}
 
@@ -89,14 +89,14 @@ namespace ymovie.tv.view {
 			return nav.goHome();
 		}
 
-		activateScreen(screen:Screen, focus?:Focus.IFocusable) {
+		activateScreen(screen:Screen, defaultFocus?:Focus.IFocusable) {
 			const screens:Array<Screen> = [this.aboutScreen, this.mediaScreen, this.playerScreen, this.searchScreen, this.setupScreen];
 			for(const item of screens)
 				if(item != screen && item.isActive)
 					item.deactivate();
-			screen.activate(this.focus.focusedComponent);
-			if(focus)
-				this.ensureFocus(focus);
+			screen.activate(this.focus.focusedComponent !== defaultFocus);
+			if(defaultFocus)
+				this.ensureFocus(defaultFocus);
 		}
 
 		executeFocusAction(action:Focus.Action) {

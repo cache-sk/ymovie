@@ -130,7 +130,7 @@ namespace ymovie.tv.view.media {
 
 		onMouseEnter() {
 			this.scrollOnFocus = false;
-			this.trigger(new Action.RequestFocus(this));
+			this.trigger(new Action.RequestFocus({component:this, element:this.element}));
 			this.scrollOnFocus = true;
 		}
 	}

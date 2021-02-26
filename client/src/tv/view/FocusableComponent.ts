@@ -1,4 +1,5 @@
 namespace ymovie.tv.view {
+	import Action = ymovie.tv.type.Action;
 	import Component = ymovie.view.Component;
 	import Focus = util.Focus;
 
@@ -13,6 +14,7 @@ namespace ymovie.tv.view {
 
 		focus():void {
 			this.element.classList.add("focused");
+			this.trigger(new Action.Focused({component:this, element:this.element}));
 		}
 
 		blur():void {

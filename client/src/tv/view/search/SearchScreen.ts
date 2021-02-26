@@ -2,7 +2,6 @@ namespace ymovie.tv.view.search {
 	import Action = ymovie.tv.type.Action;
 	import Catalogue = ymovie.type.Catalogue;
 	import Context = ymovie.tv.type.Context;
-	import Focus = ymovie.tv.util.Focus;
 	import DOM = ymovie.util.DOM;
 
 	export class SearchScreen extends media.MediaScreenBase {
@@ -19,13 +18,13 @@ namespace ymovie.tv.view.search {
 			this.updateActiveFocus("osk");
 			
 			this.osk.listen(Action.OSKKeySubmit, this.onOSKKeySubmit.bind(this));
-			this.osk.listen(Action.OSKKeyFocus, this.onOSKKeyFocus.bind(this));
+			this.osk.listen(Action.Focused, this.onOSKKeyFocused.bind(this));
 			this.input.addEventListener("input", this.resetSearchTimeout.bind(this));
 			this.input.addEventListener("change", this.resetSearchTimeout.bind(this));
 		}
 
-		activate(currentFocus:Focus.IFocusable | undefined) {
-			super.activate(currentFocus);
+		activate(focus:boolean) {
+			super.activate(focus);
 			this.listenGlobal(Action.GlobalKeyDown, this._onGlobalKeyDown);
 			this.listenGlobal(Action.SearchCatalogueLoaded, this._onSearchCatalogueLoaded);
 		}
@@ -58,7 +57,7 @@ namespace ymovie.tv.view.search {
 				this.resetSearchTimeout();
 		}
 
-		private onOSKKeyFocus() {
+		private onOSKKeyFocused() {
 			this.updateActiveFocus("osk");
 		}
 

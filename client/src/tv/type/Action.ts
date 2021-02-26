@@ -13,9 +13,9 @@ namespace ymovie.tv.type.Action {
 
 	export class CatalogueItemSelected extends Base<CatalogueItemSelectedData> {}
 	export class CatalogueItemFocused extends Base<CatalogueItemFocusedData> {}
-	export class StreamFocused extends Base<StreamFocusedData> {}
 	
-	export class RequestFocus extends Base<Focus.IFocusable> {}
+	export class RequestFocus extends Base<FocusData | undefined> {}
+	export class Focused extends Base<FocusData> {}
 	export class ShowScreen extends Base<ScreenId> {}
 	export class CatalogueLoaded extends Base<CatalogueLoadedData> {}
 	export class SearchCatalogueLoaded extends Base<Array<Catalogue.AnyItem>> {}
@@ -24,7 +24,6 @@ namespace ymovie.tv.type.Action {
 	export class SeekBy extends Base<number> {}
 	export class SeekTo extends Base<number> {}
 	export class EmulateFocusAction extends Base<Focus.Action> {}
-	export class OSKKeyFocus extends Base<OSKKeyData> {}
 	export class OSKKeySubmit extends Base<OSKKeyData> {}
 	export class GlobalKeyDown extends Base<KeyboardEvent> {}
 	export class Search extends Base<string> {}
@@ -39,6 +38,12 @@ namespace ymovie.tv.type.Action {
 			super(undefined);
 		}
 	}
+
+	export type FocusData = {
+		component:Focus.IFocusable;
+		element:HTMLElement;
+	}
+
 
 	export type PlayData = {
 		media:Media.Playable;
@@ -56,12 +61,6 @@ namespace ymovie.tv.type.Action {
 		readonly component:Focus.IFocusable;
 		readonly element:HTMLElement;
 		readonly scroll:boolean;
-	}
-
-	export type StreamFocusedData = {
-		readonly data:Media.Stream;
-		readonly component:Focus.IFocusable;
-		readonly element:HTMLElement;
 	}
 
 	export type CatalogueLoadedData = {

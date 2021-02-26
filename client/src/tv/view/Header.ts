@@ -48,7 +48,7 @@ namespace ymovie.tv.view {
 		}
 
 		onClick() {
-			this.trigger(new Action.RequestFocus(this));
+			this.trigger(new Action.RequestFocus({component:this, element:this.element}));
 		}
 	}
 }

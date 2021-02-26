@@ -130,7 +130,7 @@
 	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') no-repeat center 40% / 3rem;
 }
 
-.MediaScreenBase.focus-stream .Row {
+.MediaScreenBase.focus-detail .Row {
 	opacity: 0;
 	pointer-events: none;
 }
@@ -204,7 +204,7 @@
 	mask: linear-gradient(to bottom,white 6rem, transparent 8rem);
 }
 
-.focus-stream .Detail p {
+.focus-detail .Detail p {
 	-webkit-mask: linear-gradient(to bottom,white 16rem, transparent 18rem);
 	mask: linear-gradient(to bottom,white 16rem, transparent 18rem);
 }

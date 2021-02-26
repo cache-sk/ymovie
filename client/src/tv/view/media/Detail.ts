@@ -16,8 +16,6 @@ namespace ymovie.tv.view.media {
 
 			this.background = DOM.div("background");
 			this.streams = new Streams(context);
-
-			this.listenGlobal(Action.StreamsLoaded, this.onStreamsLoaded.bind(this));
 		}
 
 		render() {
@@ -37,7 +35,16 @@ namespace ymovie.tv.view.media {
 			return super.update(data);
 		}
 
-		renderBase(data:Media.Base) {
+		updateStreams(data:Action.StreamsLoadedData) {
+			const streams = data.streams
+				.sort((a, b) => ((a.width || 0) - (b.width || 0)) || ((a.size || 0) - (b.size || 0)));
+			this.streams.update({media:data.media, streams});
+			const first = this.streams.getFirst();
+			if(first)
+				this.trigger(new Action.RequestFocus({component:first, element:first.element}));
+		}
+
+		private renderBase(data:Media.Base) {
 			return [DOM.h1(data.longTitle),
 				DOM.div("extra", [
 					data.rating ? DOM.span("rating", data.rating) : undefined,
@@ -46,15 +53,6 @@ namespace ymovie.tv.view.media {
 					data instanceof Media.PlayableScc && data.genres ? DOM.span("genres", data.genres) : undefined]),
 				data instanceof Media.Scc ? DOM.p("plot", data.plot) : undefined
 			];
-		}
-
-		onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {
-			const streams = event.detail.streams
-				.sort((a, b) => ((a.width || 0) - (b.width || 0)) || ((a.size || 0) - (b.size || 0)));
-			this.streams.update({media:event.detail.media, streams});
-			const first = this.streams.getFirst();
-			if(first)
-				this.trigger(new Action.RequestFocus(first));
 		}
 	}
 
@@ -67,7 +65,7 @@ namespace ymovie.tv.view.media {
 		constructor(context:Context) {
 			super("div", undefined);
 			this.pair = new Pair(context.deviceId)
-			this.listen(Action.StreamFocused, this.onStreamFocused.bind(this));
+			this.listen(Action.Focused, this.onStreamFocused.bind(this));
 		}
 
 		getFirst():Stream | undefined {
@@ -88,7 +86,7 @@ namespace ymovie.tv.view.media {
 			return super.render();
 		}
 
-		onStreamFocused(event:CustomEvent<Action.StreamFocusedData>) {
+		onStreamFocused(event:CustomEvent<Action.FocusData>) {
 			const element = event.detail.element;
 			this.element.style.transform = `translateY(${-element.offsetTop}px)`;
 		}
@@ -104,11 +102,6 @@ namespace ymovie.tv.view.media {
 
 		getFocusLayer():string {
 			return "stream";
-		}
-
-		focus() {
-			super.focus();
-			this.trigger(new Action.StreamFocused({data:this.data.stream, component:this, element:this.element}));
 		}
 
 		submit() {

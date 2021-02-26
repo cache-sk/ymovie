@@ -3,7 +3,6 @@ namespace ymovie.tv.view.media {
 	import ClassName = util.ClassName;
 	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
-	import Focus = ymovie.tv.util.Focus;
 	import Media = ymovie.type.Media;
 
 	export abstract class MediaScreenBase extends Screen {
@@ -11,6 +10,7 @@ namespace ymovie.tv.view.media {
 		private readonly detail:Detail;
 		private lastFocusedCatalogue:Action.CatalogueItemFocusedData | undefined;
 		private readonly _onCatalogueLoaded = this.onCatalogueLoaded.bind(this);
+		private readonly _onStreamsLoaded = this.onStreamsLoaded.bind(this);
 
 		constructor(context:Context) {
 			super(context);
@@ -20,18 +20,20 @@ namespace ymovie.tv.view.media {
 			this.updateActiveFocus("rows");
 
 			this.listen(Action.CatalogueItemFocused, this.onCatalogueItemFocused.bind(this));
-			this.listen(Action.StreamFocused, this.onStreamFocused.bind(this));
+			this.detail.listen(Action.Focused, this.onDetailFocused.bind(this));
 			this.listen(Action.BlurStreams, this.onBlurStreams.bind(this));
 			this.listen(Action.CatalogueItemSelected, this.onCatalogueItemSelected.bind(this));
 		}
 
-		activate(currentFocus:Focus.IFocusable | undefined) {
-			super.activate(currentFocus);
+		activate(focus:boolean) {
+			super.activate(focus);
 			this.listenGlobal(Action.CatalogueLoaded, this._onCatalogueLoaded);
+			this.listenGlobal(Action.StreamsLoaded, this._onStreamsLoaded);
 		}
 
 		deactivate() {
 			this.unlistenGlobal(Action.CatalogueLoaded, this._onCatalogueLoaded);
+			this.unlistenGlobal(Action.StreamsLoaded, this._onStreamsLoaded);
 			super.deactivate();
 		}
 
@@ -45,7 +47,7 @@ namespace ymovie.tv.view.media {
 			DOM.append(this.rowContainer, row.render());
 			const item = row.getFirst();
 			if(requestFocus && item)
-				this.trigger(new Action.RequestFocus(item));
+				this.trigger(new Action.RequestFocus({component:item, element:item.element}));
 		}
 
 		protected removeCatalogues() {
@@ -83,17 +85,22 @@ namespace ymovie.tv.view.media {
 			}
 		}
 
-		private onStreamFocused() {
-			this.updateActiveFocus("stream");
+		private onDetailFocused() {
+			this.updateActiveFocus("detail");
 		}
 
 		private onBlurStreams() {
-			if(this.lastFocusedCatalogue)
-				this.trigger(new Action.RequestFocus(this.lastFocusedCatalogue.component));
+			const item = this.lastFocusedCatalogue;
+			if(item)
+				this.trigger(new Action.RequestFocus({component:item.component, element:item.element}));
 		}
 
 		private onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
 			this.appendCatalogue(event.detail.catalogue, true);
+		}
+
+		private onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {
+			this.detail.updateStreams(event.detail);
 		}
 	}
 }

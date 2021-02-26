@@ -37,11 +37,6 @@ namespace ymovie.tv.view {
 			this.element.addEventListener("click", this.onClick.bind(this));
 		}
 
-		focus():void {
-			super.focus();
-			this.trigger(new Action.OSKKeyFocus({value:this.action, type:this.type}));
-		}
-
 		executeFocusEvent(event:Focus.Event):boolean {
 			if(event.action === "submit") {
 				this.submit();

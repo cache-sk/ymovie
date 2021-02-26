@@ -12,7 +12,6 @@ namespace ymovie.tv.view.player {
 		private controls = new Controls();
 		private seekTimer?:number;
 		private idleTimer?:number;
-		private previousFocus:Focus.IFocusable | undefined;
 
 		constructor(context:Context) {
 			super(context);
@@ -42,18 +41,14 @@ namespace ymovie.tv.view.player {
 			return this.render();
 		}
 
-		activate(currentFocus:Focus.IFocusable | undefined) {
-			this.previousFocus = currentFocus;
-			super.activate(currentFocus);
-			this.trigger(new Action.RequestFocus(this.controls));
+		activate(focus:boolean) {
+			super.activate(focus);
+			this.trigger(new Action.RequestFocus({component:this.controls, element:this.controls.element}));
 		}
 
 		deactivate() {
 			super.deactivate();
 			this.update();
-			if(this.previousFocus)
-				this.trigger(new Action.RequestFocus(this.previousFocus));
-			this.previousFocus = undefined;
 		}
 
 		render() {
