@@ -52,15 +52,15 @@
 	position: absolute;
 	top: calc(100vh - 11rem);
 	transition: transform .5s;
-	backface-visibility: hidden;
 	will-change: transform;
+	backface-visibility: hidden;
 }
 
 .MediaScreenBase .Row {
 	white-space: nowrap;
 	transition: transform .5s, opacity .5s;
-	backface-visibility: hidden;
 	will-change: transform, opacity;
+	backface-visibility: hidden;
 	margin-bottom: 1rem;
 }
 
@@ -165,6 +165,7 @@
 	bottom: 0;
 	padding-right: 40%;
 	transition: opacity .5s;
+	will-change: opacity;
 }
 
 .Detail .background {
@@ -215,8 +216,8 @@
 	top: 4rem;
 	right: 2.5rem;
 	transition: transform .5s;
-	backface-visibility: hidden;
 	will-change: transform;
+	backface-visibility: hidden;
 }
 
 .Detail .Stream {
@@ -400,6 +401,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	bottom: 5rem;
 	transform: translateX(-50%);
 	transition: opacity .5s;
+	will-change: opacity;
 }
 
 .PlayerScreen.idle .Controls {
@@ -442,6 +444,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	position: absolute;
 	top: 7rem;
 	transition: opacity .5s;
+	will-change: opacity;
 }
 
 .OSK .Key {

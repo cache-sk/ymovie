@@ -22,7 +22,7 @@ namespace ymovie.tv.util.Nav {
 		}
 
 		goAbout() {
-			this.pushState(undefined, "About", `#${Manager.PATH_ABOUT}`);
+			this.pushState(undefined, "About", Manager.PATH_ABOUT);
 		}
 
 		isAbout(path:string):boolean {
@@ -34,7 +34,7 @@ namespace ymovie.tv.util.Nav {
 		}
 
 		goPlayer() {
-			this.pushState(undefined, "Player", `#${Manager.PATH_PLAYER}`);
+			this.pushState(undefined, "Player", Manager.PATH_PLAYER);
 		}
 
 		isPlayer(path:string):boolean {
@@ -42,7 +42,7 @@ namespace ymovie.tv.util.Nav {
 		}
 
 		goSearch() {
-			this.pushState(undefined, "Search", `#${Manager.PATH_SEARCH}`);
+			this.pushState(undefined, "Search", Manager.PATH_SEARCH);
 		}
 
 		isSearch(path:string):boolean {
@@ -50,7 +50,7 @@ namespace ymovie.tv.util.Nav {
 		}
 
 		goSetup() {
-			this.pushState(undefined, "Setup", `#${Manager.PATH_SETUP}`);
+			this.pushState(undefined, "Setup", Manager.PATH_SETUP);
 		}
 
 		isSetup(path:string):boolean {
@@ -61,10 +61,13 @@ namespace ymovie.tv.util.Nav {
 			history.back();
 		}
 
-		private pushState(source:StateSource, title:string, path?:string):void {
-			const url = document.location.pathname + (path || "");
+		private pushState(source:StateSource, title:string, path:string=""):void {
+			const url = document.location.pathname + (path ? `#${path}` : "");
 			const state = {source, title, url};
-			history.pushState(state, title, url);
+			if(this.currentPath == path)
+				history.replaceState(state, title, url);
+			else
+				history.pushState(state, title, url);
 			this.title = title;
 			this.triggerChange(state);
 		}
