@@ -121,10 +121,6 @@ namespace ymovie.web.view {
 			return super.render();
 		}
 		
-		set loading(toggle:boolean) {
-			this.toggleClass("loading", toggle);
-		}
-		
 		showNotification(title:string, message:string, html:boolean=false) {
 			this.notificationView?.update({title, message, html});
 		}

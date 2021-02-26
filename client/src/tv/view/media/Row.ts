@@ -83,7 +83,7 @@ namespace ymovie.tv.view.media {
 		}
 
 		submit() {
-			this.element.classList.add("loading");
+			this.loading = true;
 			this.trigger(new Action.CatalogueItemSelected({data:this.data, component:this, element:this.element}));
 		}
 
@@ -110,12 +110,12 @@ namespace ymovie.tv.view.media {
 
 		onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
 			if(this.data === event.detail.item)
-				this.element.classList.remove("loading");
+				this.loading = false;
 		}
 
 		onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {
 			if(this.data === event.detail.media)
-				this.element.classList.remove("loading");
+				this.loading = false;
 		}
 
 		onClick() {

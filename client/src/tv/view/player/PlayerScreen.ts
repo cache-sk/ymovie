@@ -30,10 +30,6 @@ namespace ymovie.tv.view.player {
 			this.element.classList.toggle("idle", value);
 		}
 
-		private set loading(value:boolean) {
-			this.element.classList.toggle("loading", value);
-		}
-
 		update(data?:PlayerScreenData):HTMLElement {
 			this.data = data;
 			this.idle = false;

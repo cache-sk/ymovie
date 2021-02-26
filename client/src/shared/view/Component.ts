@@ -10,6 +10,14 @@ namespace ymovie.view {
 			// @ts-ignore
 			this.element.classList.add(this.constructor.name);
 		}
+
+		protected set loading(value:boolean) {
+			this.element.classList.toggle("loading", value);
+		}
+
+		protected get loading():boolean {
+			return this.element.classList.contains("loading");
+		}
 		
 		trigger<T>(action:Action.Base<T>):T {
 			return this.triggerOn(this.element, action);

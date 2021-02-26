@@ -9,8 +9,7 @@ namespace ymovie.web.view.detail {
 		
 		render(){
 			this.clean();
-			
-			this.element.classList.toggle("loading", !this.data);
+			this.loading = !this.data;
 			if(this.data){
 				const data = this.data.data;
 				if(data instanceof Media.PlayableScc && data.trailers)

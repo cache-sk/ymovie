@@ -7,10 +7,6 @@ namespace ymovie.web.view.base {
 			this.element.addEventListener("submit", this.onSubmit.bind(this));
 		}
 		
-		set loading(value:boolean) {
-			this.element.classList.toggle("loading", value);
-		}
-		
 		async process() {}
 		
 		async onSubmit(event:Event) {

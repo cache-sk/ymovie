@@ -26,7 +26,7 @@ namespace ymovie.web.view.detail {
 		}
 		
 		onClick(){
-			this.element.classList.add("loading");
+			this.loading = true;
 			this.trigger(new type.Action.ResolveStreamUrl({stream:<Media.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
 			if(this.data?.source instanceof Media.Movie)
 				util.Watched.addMovie(this.data.source.id);
@@ -38,7 +38,7 @@ namespace ymovie.web.view.detail {
 		}
 		
 		onUrl(url:string){
-			this.element.classList.remove("loading");
+			this.loading = false;
 			if(this.data)
 				this.update({...this.data, url});
 		}

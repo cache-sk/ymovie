@@ -106,7 +106,7 @@ namespace ymovie.tv.view.media {
 		}
 
 		submit() {
-			this.element.classList.toggle("loading", true);
+			this.loading = true;
 			this.trigger(new Action.Play(this.data));
 		}
 
@@ -147,7 +147,7 @@ namespace ymovie.tv.view.media {
 
 		onStreamUrlResolved(event:CustomEvent<Action.StreamUrlResolvedData>) {
 			if(event.detail.stream === this.data.stream)
-				this.element.classList.toggle("loading", false);
+				this.loading = false;
 		}
 	}
 
