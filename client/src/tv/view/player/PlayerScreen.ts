@@ -75,6 +75,7 @@ namespace ymovie.tv.view.player {
 				this.video.addEventListener("waiting", this.onVideoWaiting.bind(this));
 				this.video.addEventListener("play", this.onVideoPlay.bind(this));
 				this.video.addEventListener("pause", this.onVideoPause.bind(this));
+				this.video.addEventListener("error", this.onVideoError.bind(this));
 				this.append([this.video, this.controls.render()]);
 			}
 
@@ -143,6 +144,12 @@ namespace ymovie.tv.view.player {
 
 		private onVideoPause() {
 			this.updateControls();
+		}
+
+		private onVideoError() {
+			this.loading = false;
+			const message = `Playback failed with code <strong>${this.video?.error?.code || 0}</strong> and message <strong>${this.video?.error?.message || 'empty'}</strong>`;
+			this.trigger(new Action.ShowNotification({title:"Player Error", message, html:true}));
 		}
 
 		private onTogglePlay() {

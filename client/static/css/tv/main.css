@@ -19,6 +19,7 @@ body {
 
 *, *:before, *:after {
 	box-sizing: inherit;
+	cursor: default;
 }
 
 input::placeholder {
@@ -47,6 +48,7 @@ p {
 	letter-spacing: -0.02em;
 }
 
+button:focus,
 .focused {
 	outline: .2rem solid #fec401;
 }

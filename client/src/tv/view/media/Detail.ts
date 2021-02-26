@@ -98,6 +98,7 @@ namespace ymovie.tv.view.media {
 		constructor(data:StreamData) {
 			super("div", data);
 			this.element.addEventListener("click", this.onClick.bind(this));
+			this.listenGlobal(Action.StreamUrlResolved, this.onStreamUrlResolved.bind(this));
 		}
 
 		getFocusLayer():string {
@@ -105,6 +106,7 @@ namespace ymovie.tv.view.media {
 		}
 
 		submit() {
+			this.element.classList.toggle("loading", true);
 			this.trigger(new Action.Play(this.data));
 		}
 
@@ -141,6 +143,11 @@ namespace ymovie.tv.view.media {
 		onClick() {
 			this.focus();
 			this.submit();
+		}
+
+		onStreamUrlResolved(event:CustomEvent<Action.StreamUrlResolvedData>) {
+			if(event.detail.stream === this.data.stream)
+				this.element.classList.toggle("loading", false);
 		}
 	}
 

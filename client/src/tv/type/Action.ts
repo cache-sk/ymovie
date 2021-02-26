@@ -5,15 +5,8 @@ namespace ymovie.tv.type.Action {
 	import Media = ymovie.type.Media;
 	import ScreenId = type.ScreenId;
 
-	export class RegisterFocusable extends Base<Array<Focus.IFocusable>> {
-		constructor() {
-			super([]);
-		}
-	}
-
 	export class CatalogueItemSelected extends Base<CatalogueItemSelectedData> {}
 	export class CatalogueItemFocused extends Base<CatalogueItemFocusedData> {}
-	
 	export class RequestFocus extends Base<FocusData | undefined> {}
 	export class Focused extends Base<FocusData> {}
 	export class ShowScreen extends Base<ScreenId> {}
@@ -27,27 +20,30 @@ namespace ymovie.tv.type.Action {
 	export class OSKKeySubmit extends Base<OSKKeyData> {}
 	export class GlobalKeyDown extends Base<KeyboardEvent> {}
 	export class Search extends Base<string> {}
+	export class ShowNotification extends Base<ShowNotificationData> {}
+	export class StreamUrlResolved extends Base<StreamUrlResolvedData> {}
+
+	export class RegisterFocusable extends Base<Array<Focus.IFocusable>> {
+		constructor() {super([]);}
+	}
+
 	export class TogglePlay extends Base<undefined> {
-		constructor() {
-			super(undefined);
-		}
+		constructor() {super(undefined);}
 	}
 	
 	export class BlurStreams extends Base<undefined> {
-		constructor() {
-			super(undefined);
-		}
+		constructor() {super(undefined);}
 	}
 
 	export type FocusData = {
-		component:Focus.IFocusable;
-		element:HTMLElement;
+		readonly component:Focus.IFocusable;
+		readonly element:HTMLElement;
 	}
 
 
 	export type PlayData = {
-		media:Media.Playable;
-		stream:Media.Stream;
+		readonly media:Media.Playable;
+		readonly stream:Media.Stream;
 	}
 
 	export type CatalogueItemSelectedData = {
@@ -76,5 +72,15 @@ namespace ymovie.tv.type.Action {
 	export type OSKKeyData = {
 		readonly type:OSKAction;
 		readonly value:string;
+	}
+
+	export type ShowNotificationData = {
+		readonly title:string;
+		readonly message:string;
+		readonly html:boolean;
+	}
+
+	export type StreamUrlResolvedData = PlayData & {
+		readonly url:string;
 	}
 }

@@ -11,6 +11,7 @@ namespace ymovie.tv.view {
 		readonly nav = new Nav.Manager();
 		readonly focus = new Focus.Manager();
 		readonly header = new Header();
+		readonly notification = new Notification();
 		readonly context:type.Context = {deviceId:this.api.deviceId, menu:this.menu};
 		readonly mediaScreen = new media.MediaScreen(this.context);
 		readonly searchScreen = new search.SearchScreen(this.context);
@@ -32,6 +33,7 @@ namespace ymovie.tv.view {
 			this.listen(Action.Play, this.onPlay.bind(this));
 			this.listen(Action.EmulateFocusAction, event => this.executeFocusAction(event.detail));
 			this.listen(Action.Search, this.onSearch.bind(this));
+			this.listen(Action.ShowNotification, event => this.showNotification(event.detail));
 
 			await this.api.init();
 
@@ -63,7 +65,8 @@ namespace ymovie.tv.view {
 				this.setupScreen.render(),
 				this.aboutScreen.render(),
 				this.playerScreen.render(),
-				this.header.render()]);
+				this.header.render(),
+				this.notification.render()]);
 			return super.render();
 		}
 
@@ -87,6 +90,10 @@ namespace ymovie.tv.view {
 			if(id === "setup")
 				return nav.goSetup();
 			return nav.goHome();
+		}
+
+		showNotification(data:Action.ShowNotificationData) {
+			this.notification.update(data);
 		}
 
 		activateScreen(screen:Screen, defaultFocus?:Focus.IFocusable) {
@@ -124,7 +131,9 @@ namespace ymovie.tv.view {
 		}
 
 		async onPlay(event:CustomEvent<Action.PlayData>) {
-			const url = await this.api.resolveStreamUrl(event.detail.stream);
+			const {stream, media} = event.detail;
+			const url = await this.api.resolveStreamUrl(stream);
+			this.trigger(new Action.StreamUrlResolved({media, stream, url}));
 			this.playerScreen.update({media:event.detail.media, stream:event.detail.stream, url});
 			this.showScreen("player");
 		}
