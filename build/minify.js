@@ -2,9 +2,10 @@ const fs = require('fs');
 const path = require("path");
 const csso = require('csso');
 const minify = require("@babel/core").transformSync;
-const Util = require("./Util.js");
+const base = path.join(__dirname, '..', 'dist/client');
+const files = ["404.html", "index.html", "kodi.html", "play.html", "tv.html"];
 
-module.exports = class HtmlOptimizer {
+class HtmlOptimizer {
 	constructor(base){
 		this.base = base;
 	}
@@ -25,8 +26,6 @@ module.exports = class HtmlOptimizer {
 		if(file[0] !== "/")
 			return null;
 		const filePath = path.join(this.base, file);
-		if(!Util.isFile(filePath))
-			return null;
 		return fs.readFileSync(filePath, {encoding:'utf8'});
 	}
 	
@@ -62,7 +61,7 @@ module.exports = class HtmlOptimizer {
 			const {code} = minify(content, {
 				plugins: ["transform-class-properties"],
 				comments: false,
-				presets: [["minify", {mangle:true, keepFnName:false, keepClassName:true}]]
+				presets: [["minify", {mangle:true, keepFnName:true, keepClassName:true}]]
 			});
 			return `<script>${code}</script>`;
 		});
@@ -79,7 +78,26 @@ module.exports = class HtmlOptimizer {
 	replaceVariables(source){
 		let result = source;
 		if(source.indexOf("${COMMIT_DATE}") > -1)
-			result = result.replace("${COMMIT_DATE}", Util.getCommitDate());
+			result = result.replace("${COMMIT_DATE}", this.getCommitDate());
 		return result;
 	}
+
+	getCommitDate(){
+		try {
+			const stdio = ['pipe', 'pipe', 'pipe'];
+			return execSync('git log -1 --format=%ct', {encoding:'utf8', stdio:stdio}).trim() * 1000;
+		} catch (e) {
+			return new Date().getTime();
+		}
+	}
 }
+
+const htmlOptimizer = new HtmlOptimizer(base);
+for(const file of files) {
+	const filePath = path.join(base, file);
+	const content = fs.readFileSync(filePath);
+	const data = htmlOptimizer.optimize(content);
+	fs.writeFileSync(filePath, data);
+}
+fs.rmdirSync(path.join(base, "css"), {recursive:true});
+fs.rmdirSync(path.join(base, "js"), {recursive:true});

@@ -15,7 +15,7 @@
 		"prepare-client": "node client/build/prepare.js",
 		"run": "node dist/server/index.js",
 		"run-debug": "node --inspect dist/server/index.js debug",
-		"start": "npm run build && npm run run",
+		"start": "npm run build && node build/minify.js && npm run run",
 		"start-debug": "npm run build && npm run run-debug",
 		"build-run-server-debug": "npm run build-server && npm run run-debug"
 	},

@@ -1,11 +1,18 @@
 const fs = require('fs');
 const path = require("path");
-const Util = require("./Util.js");
 
 module.exports = class StaticHandler {
 	constructor(){
 		this.base = path.join(__dirname, '..', 'client');
 		this.path404 = path.join(this.base, '/404.html');
+	}
+
+	isFile(path){
+		try {
+			return fs.lstatSync(path).isFile();
+		} catch (e) {
+			return false;
+		}
 	}
 	
 	handle(request, response){
@@ -22,7 +29,7 @@ module.exports = class StaticHandler {
 	}
 	
 	handlePath(request, response, path){
-		if(!Util.isFile(path))
+		if(!this.isFile(path))
 			return false;
 		
 		this.writeFile(path, response);
