@@ -26,7 +26,7 @@ namespace ymovie.tv.view.media {
 					this.background.style.backgroundImage = `url(${Thumbnail.largeBackground(this.data.fanart)})`;
 					this.append(this.background);
 				}
-				this.append([this.renderBase(this.data), this.streams.render()]);
+				this.append([DOM.div("container", this.renderBase(this.data)), this.streams.render()]);
 			}
 			return super.render();
 		}

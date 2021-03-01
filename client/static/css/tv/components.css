@@ -1,3 +1,10 @@
+.Detail .Stream.loading,
+.MediaScreenBase .Row .Item.loading::after,
+.PlayerScreen.loading::after,
+.SearchScreen.loading input {
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') !important;
+}
+
 .Header {
 	position: absolute;
 	top: 1.5rem;
@@ -95,7 +102,7 @@
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
 
-.MediaScreenBase .Row .Item:not(.loading):not(.loading).series {
+.MediaScreenBase .Row .Item:not(.loading).series {
 	background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path fill=\"%23fec401\" d=\"M22 4v12h-20v-12h20zm2-2h-24v16h24v-16zm-7 18h-10v2h10v-2z\"/></svg>'),
 		linear-gradient(180deg, #222 50%, #000 100%);
 }
@@ -127,7 +134,7 @@
 	top: 0;
 	bottom: 0;
 	right: 0;
-	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') no-repeat center 40% / 3rem;
+	background: no-repeat center 40% / 3rem;
 }
 
 .MediaScreenBase.focus-detail .Row {
@@ -198,16 +205,19 @@
 	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23fec401" d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z"/></svg>') no-repeat;
 }
 
-.Detail p {
-	clear: both;
-	margin-top: .5rem;
-	-webkit-mask: linear-gradient(to bottom,white 6rem, transparent 8rem);
-	mask: linear-gradient(to bottom,white 6rem, transparent 8rem);
+.Detail .container {
+	-webkit-mask: linear-gradient(to bottom,white 10rem, transparent 13rem);
+	mask: linear-gradient(to bottom,white 10rem, transparent 13rem);
 }
 
-.focus-detail .Detail p {
-	-webkit-mask: linear-gradient(to bottom,white 16rem, transparent 18rem);
-	mask: linear-gradient(to bottom,white 16rem, transparent 18rem);
+.focus-detail .Detail .container {
+	-webkit-mask: linear-gradient(to bottom,white 20rem, transparent 23rem);
+	mask: linear-gradient(to bottom,white 20rem, transparent 23rem);
+}
+
+.Detail .container p {
+	clear: both;
+	margin-top: .5rem;
 }
 
 .Detail .Streams {
@@ -231,10 +241,6 @@
 	padding: .1rem 2.5rem .1rem .7rem;
 	border-radius: 1rem;
 	background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path fill=\"%23fec401\" d=\"M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 18v-12l10 6-10 6z\"/></svg>') no-repeat right .7rem center / 1.5rem;
-}
-
-.Detail .Stream.loading {
-	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>');
 }
 
 .Detail .Stream span {
@@ -383,7 +389,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	height: 4rem;
 	left: calc(50% - 2rem);
 	top: calc(50% - 2rem);
-	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" r="32" stroke-width="8" stroke="%23fec401" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round" transform="rotate(68.1026 50 50)"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform></circle></svg>') no-repeat center / 100%;
+	background: no-repeat center / 100%;
 }
 
 .PlayerScreen video {
@@ -483,6 +489,12 @@ body:not(.webshare-ok) .Detail .Stream {
 	color: white;
 	font-size: 1rem;
 	padding: 1rem;
+}
+
+.SearchScreen.loading input {
+	background-repeat: no-repeat;
+	background-position: center right;
+	background-size: 2rem;
 }
 
 .SearchScreen:not(.focus-osk) .OSK,

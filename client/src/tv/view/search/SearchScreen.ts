@@ -48,7 +48,7 @@ namespace ymovie.tv.view.search {
 
 		resetSearchTimeout() {
 			this.stopSearchTimeout();
-			if(this.input.value.length > 2 && this.input.value != this.lastSearch)
+			if(this.input.value.length && this.input.value != this.lastSearch)
 				this.searchTimeout = setTimeout(this.onSearch.bind(this), this.searchTimeoutInterval);
 		}
 
@@ -77,10 +77,12 @@ namespace ymovie.tv.view.search {
 			this.stopSearchTimeout();
 			this.removeCatalogues();
 			this.lastSearch = this.input.value;
+			this.loading = true;
 			this.trigger(new Action.Search(this.input.value));
 		}
 
 		private onSearchCatalogueLoaded(event:CustomEvent<Array<Catalogue.AnyItem>>) {
+			this.loading = false;
 			this.appendCatalogue(event.detail, false);
 		}
 	}

@@ -144,8 +144,9 @@ namespace ymovie.tv.view.player {
 
 		private onVideoError() {
 			this.loading = false;
-			const message = `Playback failed with code <strong>${this.video?.error?.code || 0}</strong> and message <strong>${this.video?.error?.message || 'empty'}</strong>`;
+			const message = `Playback failed with code <strong>${this.video?.error?.code || 0}</strong> and message <strong>${this.video?.error?.message || 'empty'}</strong>.`;
 			this.trigger(new Action.ShowNotification({title:"Player Error", message, html:true}));
+			this.trigger(new Action.GoBack());
 		}
 
 		private onTogglePlay() {
@@ -200,7 +201,7 @@ namespace ymovie.tv.view.player {
 		}
 
 		render() {
-			this.thumb.style.left = `${(this.data.currentTime / this.data.duration * 100)}%`;
+			this.thumb.style.left = `${this.data.currentTime / this.data.duration * 100 || 0}%`;
 			this.time.innerHTML = `${Util.formatDuration(this.data.currentTime)} / ${Util.formatDuration(this.data.duration)}`;
 			return super.render();
 		}

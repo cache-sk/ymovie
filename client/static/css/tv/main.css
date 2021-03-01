@@ -48,7 +48,11 @@ p {
 	letter-spacing: -0.02em;
 }
 
-button:focus,
+button:focus {
+	outline: none;
+}
+
+button:focus.focused,
 .focused {
 	outline: .2rem solid #fec401;
 }

@@ -37,6 +37,10 @@ namespace ymovie.tv.type.Action {
 		constructor() {super(undefined);}
 	}
 
+	export class GoBack extends Base<undefined> {
+		constructor() {super(undefined);}
+	}
+
 	export type FocusData = {
 		readonly component:Focus.IFocusable;
 		readonly element:HTMLElement;
