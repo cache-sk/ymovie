@@ -9,36 +9,74 @@ namespace ymovie.tv.view.media {
 	import Thumbnail = ymovie.util.Thumbnail;
 
 	export class Row extends DataComponent<HTMLDivElement, RowData> {
-		private first:Item | undefined;
+		private readonly items:Array<Item> = [];
 
 		constructor(data:RowData) {
 			super("div", data);
 
 			this.listen(Action.CatalogueItemFocused, this.onCatalogueItemFocused.bind(this));
+			this.listenGlobal(Action.CatalogueLoaded, this.onCatalogueLoaded.bind(this));
 		}
 
 		getFirst():Item | undefined {
-			return this.first;
+			return this.items?.[0];
+		}
+
+		private getLastItemLink():Scc.CatalogueLink | undefined {
+			const data = this.data.length ? this.data[this.data.length - 1] : undefined;
+			return data && (this.isMoreLink(data) ? <Scc.CatalogueLink>data : undefined);
+		}
+
+		private isMoreLink(data:RowItemData):boolean {
+			return data instanceof Scc.CatalogueLink && data.page ? true : false;
 		}
 
 		render() {
 			this.clean();
-			this.first = undefined;
-			for(const data of this.data) {
-				const item = new Item(data);
-				if(!this.first) this.first = item;
-				this.append(item.render());
-			}
+			for(const data of this.data)
+				this.appendData(data);
 			return super.render();
 		}
 
-		onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {
-			if(event.detail.scroll)
-				this.element.style.transform = `translateX(${-event.detail.element.offsetLeft}px)`;
+		private appendData(data:RowItemData) {
+			if(!this.isMoreLink(data)) {
+				const item = new Item(data);
+				this.items.push(item);
+				this.append(item.render());
+			}
+		}
+
+		private onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
+			if(event.detail.item === this.getLastItemLink()) {
+				this.loading = false;
+				for(const data of event.detail.catalogue) {
+					this.data.push(data);
+					this.appendData(data);
+				}
+			}
+		}
+
+		private onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {
+			if(!event.detail.scroll)
+				return;
+			this.element.style.transform = `translateX(${-event.detail.element.offsetLeft}px)`;
+
+			if(this.loading)
+				return;
+
+			const link = this.getLastItemLink();
+			if(!link || this.items.length < 2)
+				return;
+
+			const rect = this.items[this.items.length - 2]!.getBoundingRect();
+			if(rect && rect.x < document.body.clientWidth) {
+				this.loading = true;
+				this.trigger(new Action.RequestMoreItems(link));
+			}
 		}
 	}
 
-	export type RowItemData = Catalogue.AnyItem;
+	type RowItemData = Catalogue.AnyItem;
 	export type RowData = Array<RowItemData>;
 
 	class Item extends FocusableDataComponent<HTMLDivElement, RowItemData> {
@@ -70,7 +108,7 @@ namespace ymovie.tv.view.media {
 		renderPoster(poster:string | undefined) {
 			const url = Thumbnail.smallPoster(poster) || Item.DEFAULT_POSTER_URL;
 			const result = DOM.img(undefined, url);
-			result.width = 100; // mute consoloe warning
+			result.width = 100; // mute console warning
 			result.loading = "lazy";
 			result.addEventListener("error", this._onImageError);
 			result.classList.toggle("missing", !poster);

@@ -96,7 +96,8 @@ namespace ymovie.tv.view.media {
 		}
 
 		private onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
-			this.appendCatalogue(event.detail.catalogue, true);
+			if(event.detail.newRow)
+				this.appendCatalogue(event.detail.catalogue, true);
 		}
 
 		private onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {

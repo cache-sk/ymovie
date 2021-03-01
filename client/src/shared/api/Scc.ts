@@ -1,9 +1,11 @@
 /// <reference path="../type/Catalogue.ts"/>
 /// <reference path="../type/Media.ts"/>
+/// <reference path="../util/Url.ts"/>
 
 namespace ymovie.api.Scc {
 	import Catalogue = type.Catalogue;
 	import Media = type.Media;
+	import Url = ymovie.util.Url;
 
 	export class Api {
 		static ENDPOINT = "https://plugin.sc2.zone";
@@ -62,16 +64,12 @@ namespace ymovie.api.Scc {
 		
 		async loadUrl(url:string){
 			const headers = {"X-Uuid":this.uuid};
-			const finalUrl = this.appendAccessToken(url);
+			const finalUrl = Url.setParam(url, Api.TOKEN_PARAM_NAME, Api.TOKEN_PARAM_VALUE);
 			return await (await fetch(finalUrl, {headers})).json();
 		}
-		
-		appendAccessToken(url:string){
-			const name = Api.TOKEN_PARAM_NAME;
-			const value = Api.TOKEN_PARAM_VALUE;
-			if(url.indexOf(`&${name}=`) != -1 || url.indexOf(`?${name}=`) != -1)
-				return url;
-			return url + (url.indexOf("?") != -1 ? "&" : "?") + `${name}=${value}`;
+
+		static setLimit(url:string, value:number) {
+			return Url.setParam(url, "limit", value.toString());
 		}
 	}
 

@@ -34,6 +34,7 @@ namespace ymovie.tv.view {
 			this.listen(Action.EmulateFocusAction, event => this.executeFocusAction(event.detail));
 			this.listen(Action.Search, this.onSearch.bind(this));
 			this.listen(Action.ShowNotification, event => this.showNotification(event.detail));
+			this.listen(Action.RequestMoreItems, this.onRequestMoreItems.bind(this));
 
 			await this.api.init();
 
@@ -116,14 +117,19 @@ namespace ymovie.tv.view {
 		async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
 			const {data} = event.detail;
 			if(data instanceof Scc.CatalogueLink)
-				return this.trigger(new Action.CatalogueLoaded({item:data, catalogue:await this.api.loadPath(data.url, "more")}));
+				return this.trigger(new Action.CatalogueLoaded({item:data, newRow:true, catalogue:await this.api.loadPath(data.url, "more")}));
 			if(data instanceof Media.Series)
-				return this.trigger(new Action.CatalogueLoaded({item:data, catalogue:await this.api.loadSeasons(data.id, "more")}));
+				return this.trigger(new Action.CatalogueLoaded({item:data, newRow:true, catalogue:await this.api.loadSeasons(data.id, "more")}));
 			if(data instanceof Media.Season)
-				return this.trigger(new Action.CatalogueLoaded({item:data, catalogue:await this.api.loadEpisodes(data.id, "more")}));
+				return this.trigger(new Action.CatalogueLoaded({item:data, newRow:true, catalogue:await this.api.loadEpisodes(data.id, "more")}));
 			if(data instanceof Media.PlayableScc)
 				return this.trigger(new Action.StreamsLoaded({media:data, streams:await this.api.loadStreams(data)}));
 			return;
+		}
+
+		async onRequestMoreItems(event:CustomEvent<Scc.CatalogueLink>) {
+			const data = event.detail;
+			return this.trigger(new Action.CatalogueLoaded({item:data, newRow:false, catalogue:await this.api.loadPath(data.url, "more")}));
 		}
 
 		async onSearch(event:CustomEvent<string>) {

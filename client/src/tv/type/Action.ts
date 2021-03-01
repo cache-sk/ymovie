@@ -3,9 +3,11 @@ namespace ymovie.tv.type.Action {
 	import Catalogue = ymovie.type.Catalogue;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
+	import Scc = ymovie.api.Scc;
 	import ScreenId = type.ScreenId;
 
 	export class CatalogueItemSelected extends Base<CatalogueItemSelectedData> {}
+	export class RequestMoreItems extends Base<Scc.CatalogueLink> {}
 	export class CatalogueItemFocused extends Base<CatalogueItemFocusedData> {}
 	export class RequestFocus extends Base<FocusData | undefined> {}
 	export class Focused extends Base<FocusData> {}
@@ -62,6 +64,7 @@ namespace ymovie.tv.type.Action {
 	export type CatalogueLoadedData = {
 		readonly item:Catalogue.AnyItem;
 		readonly catalogue:Array<Catalogue.AnyItem>;
+		readonly newRow:boolean;
 	}
 
 	export type StreamsLoadedData = {
