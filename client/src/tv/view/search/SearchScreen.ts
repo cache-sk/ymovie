@@ -3,12 +3,12 @@ namespace ymovie.tv.view.search {
 	import Catalogue = ymovie.type.Catalogue;
 	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
+	import Timeout = ymovie.util.Timeout;
 
 	export class SearchScreen extends media.MediaScreenBase {
 		private readonly osk = new OSK();
 		private readonly input = DOM.input(undefined, "q", "", "Search query");
-		private searchTimeout:number | undefined;
-		private readonly searchTimeoutInterval = 1000;
+		private readonly searchTimeout = new Timeout(1000);
 		private lastSearch = "";
 		private _onGlobalKeyDown = this.delaySearchTimeout.bind(this);
 		private _onSearchCatalogueLoaded = this.onSearchCatalogueLoaded.bind(this);
@@ -30,7 +30,7 @@ namespace ymovie.tv.view.search {
 		}
 
 		deactivate() {
-			this.stopSearchTimeout();
+			this.searchTimeout.stop();
 			this.unlistenGlobal(Action.GlobalKeyDown, this._onGlobalKeyDown);
 			this.unlistenGlobal(Action.SearchCatalogueLoaded, this._onSearchCatalogueLoaded);
 			super.deactivate();
@@ -41,15 +41,10 @@ namespace ymovie.tv.view.search {
 			return super.render();
 		}
 
-		stopSearchTimeout() {
-			clearTimeout(this.searchTimeout);
-			this.searchTimeout = undefined;
-		}
-
 		resetSearchTimeout() {
-			this.stopSearchTimeout();
+			this.searchTimeout.stop();
 			if(this.input.value.length && this.input.value != this.lastSearch)
-				this.searchTimeout = setTimeout(this.onSearch.bind(this), this.searchTimeoutInterval);
+				this.searchTimeout.start(this.onSearch.bind(this));
 		}
 
 		delaySearchTimeout() {
@@ -74,7 +69,7 @@ namespace ymovie.tv.view.search {
 		}
 
 		private onSearch() {
-			this.stopSearchTimeout();
+			this.searchTimeout.stop();
 			this.removeCatalogues();
 			this.lastSearch = this.input.value;
 			this.loading = true;

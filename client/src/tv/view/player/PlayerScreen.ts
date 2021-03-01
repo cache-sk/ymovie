@@ -4,14 +4,15 @@ namespace ymovie.tv.view.player {
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
+	import Timeout = ymovie.util.Timeout;
 	import Util = ymovie.util.Util;
 
 	export class PlayerScreen extends Screen {
 		private data:PlayerScreenData;
 		private video?:HTMLVideoElement;
 		private controls = new Controls();
-		private seekTimer?:number;
-		private idleTimer?:number;
+		private readonly seekTimer = new Timeout(1000);
+		private readonly idleTimer = new Timeout(2000);
 
 		constructor(context:Context) {
 			super(context);
@@ -23,10 +24,9 @@ namespace ymovie.tv.view.player {
 		}
 
 		private set idle(value:boolean) {
-			clearTimeout(this.idleTimer);
-			this.idleTimer = undefined;
+			this.idleTimer.stop();
 			if(!value) 
-				this.idleTimer = setTimeout(() => this.idle = true, 2000);
+				this.idleTimer.start(() => this.idle = true);
 			this.element.classList.toggle("idle", value);
 		}
 
@@ -97,8 +97,7 @@ namespace ymovie.tv.view.player {
 			const currentTime = Math.max(0, Math.min(duration, time));
 			this.controls.update({duration, currentTime});
 
-			clearTimeout(this.seekTimer);
-			this.seekTimer = setTimeout(this.onApplySeek.bind(this), 1000);
+			this.seekTimer.start(this.onApplySeek.bind(this));
 			this.idle = false;
 		}
 
@@ -169,8 +168,7 @@ namespace ymovie.tv.view.player {
 		}
 
 		private onApplySeek() {
-			clearTimeout(this.seekTimer);
-			this.seekTimer = undefined;
+			this.seekTimer.stop();
 			if(this.video)
 				this.video.currentTime = this.controls.data.currentTime;
 		}

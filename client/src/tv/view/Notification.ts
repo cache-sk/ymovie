@@ -2,18 +2,13 @@ namespace ymovie.tv.view {
 	import Action = ymovie.tv.type.Action;
 	import DataComponent = ymovie.view.DataComponent;
 	import DOM = ymovie.util.DOM;
+	import Timeout = ymovie.util.Timeout;
 
 	export class Notification extends DataComponent<HTMLDivElement, Data> {
-		private hideTimeout:number | undefined;
-		private readonly hideTimeoutInterval = 3000;
+		private readonly hideTimeout = new Timeout(3000);
 
 		constructor() {
 			super("div", undefined);
-		}
-
-		stopTimeout() {
-			clearTimeout(this.hideTimeout);
-			this.hideTimeout = undefined;
 		}
 
 		private set visible(value:boolean) {
@@ -21,9 +16,9 @@ namespace ymovie.tv.view {
 		}
 
 		update(data:Data) {
-			this.stopTimeout();
+			this.hideTimeout.stop();
 			if(data)
-				this.hideTimeout = setTimeout(() => this.visible = false, this.hideTimeoutInterval);
+				this.hideTimeout.start(() => this.visible = false);
 			return super.update(data);
 		}
 

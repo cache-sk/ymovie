@@ -39,7 +39,7 @@
 
 .Screen {
 	position: absolute;
-	padding: 4rem 2.5rem;
+	padding: 4rem 2.5rem 1.5rem 2.5rem;
 	display: none;
 	left: 0;
 	top: 0;
@@ -524,4 +524,54 @@ body:not(.webshare-ok) .Detail .Stream {
 
 .Notification.visible {
 	opacity: 1;
+}
+
+.Help {
+	position: absolute;
+	left: 50%;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, .6);
+	color: white;
+	padding: 1.5rem 2.5rem 1.5rem 1rem;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity .5s;
+	will-change: opacity;
+}
+
+.Help.visible {
+	opacity: 1;
+}
+
+.Help .instructions span {
+	display: inline-block;
+	width: 3rem;
+}
+
+.Help .instructions button {
+	border-radius: .3rem;
+	border: .1rem solid white;
+	background: none;
+	color: inherit;
+	font-size: .8rem;
+	width: 3rem;
+	margin-left: .5rem;
+}
+
+.Help .log {
+	position: absolute;
+	top: 12.5rem;
+	right: 2.5rem;
+	bottom: 1.5rem;
+	left: 1rem;
+	overflow: hidden;
+	font-size: .8rem;
+}
+
+.Help .log code {
+	color: red;
+	font: bold 1em monospace;
+	margin-right: .5rem;
 }

@@ -18,6 +18,7 @@ namespace ymovie.tv.view {
 		readonly setupScreen = new setup.SetupScreen(this.context);
 		readonly aboutScreen = new about.AboutScreen(this.context);
 		readonly playerScreen = new player.PlayerScreen(this.context);
+		readonly help = new Help();
 
 		static async init(){
 			const result = new App();
@@ -68,7 +69,8 @@ namespace ymovie.tv.view {
 				this.aboutScreen.render(),
 				this.playerScreen.render(),
 				this.header.render(),
-				this.notification.render()]);
+				this.notification.render(),
+				this.help.render()]);
 			return super.render();
 		}
 
@@ -192,6 +194,8 @@ namespace ymovie.tv.view {
 			if(action) {
 				event.preventDefault();
 				this.executeFocusAction(action);
+			} else {
+				this.help.logKey(event);
 			}
 		}
 	}

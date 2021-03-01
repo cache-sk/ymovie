@@ -1,10 +1,11 @@
 namespace ymovie.web.view.discovery {
 	import Action = type.Action;
 	import DOM = ymovie.util.DOM;
+	import Timeout = ymovie.util.Timeout;
 
 	export class SearchForm extends base.Form {
-		input:HTMLInputElement;
-		timeout:number | undefined;
+		private input:HTMLInputElement;
+		private readonly timeout = new Timeout(1000);
 
 		constructor(){
 			super();
@@ -23,21 +24,14 @@ namespace ymovie.web.view.discovery {
 				this.input.value = value;
 		}
 		
-		clearTimeout(){
-			if(this.timeout)
-				clearTimeout(this.timeout);
-			this.timeout = undefined;
-		}
-		
 		async process() {
-			this.clearTimeout();
+			this.timeout.stop();
 			const query = this.input.value;
 			this.trigger(new Action.Search({query}));
 		}
 		
 		onChange(){
-			this.clearTimeout();
-			this.timeout = setTimeout(this.onTimeout.bind(this), 1000);
+			this.timeout.start(this.onTimeout.bind(this));
 		}
 		
 		async onSubmit(event:Event) {
@@ -46,7 +40,7 @@ namespace ymovie.web.view.discovery {
 		}
 
 		onTimeout(){
-			this.clearTimeout();
+			this.timeout.stop();
 			this.process();
 		}
 	}
