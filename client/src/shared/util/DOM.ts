@@ -114,5 +114,10 @@ namespace ymovie.util.DOM {
 			container.appendChild(<Node>content);
 	}
 
+	export function remove(container:ChildNode) {
+		if(container.parentElement)
+			container.parentElement.removeChild(container);
+	}
+
 	export type Content = HTMLElement | string | number | undefined | null | Array<Content>;
 }

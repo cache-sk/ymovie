@@ -62,7 +62,7 @@ namespace ymovie.tv.view.media {
 			const element = event.detail.element;
 			const container = this.rowContainer;
 			while(container.lastChild && !container.lastChild.contains(element))
-				container.lastChild.remove();
+				DOM.remove(container.lastChild);
 		}
 
 		private onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {

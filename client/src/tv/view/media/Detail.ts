@@ -5,33 +5,39 @@ namespace ymovie.tv.view.media {
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
+	import Timeout = ymovie.util.Timeout;
 	import Thumbnail = ymovie.util.Thumbnail;
 	import Util = ymovie.util.Util;
 
 	export class Detail extends DataComponent<HTMLDivElement, DetailData> {
-		private readonly background:HTMLDivElement;
+		private readonly background = new Background();
+		private readonly container = DOM.div("container");
 		private readonly streams:Streams;
 
 		constructor(context:Context) {
 			super("div", undefined);
 
-			this.background = DOM.div("background");
 			this.streams = new Streams(context);
+			this.append(this.background.render());
 		}
 
 		render() {
-			this.clean();
 			if(this.data instanceof Media.Base) {
-				if(this.data.fanart) {
-					this.background.style.backgroundImage = `url(${Thumbnail.largeBackground(this.data.fanart)})`;
-					this.append(this.background);
-				}
-				this.append([DOM.div("container", this.renderBase(this.data)), this.streams.render()]);
+				DOM.clean(this.container);
+				DOM.append(this.container, this.renderBase(this.data));
+				this.append([this.container, this.streams.render()]);
+			} else {
+				DOM.remove(this.container);
+				DOM.remove(this.streams.element);
 			}
+
 			return super.render();
 		}
 
 		update(data:DetailData) {
+			if(data === this.data)
+				return this.element;
+			this.background.update(data?.fanart);
 			this.streams.update(undefined);
 			return super.update(data);
 		}
@@ -58,6 +64,38 @@ namespace ymovie.tv.view.media {
 	}
 
 	export type DetailData = Media.Base | undefined;
+
+	class Background extends DataComponent<HTMLDivElement, BackgroundData> {
+		private readonly timeout = new Timeout(1000);
+		private readonly image = DOM.img(undefined, "");
+
+		constructor() {
+			super("div", undefined);
+
+			this.image.addEventListener("load", this.onImageLoad.bind(this));
+			this.append(this.image);
+		}
+
+		set visible(value:boolean) {
+			this.element.classList.toggle("visible", value);
+		}
+
+		render() {
+			this.visible = false;
+			if(this.data)
+				this.timeout.start(() => this.image.src = Thumbnail.largeBackground(this.data) || "");
+			else
+				this.timeout.stop();
+			
+			return super.render();
+		}
+
+		private onImageLoad() {
+			this.visible = true;
+		}
+	}
+
+	type BackgroundData = string | undefined;
 
 	class Streams extends DataComponent<HTMLDivElement, StreamsData> {
 		private first:Stream | undefined;
@@ -87,7 +125,7 @@ namespace ymovie.tv.view.media {
 			return super.render();
 		}
 
-		onStreamFocused(event:CustomEvent<Action.FocusData>) {
+		private onStreamFocused(event:CustomEvent<Action.FocusData>) {
 			const element = event.detail.element;
 			this.element.style.transform = `translateY(${-element.offsetTop}px)`;
 		}
@@ -137,16 +175,16 @@ namespace ymovie.tv.view.media {
 			return super.render();
 		}
 
-		add(className:string, value:string | undefined | null):DOM.Content {
+		private add(className:string, value:string | undefined | null):DOM.Content {
 			return value ? DOM.span(className, value) : undefined;
 		}
 
-		onClick() {
+		private onClick() {
 			this.focus();
 			this.submit();
 		}
 
-		onStreamUrlResolved(event:CustomEvent<Action.StreamUrlResolvedData>) {
+		private onStreamUrlResolved(event:CustomEvent<Action.StreamUrlResolvedData>) {
 			if(event.detail.stream === this.data.stream)
 				this.loading = false;
 		}
