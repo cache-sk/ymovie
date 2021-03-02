@@ -62,8 +62,8 @@ namespace ymovie.api.Webshare {
 			return await this.loadValue(Api.PATH_USER_DATA, body, "username");
 		}
 		
-		async getLink(ident:string, token:string):Promise<string> {
-			const body = `ident=${encodeURIComponent(ident)}&wst=${encodeURIComponent(token)}&device_uuid=${encodeURIComponent(this.uuid)}`;
+		async getLink(ident:string, https:boolean, token:string):Promise<string> {
+			const body = `ident=${encodeURIComponent(ident)}&wst=${encodeURIComponent(token)}&device_uuid=${encodeURIComponent(this.uuid)}&force_https=${https ? 1 : 0}`;
 			return await this.loadValue(Api.PATH_FILE_LINK, body, "link");
 		}
 		

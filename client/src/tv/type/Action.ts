@@ -88,6 +88,6 @@ namespace ymovie.tv.type.Action {
 	}
 
 	export type StreamUrlResolvedData = PlayData & {
-		readonly url:string;
+		readonly url:string | undefined;
 	}
 }

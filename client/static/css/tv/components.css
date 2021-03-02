@@ -1,4 +1,4 @@
-.Detail .Stream.loading,
+.webshare-ok .Detail .Stream.loading,
 .MediaScreenBase .Row .Item.loading::after,
 .PlayerScreen.loading::after,
 .SearchScreen.loading input {
@@ -240,6 +240,9 @@
 	border: .2rem solid #fec401 !important;
 	padding: .1rem 2.5rem .1rem .7rem;
 	border-radius: 1rem;
+}
+
+.webshare-ok .Detail .Stream.focused {
 	background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path fill=\"%23fec401\" d=\"M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 18v-12l10 6-10 6z\"/></svg>') no-repeat right .7rem center / 1.5rem;
 }
 

@@ -141,10 +141,13 @@ namespace ymovie.tv.view {
 
 		async onPlay(event:CustomEvent<Action.PlayData>) {
 			const {stream, media} = event.detail;
-			const url = await this.api.resolveStreamUrl(stream);
+			const https = document.location.protocol === "https:";
+			const url = this.api.webshareToken ? await this.api.resolveStreamUrl(stream, https) : undefined;
 			this.trigger(new Action.StreamUrlResolved({media, stream, url}));
-			this.playerScreen.update({media:event.detail.media, stream:event.detail.stream, url});
-			this.showScreen("player");
+			if(url) {
+				this.playerScreen.update({media:event.detail.media, stream:event.detail.stream, url});
+				this.showScreen("player");
+			}
 		}
 
 		onNavChange(data:Nav.ChangeData) {
