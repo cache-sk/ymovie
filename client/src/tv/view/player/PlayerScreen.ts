@@ -32,7 +32,8 @@ namespace ymovie.tv.view.player {
 
 		update(data?:PlayerScreenData):HTMLElement {
 			this.data = data;
-			this.idle = false;
+			this.idle = !data;
+			this.seekTimer.stop();
 			this.controls.update({duration:0, currentTime:0});
 			return this.render();
 		}
@@ -168,7 +169,6 @@ namespace ymovie.tv.view.player {
 		}
 
 		private onApplySeek() {
-			this.seekTimer.stop();
 			if(this.video)
 				this.video.currentTime = this.controls.data.currentTime;
 		}

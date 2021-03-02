@@ -9,7 +9,7 @@ namespace ymovie.util {
 
 		start(handler:Function) {
 			this.stop();
-			this.id = setTimeout(handler, this.interval);
+			this.id = setTimeout(() => {this.stop(); handler()}, this.interval);
 		}
 
 		stop() {

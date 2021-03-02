@@ -31,17 +31,12 @@ namespace ymovie.web.view.discovery {
 		}
 		
 		onChange(){
-			this.timeout.start(this.onTimeout.bind(this));
+			this.timeout.start(this.process.bind(this));
 		}
 		
 		async onSubmit(event:Event) {
 			await super.onSubmit(event);
 			this.input.blur();
-		}
-
-		onTimeout(){
-			this.timeout.stop();
-			this.process();
 		}
 	}
 }

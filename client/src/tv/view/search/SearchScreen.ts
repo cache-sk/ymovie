@@ -69,7 +69,6 @@ namespace ymovie.tv.view.search {
 		}
 
 		private onSearch() {
-			this.searchTimeout.stop();
 			this.removeCatalogues();
 			this.lastSearch = this.input.value;
 			this.loading = true;
