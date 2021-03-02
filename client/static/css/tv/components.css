@@ -189,20 +189,12 @@
 }
 
 .Detail .Background img {
-	width: 100%;
-	transform: translate(-50%, -50%);
 	position: absolute;
+	transform: translate(-50%, -50%);
 	left: 50%;
 	top: 50%;
-}
-
-@supports (object-fit: cover) {
-	.Detail .Background img {
-		object-fit: cover;
-		height: 100%;
-		position: initial;
-		transform: none;
-	}
+	min-height: 100%;
+	min-width: 100%;
 }
 
 .Detail .Background.visible {
