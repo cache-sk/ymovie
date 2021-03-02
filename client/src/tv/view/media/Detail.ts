@@ -114,7 +114,7 @@ namespace ymovie.tv.view.media {
 		render() {
 			this.clean();
 			this.first = undefined;
-			this.element.style.transform = "none";
+			util.Transform.on(this.element, "none");
 			this.append(this.pair.render());
 			if(this.data)
 				for(const item of this.data.streams) {
@@ -127,7 +127,7 @@ namespace ymovie.tv.view.media {
 
 		private onStreamFocused(event:CustomEvent<Action.FocusData>) {
 			const element = event.detail.element;
-			this.element.style.transform = `translateY(${-element.offsetTop}px)`;
+			util.Transform.on(this.element, `translateY(${-element.offsetTop}px)`);
 		}
 	}
 

@@ -21,8 +21,8 @@ namespace ymovie.tv.view {
 		readonly help = new Help();
 
 		static async init(){
-			const result = new App();
-			await result.init();
+			util.Polyfill.init();
+			await new App().init();
 		}
 
 		async init():Promise<any> {
@@ -180,19 +180,19 @@ namespace ymovie.tv.view {
 				return;
 
 			let action:Focus.Action | undefined;
-			if(event.key == "ArrowLeft" || event.code == "Digit4")
+			if(event.key == "ArrowLeft" || event.code == "Digit4" || event.keyCode == 37)
 				action = "left";
-			else if(event.key == "ArrowRight" || event.code == "Digit6")
+			else if(event.key == "ArrowRight" || event.code == "Digit6" || event.keyCode == 39)
 				action = "right";
-			else if(event.key == "ArrowUp" || event.code == "Digit2")
+			else if(event.key == "ArrowUp" || event.code == "Digit2" || event.keyCode == 38)
 				action = "up";
-			else if(event.key == "ArrowDown" || event.code == "Digit8")
+			else if(event.key == "ArrowDown" || event.code == "Digit8" || event.keyCode == 40)
 				action = "down";
-			else if(event.key == "Enter" || event.code == "Digit5")
+			else if(event.key == "Enter" || event.code == "Digit5" || event.keyCode == 13)
 				action = "submit";
-			else if(event.key == "Escape" || event.code == "Digit0")
+			else if(event.key == "Escape" || event.code == "Digit0" || event.keyCode == 27)
 				action = "back";
-			else if(event.key == "Backspace")
+			else if(event.key == "Backspace" || event.keyCode == 8)
 				action = "back";
 			if(action) {
 				event.preventDefault();

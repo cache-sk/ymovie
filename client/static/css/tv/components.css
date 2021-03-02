@@ -57,8 +57,9 @@
 
 .MediaScreenBase .rows {
 	position: absolute;
-	top: calc(100vh - 11rem);
+	top: calc(100% - 11rem);
 	transition: transform .5s;
+	-webkit-transition: transform .5s;
 	will-change: transform;
 	backface-visibility: hidden;
 }
@@ -66,6 +67,7 @@
 .MediaScreenBase .Row {
 	white-space: nowrap;
 	transition: transform .5s, opacity .5s;
+	-webkit-transition: transform .5s, opacity .5s;
 	will-change: transform, opacity;
 	backface-visibility: hidden;
 	margin-bottom: 1rem;
@@ -94,7 +96,8 @@
 .MediaScreenBase .Row .Item:not(.loading).fairyTale,
 .MediaScreenBase .Row .Item:not(.loading).animated,
 .MediaScreenBase .Row .Item:not(.loading).popular {
-	background: no-repeat center 35% / 50%, 100%;
+	background: no-repeat center 35%, no-repeat;
+	background-size: 50%, 100%;
 }
 
 .MediaScreenBase .Row .Item:not(.loading).movie {
@@ -158,6 +161,7 @@
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%,-50%);
+	-webkit-transform: translate(-50%,-50%);
 }
 
 .MediaScreenBase .Row .Item img.missing,
@@ -172,6 +176,7 @@
 	bottom: 0;
 	padding-right: 40%;
 	transition: opacity .5s;
+	-webkit-transition: opacity .5s;
 	will-change: opacity;
 }
 
@@ -185,12 +190,14 @@
 	background: black;
 	opacity: 0;
 	transition: opacity .5s;
+	-webkit-transition: opacity .5s;
 	will-change: opacity;
 }
 
 .Detail .Background img {
 	position: absolute;
 	transform: translate(-50%, -50%);
+	-webkit-transform: translate(-50%, -50%);
 	left: 50%;
 	top: 50%;
 	min-height: 100%;
@@ -241,6 +248,7 @@
 	top: 4rem;
 	right: 2.5rem;
 	transition: transform .5s;
+	-webkit-transition: transform .5s;
 	will-change: transform;
 	backface-visibility: hidden;
 }
@@ -428,7 +436,9 @@ body:not(.webshare-ok) .Detail .Stream {
 	height: .5rem;
 	bottom: 5rem;
 	transform: translateX(-50%);
+	-webkit-transform: translateX(-50%);
 	transition: opacity .5s;
+	-webkit-transition: opacity .5s;
 	will-change: opacity;
 }
 
@@ -448,6 +458,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	border-radius: 100%;
 	top: -.75rem;
 	transform: translateX(-50%);
+	-webkit-transform: translateX(-50%);
 }
 
 .PlayerScreen.paused .Controls .thumb {
@@ -472,6 +483,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	position: absolute;
 	top: 6.5rem;
 	transition: opacity .5s;
+	-webkit-transition: opacity .5s;
 	will-change: opacity;
 }
 
@@ -533,6 +545,7 @@ body:not(.webshare-ok) .Detail .Stream {
 .Notification {
 	opacity: 0;
 	transition: opacity .5s;
+	-webkit-transition: opacity .5s;
 	will-change: opacity;
 	pointer-events: none;
 	position: absolute;
@@ -560,6 +573,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity .5s;
+	-webkit-transition: opacity .5s;
 	will-change: opacity;
 }
 

@@ -77,7 +77,7 @@ namespace ymovie.tv.view.media {
 					className = "down";
 					child.classList.remove("up");
 					child.classList.remove("down");
-					container.style.transform = `translateY(${-(<HTMLElement>child).offsetTop}px)`;
+					util.Transform.on(container, `translateY(${-(<HTMLElement>child).offsetTop}px)`);
 				} else {
 					child.classList.add(className);
 					child.classList.remove(className == "down" ? "up" : "down");

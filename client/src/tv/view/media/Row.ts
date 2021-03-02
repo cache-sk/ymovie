@@ -59,7 +59,7 @@ namespace ymovie.tv.view.media {
 		private onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {
 			if(!event.detail.scroll)
 				return;
-			this.element.style.transform = `translateX(${-event.detail.element.offsetLeft}px)`;
+			util.Transform.on(this.element, `translateX(${-event.detail.element.offsetLeft}px)`);
 
 			if(this.loading)
 				return;
