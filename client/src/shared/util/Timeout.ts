@@ -7,6 +7,10 @@ namespace ymovie.util {
 			this.interval = interval;
 		}
 
+		get running():boolean {
+			return this.id !== undefined;
+		}
+
 		start(handler:Function) {
 			this.stop();
 			this.id = setTimeout(() => {this.stop(); handler()}, this.interval);

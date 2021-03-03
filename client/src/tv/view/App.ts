@@ -1,31 +1,32 @@
 namespace ymovie.tv.view {
 	import Action = type.Action;
 	import Focus = util.Focus;
+	import Keyboard = util.Keyboard;
 	import Media = ymovie.type.Media;
 	import Nav = util.Nav;
 	import Scc = ymovie.api.Scc;
 	import ScreenId = type.ScreenId;
 
 	export class App extends ymovie.view.App {
-		readonly api = new api.Api();
-		readonly nav = new Nav.Manager();
-		readonly focus = new Focus.Manager();
-		readonly header = new Header();
-		readonly notification = new Notification();
-		readonly context:type.Context = {deviceId:this.api.deviceId, menu:this.menu};
-		readonly mediaScreen = new media.MediaScreen(this.context);
-		readonly searchScreen = new search.SearchScreen(this.context);
-		readonly setupScreen = new setup.SetupScreen(this.context);
-		readonly aboutScreen = new about.AboutScreen(this.context);
-		readonly playerScreen = new player.PlayerScreen(this.context);
-		readonly help = new Help();
+		private readonly api = new api.Api();
+		private readonly nav = new Nav.Manager();
+		private readonly focus = new Focus.Manager();
+		private readonly header = new Header();
+		private readonly notification = new Notification();
+		private readonly context:type.Context = {deviceId:this.api.deviceId, menu:this.menu};
+		private readonly mediaScreen = new media.MediaScreen(this.context);
+		private readonly searchScreen = new search.SearchScreen(this.context);
+		private readonly setupScreen = new setup.SetupScreen(this.context);
+		private readonly aboutScreen = new about.AboutScreen(this.context);
+		private readonly playerScreen = new player.PlayerScreen(this.context);
+		private readonly help = new Help();
 
 		static async init(){
 			util.Polyfill.init();
 			await new App().init();
 		}
 
-		async init():Promise<any> {
+		private async init():Promise<any> {
 			this.api.webshareStatusChanged.add(this.onApiWebshareStatus.bind(this));
 
 			this.listen(Action.CatalogueItemSelected, this.onCatalogueItemSelected.bind(this));
@@ -50,9 +51,9 @@ namespace ymovie.tv.view {
 			document.addEventListener("keydown", this.onDocumentKeyDown.bind(this));
 		}
 
-		initDeeplink(){
+		private initDeeplink(){
 			const nav = this.nav;
-			const path = nav.currentPath;
+			const path = nav.current;
 			if(nav.isAbout(path))
 				return nav.goAbout();
 			if(nav.isSearch(path))
@@ -74,16 +75,16 @@ namespace ymovie.tv.view {
 			return super.render();
 		}
 
-		ensureFocus(component:Focus.IFocusable) {
+		private ensureFocus(component:Focus.IFocusable) {
 			if(!this.focus.focusedComponent)
 				this.requestFocus(component);
 		}
 
-		requestFocus(component:Focus.IFocusable | undefined) {
+		private requestFocus(component:Focus.IFocusable | undefined) {
 			this.focus.focusedComponent = component;
 		}
 
-		showScreen(id:ScreenId) {
+		private showScreen(id:ScreenId) {
 			const nav = this.nav;
 			if(id === "about")
 				return nav.goAbout();
@@ -96,11 +97,11 @@ namespace ymovie.tv.view {
 			return nav.goHome();
 		}
 
-		showNotification(data:Action.ShowNotificationData) {
+		private showNotification(data:Action.ShowNotificationData) {
 			this.notification.update(data);
 		}
 
-		activateScreen(screen:Screen, defaultFocus?:Focus.IFocusable) {
+		private activateScreen(screen:Screen, defaultFocus?:Focus.IFocusable) {
 			const screens:Array<Screen> = [this.aboutScreen, this.mediaScreen, this.playerScreen, this.searchScreen, this.setupScreen];
 			for(const item of screens)
 				if(item != screen && item.isActive)
@@ -110,14 +111,14 @@ namespace ymovie.tv.view {
 				this.ensureFocus(defaultFocus);
 		}
 
-		executeFocusAction(action:Focus.Action) {
+		private executeFocusAction(action:Focus.Action) {
 			const components = this.trigger(new Action.RegisterFocusable());
 			const result = this.focus.executeEvent(components, {action});
 			if(!result && action === "back")
 				this.nav.goBack();
 		}
 
-		async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
+		private async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
 			const {data} = event.detail;
 			if(data instanceof Scc.CatalogueLink)
 				return this.trigger(new Action.CatalogueLoaded({item:data, newRow:true, catalogue:await this.api.loadPath(data.url, "more")}));
@@ -130,16 +131,16 @@ namespace ymovie.tv.view {
 			return;
 		}
 
-		async onRequestMoreItems(event:CustomEvent<Scc.CatalogueLink>) {
+		private async onRequestMoreItems(event:CustomEvent<Scc.CatalogueLink>) {
 			const data = event.detail;
 			return this.trigger(new Action.CatalogueLoaded({item:data, newRow:false, catalogue:await this.api.loadPath(data.url, "more")}));
 		}
 
-		async onSearch(event:CustomEvent<string>) {
+		private async onSearch(event:CustomEvent<string>) {
 			return this.trigger(new Action.SearchCatalogueLoaded(await this.api.searchScc(event.detail, "more")));
 		}
 
-		async onPlay(event:CustomEvent<Action.PlayData>) {
+		private async onPlay(event:CustomEvent<Action.PlayData>) {
 			const {stream, media} = event.detail;
 			const https = document.location.protocol === "https:";
 			const url = this.api.webshareToken ? await this.api.resolveStreamUrl(stream, https) : undefined;
@@ -150,9 +151,9 @@ namespace ymovie.tv.view {
 			}
 		}
 
-		onNavChange(data:Nav.ChangeData) {
+		private onNavChange(data:Nav.ChangeData) {
 			const nav = this.nav;
-			const path = data.path;
+			const path = data;
 			let screenId:ScreenId = "media";
 			if(nav.isAbout(path)) {
 				screenId = "about";
@@ -174,26 +175,12 @@ namespace ymovie.tv.view {
 			util.ClassName.updateType(this.element, "screen", screenId);
 		}
 
-		onDocumentKeyDown(event:KeyboardEvent) {
+		private onDocumentKeyDown(event:KeyboardEvent) {
 			this.trigger(new Action.GlobalKeyDown(event));
 			if(event.defaultPrevented)
 				return;
 
-			let action:Focus.Action | undefined;
-			if(event.key == "ArrowLeft" || event.code == "Digit4" || event.keyCode == 37)
-				action = "left";
-			else if(event.key == "ArrowRight" || event.code == "Digit6" || event.keyCode == 39)
-				action = "right";
-			else if(event.key == "ArrowUp" || event.code == "Digit2" || event.keyCode == 38)
-				action = "up";
-			else if(event.key == "ArrowDown" || event.code == "Digit8" || event.keyCode == 40)
-				action = "down";
-			else if(event.key == "Enter" || event.code == "Digit5" || event.keyCode == 13)
-				action = "submit";
-			else if(event.key == "Escape" || event.code == "Digit0" || event.keyCode == 27)
-				action = "back";
-			else if(event.key == "Backspace" || event.keyCode == 8)
-				action = "back";
+			const action = Keyboard.eventToAction(event);
 			if(action) {
 				event.preventDefault();
 				this.executeFocusAction(action);

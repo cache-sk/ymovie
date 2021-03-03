@@ -1,11 +1,10 @@
 namespace ymovie.tv.util.Nav {
-	export class Manager {
-		static PATH_ABOUT = "/about";
-		static PATH_PLAYER = "/player";
-		static PATH_SEARCH = "/search";
-		static PATH_SETUP = "/setup";
+	import ScreenId = type.ScreenId;
 
+	export class Manager {
 		readonly changed = new ymovie.util.Signal.Signal1<ChangeData>();
+		private readonly history:Array<State> = ["media"];
+		private historyIndex:number = 0;
 
 		constructor() {}
 
@@ -13,92 +12,81 @@ namespace ymovie.tv.util.Nav {
 			window.addEventListener("popstate", this.onWindowPopState.bind(this));
 		}
 
-		set title(value:string) {
-			document.title = value ? `${value} | YMovie` : "YMovie";
-		}
-
-		get currentPath():string {
-			return location.hash.substr(1);
+		get current():State {
+			return this.history[this.historyIndex]!;
 		}
 
 		goAbout() {
-			this.pushState(undefined, "About", Manager.PATH_ABOUT);
+			this.pushState("about");
 		}
 
-		isAbout(path:string):boolean {
-			return path.startsWith(Manager.PATH_ABOUT);
+		isAbout(path:State):boolean {
+			return path === "about";
 		}
 
 		goHome() {
-			this.pushState(undefined, "");
+			this.pushState("media");
 		}
 
 		goPlayer() {
-			this.pushState(undefined, "Player", Manager.PATH_PLAYER);
+			this.pushState("player");
 		}
 
-		isPlayer(path:string):boolean {
-			return path.startsWith(Manager.PATH_PLAYER);
+		isPlayer(path:State):boolean {
+			return path === "player";
 		}
 
 		goSearch() {
-			this.pushState(undefined, "Search", Manager.PATH_SEARCH);
+			this.pushState("search");
 		}
 
-		isSearch(path:string):boolean {
-			return path.startsWith(Manager.PATH_SEARCH);
+		isSearch(path:State):boolean {
+			return path === "search";
 		}
 
 		goSetup() {
-			this.pushState(undefined, "Setup", Manager.PATH_SETUP);
+			this.pushState("setup");
 		}
 
-		isSetup(path:string):boolean {
-			return path.startsWith(Manager.PATH_SETUP);
+		isSetup(path:State):boolean {
+			return path === "setup";
 		}
 
 		goBack():void {
-			history.back();
+			if(this.historyIndex > 1) {
+				this.historyIndex--;
+				this.triggerChange();
+			}
 		}
 
-		private pushState(source:StateSource, title:string, path:string=""):void {
-			const url = document.location.pathname + (path ? `#${path}` : "");
-			const state = {source, title, url};
-			if(this.currentPath == path)
-				history.replaceState(state, title, url);
-			else
-				history.pushState(state, title, url);
-			this.title = title;
-			this.triggerChange(state);
+		private pushState(state:State):void {
+			if(state !== this.current) {
+				this.history.push(state);
+				this.historyIndex++;
+				const apiState:ApiState = {state, index:this.historyIndex};
+				history.pushState(apiState, "");
+			}
+			this.triggerChange();
 		}
 
-		private triggerChange(state:State):void {
-			const path = state.url.substr(document.location.pathname.length + 1);
-			const data = {source:state.source, title:state.title, url:state.url, path};
-			this.changed.dispatch(data);
+		private triggerChange():void {
+			this.changed.dispatch(this.history[this.historyIndex]!);
 		}
 
-		protected onWindowPopState(event:PopStateEvent):void {
-			const state = event.state;
-			
-			// ignore url entered by user
-			if(!state)
-				return;
-			
-			this.title = state?.title;
-			this.triggerChange(state);
+		private onWindowPopState(event:PopStateEvent):void {
+			const state:ApiState = event.state;
+			if(state && state.index >= 0 && state.index < this.history.length) {
+				this.historyIndex = state.index;
+				this.triggerChange();
+			}
 		}
 	}
 
-	export type State = {
-		readonly source:StateSource;
-		readonly title:string;
-		readonly url:string;
-	}
+	export type State = ScreenId;
+	export type ChangeData = State;
 
-	export type StateSource = string | undefined;
-
-	export type ChangeData = State & {
-		readonly path:string;
+	type ApiState = {
+		readonly state:State;
+		readonly index:number;
 	}
 }

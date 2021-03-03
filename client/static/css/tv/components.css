@@ -59,7 +59,7 @@
 	position: absolute;
 	top: calc(100% - 11rem);
 	transition: transform .5s;
-	-webkit-transition: transform .5s;
+	-webkit-transition: all .5s;
 	will-change: transform;
 	backface-visibility: hidden;
 }
@@ -67,7 +67,7 @@
 .MediaScreenBase .Row {
 	white-space: nowrap;
 	transition: transform .5s, opacity .5s;
-	-webkit-transition: transform .5s, opacity .5s;
+	-webkit-transition: all .5s;
 	will-change: transform, opacity;
 	backface-visibility: hidden;
 	margin-bottom: 1rem;
@@ -186,12 +186,25 @@
 	top: 0;
 	right: 0;
 	bottom: 0;
-	filter: brightness(0.5);
 	background: black;
 	opacity: 0;
 	transition: opacity .5s;
 	-webkit-transition: opacity .5s;
 	will-change: opacity;
+}
+
+.Detail .Background img {
+	opacity: .5;
+}
+
+@supports (filter: brightness(.5)) {
+	.Detail .Background {
+		filter: brightness(.5);
+	}
+
+	.Detail .Background img {
+		opacity: initial;
+	}
 }
 
 .Detail .Background img {
@@ -248,7 +261,7 @@
 	top: 4rem;
 	right: 2.5rem;
 	transition: transform .5s;
-	-webkit-transition: transform .5s;
+	-webkit-transition: all .5s;
 	will-change: transform;
 	backface-visibility: hidden;
 }

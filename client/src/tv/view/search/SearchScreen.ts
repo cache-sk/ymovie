@@ -10,7 +10,7 @@ namespace ymovie.tv.view.search {
 		private readonly input = DOM.input(undefined, "q", "", "Search query");
 		private readonly searchTimeout = new Timeout(1000);
 		private lastSearch = "";
-		private _onGlobalKeyDown = this.delaySearchTimeout.bind(this);
+		private _onGlobalKeyDown = this.onGlobalKeyDown.bind(this);
 		private _onSearchCatalogueLoaded = this.onSearchCatalogueLoaded.bind(this);
 
 		constructor(context:Context) {
@@ -41,15 +41,43 @@ namespace ymovie.tv.view.search {
 			return super.render();
 		}
 
-		resetSearchTimeout() {
+		private resetSearchTimeout() {
 			this.searchTimeout.stop();
 			if(this.input.value.length && this.input.value != this.lastSearch)
 				this.searchTimeout.start(this.onSearch.bind(this));
 		}
 
-		delaySearchTimeout() {
-			if(this.searchTimeout)
+		private delaySearchTimeout() {
+			if(this.searchTimeout.running)
 				this.resetSearchTimeout();
+		}
+
+		private applyInsert(value:string) {
+			this.input.value += value;
+			this.resetSearchTimeout();
+		}
+
+		private applyDel() {
+			const input = this.input;
+			input.value = input.value.substr(0, Math.max(input.value.length - 1, 0));
+			this.resetSearchTimeout();
+		}
+
+		private onGlobalKeyDown(event:CustomEvent<KeyboardEvent>) {
+			const source = event.detail;
+			const char = source.key || String.fromCharCode(source.which || source.keyCode);
+			if(char && char.match(/^[a-z0-9]$/i)) {
+				source.preventDefault();
+				this.applyInsert(char);
+			} else if(char === " ") {
+				source.preventDefault();
+				this.applyInsert(" ");
+			} else if(source.key === "Backspace" || source.key === "Delete" 
+				|| source.which === 8 || source.which === 46) {
+				source.preventDefault();
+				this.applyDel();
+			}
+			this.delaySearchTimeout();
 		}
 
 		private onOSKKeyFocused() {
@@ -58,14 +86,12 @@ namespace ymovie.tv.view.search {
 
 		private onOSKKeySubmit(event:CustomEvent<Action.OSKKeyData>) {
 			const {type, value} = event.detail;
-			const input = this.input;
 			if(type === "del")
-				input.value = input.value.substr(0, Math.max(input.value.length - 1, 0));
+				this.applyDel();
 			else if(type === "space")
-				input.value += " ";
+				this.applyInsert(" ");
 			else
-				input.value += value;
-			this.resetSearchTimeout();
+				this.applyInsert(value);
 		}
 
 		private onSearch() {

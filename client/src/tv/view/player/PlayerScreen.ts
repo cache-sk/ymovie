@@ -3,6 +3,7 @@ namespace ymovie.tv.view.player {
 	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
+	import Keyboard = util.Keyboard;
 	import Media = ymovie.type.Media;
 	import Timeout = ymovie.util.Timeout;
 	import Util = ymovie.util.Util;
@@ -13,6 +14,7 @@ namespace ymovie.tv.view.player {
 		private controls = new Controls();
 		private readonly seekTimer = new Timeout(1000);
 		private readonly idleTimer = new Timeout(2000);
+		private readonly _onGlobalKeyDown = this.onGlobalKeyDown.bind(this);
 
 		constructor(context:Context) {
 			super(context);
@@ -41,9 +43,11 @@ namespace ymovie.tv.view.player {
 		activate(focus:boolean) {
 			super.activate(focus);
 			this.trigger(new Action.RequestFocus({component:this.controls, element:this.controls.element}));
+			this.listenGlobal(Action.GlobalKeyDown, this._onGlobalKeyDown);
 		}
 
 		deactivate() {
+			this.unlistenGlobal(Action.GlobalKeyDown, this._onGlobalKeyDown);
 			super.deactivate();
 			this.update();
 		}
@@ -84,7 +88,7 @@ namespace ymovie.tv.view.player {
 				return;
 			
 			const duration = this.video.duration;
-			const currentTime = this.seekTimer ? this.controls.data.currentTime : this.video.currentTime;
+			const currentTime = this.seekTimer.running ? this.controls.data.currentTime : this.video.currentTime;
 			this.controls.update({duration, currentTime});
 
 			this.element.classList.toggle("paused", this.video.paused);
@@ -100,6 +104,28 @@ namespace ymovie.tv.view.player {
 
 			this.seekTimer.start(this.onApplySeek.bind(this));
 			this.idle = false;
+		}
+
+		private play() {
+			if(!this.video)
+				return;
+			this.video.play();
+			this.idle = false;
+		}
+
+		private togglePlay() {
+			if(!this.video)
+				return;
+
+			if(this.video.paused)
+				this.video.play();
+			else
+				this.video.pause();
+			this.idle = false;
+		}
+
+		private stop() {
+			this.trigger(new Action.GoBack());
 		}
 
 		private onVideoTimeUpdate() {
@@ -146,18 +172,11 @@ namespace ymovie.tv.view.player {
 			this.loading = false;
 			const message = `Playback failed with code <strong>${this.video?.error?.code || 0}</strong> and message <strong>${this.video?.error?.message || 'empty'}</strong>.`;
 			this.trigger(new Action.ShowNotification({title:"Player Error", message, html:true}));
-			this.trigger(new Action.GoBack());
+			this.stop();
 		}
 
 		private onTogglePlay() {
-			if(!this.video)
-				return;
-
-			if(this.video.paused)
-				this.video.play();
-			else
-				this.video.pause();
-			this.idle = false;
+			this.togglePlay();
 		}
 
 		private onSeekBy(event:CustomEvent<number>) {
@@ -175,6 +194,19 @@ namespace ymovie.tv.view.player {
 
 		private onMouseMove() {
 			this.idle = false;
+		}
+
+		private onGlobalKeyDown(event:CustomEvent<KeyboardEvent>) {
+			if(Keyboard.isPlayPause(event.detail)) {
+				this.togglePlay();
+				event.preventDefault();
+			} else if(Keyboard.isPlay(event.detail)) {
+				this.play();
+				event.preventDefault();
+			} else if(Keyboard.isStop(event.detail)) {
+				this.stop();
+				event.preventDefault();
+			}
 		}
 	}
 
