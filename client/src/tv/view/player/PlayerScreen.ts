@@ -197,15 +197,16 @@ namespace ymovie.tv.view.player {
 		}
 
 		private onGlobalKeyDown(event:CustomEvent<KeyboardEvent>) {
-			if(Keyboard.isPlayPause(event.detail)) {
+			const source = event.detail;
+			if(Keyboard.isPlayPause(source)) {
 				this.togglePlay();
-				event.preventDefault();
-			} else if(Keyboard.isPlay(event.detail)) {
+				source.preventDefault();
+			} else if(Keyboard.isPlay(source)) {
 				this.play();
-				event.preventDefault();
-			} else if(Keyboard.isStop(event.detail)) {
+				source.preventDefault();
+			} else if(Keyboard.isStop(source)) {
 				this.stop();
-				event.preventDefault();
+				source.preventDefault();
 			}
 		}
 	}

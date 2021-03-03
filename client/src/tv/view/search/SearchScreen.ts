@@ -68,14 +68,14 @@ namespace ymovie.tv.view.search {
 				return;
 			const source = event.detail;
 			const char = source.key || String.fromCharCode(source.which || source.keyCode);
-			if(char && char.match(/^[a-z0-9]$/i)) {
+			if(char && char.match(/^[a-z]$/i)) {
 				source.preventDefault();
 				this.applyInsert(char);
 			} else if(char === " ") {
 				source.preventDefault();
 				this.applyInsert(" ");
-			} else if(source.key === "Backspace" || source.key === "Delete" 
-				|| source.which === 8 || source.which === 46) {
+			} else if(this.input.value && (source.key === "Backspace" || source.key === "Delete" 
+				|| source.which === 8 || source.which === 46)) {
 				source.preventDefault();
 				this.applyDel();
 			}

@@ -61,8 +61,9 @@ namespace ymovie.tv.util.Nav {
 
 		private pushState(state:State):void {
 			if(state !== this.current) {
+				this.history.splice(this.historyIndex + 1);
 				this.history.push(state);
-				this.historyIndex++;
+				this.historyIndex = this.history.length - 1;
 				const apiState:ApiState = {state, index:this.historyIndex};
 				history.pushState(apiState, "");
 			}
