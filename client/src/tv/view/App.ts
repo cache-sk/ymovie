@@ -38,6 +38,7 @@ namespace ymovie.tv.view {
 			this.listen(Action.ShowNotification, event => this.showNotification(event.detail));
 			this.listen(Action.RequestMoreItems, this.onRequestMoreItems.bind(this));
 			this.listen(Action.GoBack, () => this.nav.goBack());
+			this.listen(Action.Log, event => this.help.logMessage(event.detail));
 
 			await this.api.init();
 

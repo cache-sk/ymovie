@@ -16,22 +16,19 @@ namespace ymovie.tv.type.Action {
 	export class SearchCatalogueLoaded extends Base<Array<Catalogue.AnyItem>> {}
 	export class StreamsLoaded extends Base<StreamsLoadedData> {}
 	export class Play extends Base<PlayData> {}
-	export class SeekBy extends Base<number> {}
-	export class SeekTo extends Base<number> {}
 	export class EmulateFocusAction extends Base<Focus.Action> {}
 	export class OSKKeySubmit extends Base<OSKKeyData> {}
 	export class GlobalKeyDown extends Base<KeyboardEvent> {}
 	export class Search extends Base<string> {}
 	export class ShowNotification extends Base<ShowNotificationData> {}
 	export class StreamUrlResolved extends Base<StreamUrlResolvedData> {}
+	export class Log extends Base<string> {}
 
 	export class RegisterFocusable extends Base<Array<Focus.IFocusable>> {
 		constructor() {super([]);}
 	}
 
-	export class TogglePlay extends Base<undefined> {
-		constructor() {super(undefined);}
-	}
+
 	
 	export class BlurStreams extends Base<undefined> {
 		constructor() {super(undefined);}

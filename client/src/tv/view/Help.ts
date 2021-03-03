@@ -45,10 +45,14 @@ namespace ymovie.tv.view {
 		}
 
 		logKey(event:KeyboardEvent) {
+			this.logMessage(`Unexpected key <code>${event.key}</code> code <code>${event.code}</code> keyCode <code>${event.keyCode}</code>`);
+		}
+
+		logMessage(value:string) {
 			this.visible = true;
 			this.hideTimeout.start(() => this.visible = false);
 			const p = DOM.p(undefined);
-			p.innerHTML = `Unexpected key <code>${event.key}</code> code <code>${event.code}</code> keyCode <code>${event.keyCode}</code>`;
+			p.innerHTML = value;
 			DOM.append(this.log, p);
 			if(this.log.children.length > 30)
 				this.log.removeChild(this.log.firstChild!);

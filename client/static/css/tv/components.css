@@ -421,6 +421,10 @@ body:not(.webshare-ok) .Detail .Stream {
 	background: black;
 }
 
+.PlayerScreen.idle {
+	cursor: none;
+}
+
 .PlayerScreen.loading::after {
 	content: "";
 	position: absolute;
@@ -490,6 +494,20 @@ body:not(.webshare-ok) .Detail .Stream {
 	position: absolute;
 	right: 0;
 	top: -1.5rem;
+}
+
+.PlayerScreen .Controls .audioTracks {
+	position: absolute;
+	right: 0rem;
+	top: .8rem;
+}
+
+.PlayerScreen .Controls .audioTracks span {
+	margin-left: .5rem;
+}
+
+.PlayerScreen .Controls .audioTracks span.current {
+	border-bottom: .2rem solid white;
 }
 
 .OSK {

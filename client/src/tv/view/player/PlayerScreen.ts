@@ -1,5 +1,6 @@
 namespace ymovie.tv.view.player {
 	import Action = ymovie.tv.type.Action;
+	import Base = ymovie.type.Action.Base;
 	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
@@ -15,13 +16,15 @@ namespace ymovie.tv.view.player {
 		private readonly seekTimer = new Timeout(1000);
 		private readonly idleTimer = new Timeout(2000);
 		private readonly _onGlobalKeyDown = this.onGlobalKeyDown.bind(this);
+		private audioTracks:AudioTracks | undefined;
 
 		constructor(context:Context) {
 			super(context);
 
-			this.listen(Action.SeekBy, this.onSeekBy.bind(this));
-			this.listen(Action.SeekTo, this.onSeekTo.bind(this));
-			this.listen(Action.TogglePlay, this.onTogglePlay.bind(this));
+			this.listen(SeekBy, this.onSeekBy.bind(this));
+			this.listen(SeekTo, this.onSeekTo.bind(this));
+			this.listen(TogglePlay, this.onTogglePlay.bind(this));
+			this.listen(ShowControls, this.onShowControls.bind(this));
 			this.element.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
 
@@ -35,6 +38,7 @@ namespace ymovie.tv.view.player {
 		update(data?:PlayerScreenData):HTMLElement {
 			this.data = data;
 			this.idle = !data;
+			this.audioTracks = undefined;
 			this.seekTimer.stop();
 			this.controls.update({duration:0, currentTime:0});
 			return this.render();
@@ -89,8 +93,7 @@ namespace ymovie.tv.view.player {
 			
 			const duration = this.video.duration;
 			const currentTime = this.seekTimer.running ? this.controls.data.currentTime : this.video.currentTime;
-			this.controls.update({duration, currentTime});
-
+			this.controls.update({duration, currentTime, audioTracks:this.audioTracks});
 			this.element.classList.toggle("paused", this.video.paused);
 		}
 		
@@ -133,6 +136,7 @@ namespace ymovie.tv.view.player {
 		}
 
 		private onVideoLoadedData() {
+			this.audioTracks = AudioTracks.create((<any>this.video).audioTracks);
 			this.updateControls();
 		}
 
@@ -179,6 +183,10 @@ namespace ymovie.tv.view.player {
 			this.togglePlay();
 		}
 
+		private onShowControls() {
+			this.idle = false;
+		}
+
 		private onSeekBy(event:CustomEvent<number>) {
 			this.seek(this.controls.data.currentTime + event.detail);
 		}
@@ -218,15 +226,14 @@ namespace ymovie.tv.view.player {
 	}
 
 	class Controls extends FocusableDataComponent<HTMLDivElement, ConstrolsData> {
-		private readonly thumb:HTMLDivElement;
-		private readonly time:HTMLDivElement;
+		private readonly thumb = DOM.div("thumb");
+		private readonly time = DOM.div("time");
+		private readonly audioTracks = DOM.div("audioTracks");
 
 		constructor() {
 			super("div", {duration:0, currentTime:0});
 
-			this.thumb = DOM.div("thumb");
-			this.time = DOM.div("time");
-			this.append([this.thumb, this.time]);
+			this.append([this.thumb, this.time, this.audioTracks]);
 			this.thumb.addEventListener("click", this.onThumbClick.bind(this));
 			this.element.addEventListener("click", this.onClick.bind(this));
 		}
@@ -234,24 +241,39 @@ namespace ymovie.tv.view.player {
 		render() {
 			this.thumb.style.left = `${this.data.currentTime / this.data.duration * 100 || 0}%`;
 			this.time.innerHTML = `${Util.formatDuration(this.data.currentTime)} / ${Util.formatDuration(this.data.duration)}`;
+
+			DOM.clean(this.audioTracks);
+			const tracks = this.data.audioTracks;
+			if(tracks)
+				for(let i = 0; i < tracks.list.length; i++)
+					DOM.append(this.audioTracks, DOM.span(i === tracks.current ? "current" : undefined, tracks.list[i]!.language || "???"));
+			
+
 			return super.render();
 		}
 
 		submit() {
-			this.trigger(new Action.TogglePlay());
+			this.trigger(new TogglePlay());
 		}
+
 
 		executeFocusEvent(event:Focus.Event):boolean {
 			if(event.action === "right") {
-				this.trigger(new Action.SeekBy(30));
+				this.trigger(new SeekBy(30));
 				return true;
 			}
 			if(event.action === "left") {
-				this.trigger(new Action.SeekBy(-30));
+				this.trigger(new SeekBy(-30));
 				return true;
 			}
 			if(event.action === "submit") {
 				this.submit();
+				return true;
+			}
+			if(event.action === "down" && this.data.audioTracks) {
+				this.data.audioTracks.change();
+				this.trigger(new ShowControls());
+				this.render();
 				return true;
 			}
 			return false;
@@ -265,12 +287,52 @@ namespace ymovie.tv.view.player {
 		onClick(event:MouseEvent) {
 			const rect = this.element.getBoundingClientRect();
 			const time = (event.clientX - rect.x) / rect.width * this.data.duration;
-			this.trigger(new Action.SeekTo(time));
+			this.trigger(new SeekTo(time));
+		}
+	}
+
+	class AudioTracks {
+		readonly list:Array<AudioTrack>
+		private _current = 0;
+		
+		private constructor(list:Array<AudioTrack>) {
+			this.list = list;
+		}
+
+		get current():number {
+			return this._current;
+		}
+
+		static create(list:Array<AudioTrack> | undefined):AudioTracks | undefined {
+			if(list && list.length && list.length > 1)
+				return new AudioTracks(list);
+			return undefined;
+		}
+
+		change() {
+			this._current = (this._current >= (this.list.length - 1)) ? 0 : (this._current + 1);
+			for(let i = 0; i < this.list.length; i++)
+				this.list[i]!.enabled = false;
+			this.list[this._current]!.enabled = true;
 		}
 	}
 
 	type ConstrolsData = {
-		duration:number;
-		currentTime:number;
+		readonly duration:number;
+		readonly currentTime:number;
+		readonly audioTracks?:AudioTracks;
 	}
+
+	type AudioTrack = {
+		enabled:boolean;
+		readonly id:string;
+		readonly kind:string;
+		readonly label:string;
+		readonly language:string;
+	}
+
+	class TogglePlay extends Base<undefined> {constructor() {super(undefined);}}
+	class ShowControls extends Base<undefined> {constructor() {super(undefined);}}
+	class SeekBy extends Base<number> {}
+	class SeekTo extends Base<number> {}
 }
