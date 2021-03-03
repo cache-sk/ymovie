@@ -64,6 +64,8 @@ namespace ymovie.tv.view.search {
 		}
 
 		private onGlobalKeyDown(event:CustomEvent<KeyboardEvent>) {
+			if(this.getActiveFocus() !== "osk")
+				return;
 			const source = event.detail;
 			const char = source.key || String.fromCharCode(source.which || source.keyCode);
 			if(char && char.match(/^[a-z0-9]$/i)) {

@@ -53,7 +53,7 @@ namespace ymovie.tv.util.Nav {
 		}
 
 		goBack():void {
-			if(this.historyIndex > 1) {
+			if(this.historyIndex > 0) {
 				this.historyIndex--;
 				this.triggerChange();
 			}

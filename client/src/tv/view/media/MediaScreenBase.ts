@@ -58,6 +58,10 @@ namespace ymovie.tv.view.media {
 			ClassName.updateType(this.element, "focus", value);
 		}
 
+		protected getActiveFocus() {
+			return ClassName.getType(this.element, "focus");
+		}
+
 		private onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
 			const element = event.detail.element;
 			const container = this.rowContainer;
