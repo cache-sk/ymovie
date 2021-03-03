@@ -102,7 +102,8 @@ namespace ymovie.tv.view {
 			this.notification.update(data);
 		}
 
-		private activateScreen(screen:Screen, defaultFocus?:Focus.IFocusable) {
+		private activateScreen(screenId:ScreenId, screen:Screen, defaultFocus?:Focus.IFocusable) {
+			util.ClassName.updateType(this.element, "screen", screenId);
 			const screens:Array<Screen> = [this.aboutScreen, this.mediaScreen, this.playerScreen, this.searchScreen, this.setupScreen];
 			for(const item of screens)
 				if(item != screen && item.isActive)
@@ -155,25 +156,16 @@ namespace ymovie.tv.view {
 		private onNavChange(data:Nav.ChangeData) {
 			const nav = this.nav;
 			const path = data;
-			let screenId:ScreenId = "media";
-			if(nav.isAbout(path)) {
-				screenId = "about";
-				this.activateScreen(this.aboutScreen, this.header.about);
-			} else if(nav.isPlayer(path)) {
-				screenId = "player";
-				this.activateScreen(this.playerScreen);
-			} else if(nav.isSearch(path)) {
-				screenId = "search";
-				this.activateScreen(this.searchScreen, this.header.search);
-			} else if(nav.isSetup(path)) {
-				screenId = "setup";
-				this.activateScreen(this.setupScreen, this.header.setup);
-			} else {
-				screenId = "media";
-				this.activateScreen(this.mediaScreen, this.header.media);
-			}
-
-			util.ClassName.updateType(this.element, "screen", screenId);
+			if(nav.isAbout(path))
+				this.activateScreen("about", this.aboutScreen, this.header.about);
+			else if(nav.isPlayer(path))
+				this.activateScreen("player", this.playerScreen);
+			else if(nav.isSearch(path))
+				this.activateScreen("search", this.searchScreen, this.header.search);
+			else if(nav.isSetup(path))
+				this.activateScreen("setup", this.setupScreen, this.header.setup);
+			else
+				this.activateScreen("media", this.mediaScreen, this.header.media);
 		}
 
 		private onDocumentKeyDown(event:KeyboardEvent) {
