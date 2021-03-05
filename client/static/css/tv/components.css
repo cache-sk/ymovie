@@ -244,7 +244,7 @@
 	mask: linear-gradient(to bottom,white 10rem, transparent 13rem);
 }
 
-.MediaScreenBase:not(.focus-rows) .rows,
+.MediaScreenBase.focus-detail .rows,
 .MediaScreenBase:not(.focus-detail) .Detail {
 	pointer-events: none;
 }

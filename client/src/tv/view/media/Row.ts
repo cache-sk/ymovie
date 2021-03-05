@@ -17,10 +17,13 @@ namespace ymovie.tv.view.media {
 			this.listen(Action.CatalogueItemFocused, this.onCatalogueItemFocused.bind(this));
 			this.listenGlobal(Action.CatalogueLoaded, this.onCatalogueLoaded.bind(this));
 			this.element.addEventListener("wheel", this.onWheel.bind(this));
+			this.element.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
 
-		getFirst():Item | undefined {
-			return this.items?.[0];
+		focusFirst() {
+			const item = this.items?.[0];
+			if(item)
+				this.trigger(new Action.RequestFocus({component:item, element:item.element}));
 		}
 
 		private getLastItemLink():Scc.CatalogueLink | undefined {
@@ -77,6 +80,13 @@ namespace ymovie.tv.view.media {
 		private onWheel(event:WheelEvent) {
 			var action:Focus.Action = event.deltaY < 0 ? "left" : "right";
 			this.trigger(new Action.EmulateFocusAction(action));
+		}
+
+		private onMouseMove() {
+			for(const item of this.items)
+				if(item.focused)
+					return;
+			this.focusFirst();
 		}
 	}
 

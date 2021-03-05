@@ -45,9 +45,8 @@ namespace ymovie.tv.view.media {
 		protected appendCatalogue(data:RowData, requestFocus:boolean) {
 			const row = new Row(data);
 			DOM.append(this.rowContainer, row.render());
-			const item = row.getFirst();
-			if(requestFocus && item)
-				this.trigger(new Action.RequestFocus({component:item, element:item.element}));
+			if(requestFocus)
+				row.focusFirst();
 		}
 
 		protected removeCatalogues() {
