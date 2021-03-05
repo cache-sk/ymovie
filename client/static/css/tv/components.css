@@ -142,7 +142,6 @@
 
 .MediaScreenBase.focus-detail .Row {
 	opacity: 0;
-	pointer-events: none;
 }
 
 .MediaScreenBase .Row .Item .label {
@@ -243,6 +242,11 @@
 .Detail .container {
 	-webkit-mask: linear-gradient(to bottom,white 10rem, transparent 13rem);
 	mask: linear-gradient(to bottom,white 10rem, transparent 13rem);
+}
+
+.MediaScreenBase:not(.focus-rows) .rows,
+.MediaScreenBase:not(.focus-detail) .Detail {
+	pointer-events: none;
 }
 
 .focus-detail .Detail .container {

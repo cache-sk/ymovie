@@ -16,6 +16,7 @@ namespace ymovie.tv.view.media {
 
 			this.listen(Action.CatalogueItemFocused, this.onCatalogueItemFocused.bind(this));
 			this.listenGlobal(Action.CatalogueLoaded, this.onCatalogueLoaded.bind(this));
+			this.element.addEventListener("wheel", this.onWheel.bind(this));
 		}
 
 		getFirst():Item | undefined {
@@ -57,8 +58,6 @@ namespace ymovie.tv.view.media {
 		}
 
 		private onCatalogueItemFocused(event:CustomEvent<Action.CatalogueItemFocusedData>) {
-			if(!event.detail.scroll)
-				return;
 			util.Transform.on(this.element, `translateX(${-event.detail.element.offsetLeft}px)`);
 
 			if(this.loading)
@@ -74,6 +73,11 @@ namespace ymovie.tv.view.media {
 				this.trigger(new Action.RequestMoreItems(link));
 			}
 		}
+
+		private onWheel(event:WheelEvent) {
+			var action:Focus.Action = event.deltaY < 0 ? "left" : "right";
+			this.trigger(new Action.EmulateFocusAction(action));
+		}
 	}
 
 	type RowItemData = Catalogue.AnyItem;
@@ -83,15 +87,12 @@ namespace ymovie.tv.view.media {
 		static DEFAULT_POSTER_URL = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z"/></svg>';
 
 		private _onImageError = this.onImageError.bind(this);
-		private scrollOnFocus = true;
 
 		constructor(data:RowItemData) {
 			super("div", data);
 			this.listenGlobal(Action.CatalogueLoaded, this.onCatalogueLoaded.bind(this));
 			this.listenGlobal(Action.StreamsLoaded, this.onStreamsLoaded.bind(this));
 			this.element.addEventListener("click", this.onClick.bind(this));
-			this.element.addEventListener("wheel", this.onWheel.bind(this));
-			this.element.addEventListener("mouseenter", this.onMouseEnter.bind(this));
 		}
 
 		render() {
@@ -105,7 +106,7 @@ namespace ymovie.tv.view.media {
 			return super.render();
 		}
 
-		renderPoster(poster:string | undefined) {
+		private renderPoster(poster:string | undefined) {
 			const url = Thumbnail.smallPoster(poster) || Item.DEFAULT_POSTER_URL;
 			const result = DOM.img(undefined, url);
 			result.width = 100; // mute console warning
@@ -117,10 +118,10 @@ namespace ymovie.tv.view.media {
 
 		focus() {
 			super.focus();
-			this.trigger(new Action.CatalogueItemFocused({data:this.data, component:this, element:this.element, scroll:this.scrollOnFocus}));
+			this.trigger(new Action.CatalogueItemFocused({data:this.data, component:this, element:this.element}));
 		}
 
-		submit() {
+		private submit() {
 			this.loading = true;
 			this.trigger(new Action.CatalogueItemSelected({data:this.data, component:this, element:this.element}));
 		}
@@ -139,37 +140,26 @@ namespace ymovie.tv.view.media {
 			return event;
 		}
 		
-		onImageError(event:Event) {
+		private onImageError(event:Event) {
 			const image = <HTMLImageElement>(event).target;
 			image.removeEventListener("error", this._onImageError);
 			image.src = Item.DEFAULT_POSTER_URL;
 			image.classList.add("error");
 		}
 
-		onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
+		private onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
 			if(this.data === event.detail.item)
 				this.loading = false;
 		}
 
-		onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {
+		private onStreamsLoaded(event:CustomEvent<Action.StreamsLoadedData>) {
 			if(this.data === event.detail.media)
 				this.loading = false;
 		}
 
-		onClick() {
+		private onClick() {
 			this.focus();
 			this.submit();
-		}
-
-		onWheel(event:WheelEvent) {
-			var action:Focus.Action = event.deltaY < 0 ? "left" : "right";
-			this.trigger(new Action.EmulateFocusAction(action));
-		}
-
-		onMouseEnter() {
-			this.scrollOnFocus = false;
-			this.trigger(new Action.RequestFocus({component:this, element:this.element}));
-			this.scrollOnFocus = true;
 		}
 	}
 }

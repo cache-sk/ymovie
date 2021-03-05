@@ -60,7 +60,6 @@ namespace ymovie.tv.type.Action {
 		readonly data:Catalogue.AnyItem;
 		readonly component:Focus.IFocusable;
 		readonly element:HTMLElement;
-		readonly scroll:boolean;
 	}
 
 	export type CatalogueLoadedData = {

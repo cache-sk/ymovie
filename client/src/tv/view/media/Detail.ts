@@ -19,6 +19,7 @@ namespace ymovie.tv.view.media {
 
 			this.streams = new Streams(context);
 			this.append(this.background.render());
+			this.element.addEventListener("wheel", this.onWheel.bind(this));
 		}
 
 		render() {
@@ -60,6 +61,11 @@ namespace ymovie.tv.view.media {
 					data instanceof Media.PlayableScc && data.genres ? DOM.span("genres", data.genres) : undefined]),
 				data instanceof Media.Scc ? DOM.p("plot", data.plot) : undefined
 			];
+		}
+
+		private onWheel(event:WheelEvent) {
+			var action:Focus.Action = event.deltaY < 0 ? "up" : "down";
+			this.trigger(new Action.EmulateFocusAction(action));
 		}
 	}
 
@@ -180,7 +186,7 @@ namespace ymovie.tv.view.media {
 		}
 
 		private onClick() {
-			this.focus();
+			this.trigger(new Action.RequestFocus({component:this, element:this.element}));
 			this.submit();
 		}
 
