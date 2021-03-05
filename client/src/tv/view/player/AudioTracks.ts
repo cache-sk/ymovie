@@ -26,14 +26,19 @@ namespace ymovie.tv.view.player {
 		}
 */
 		static create(video:HTMLVideoElement):AudioTracks | undefined {
-			const list:Data = (<any>video).audioTracks;
+			const source = (<any>video).audioTracks;
+			if(!source || !source.length || source.length < 2)
+				return undefined;
+			const list:Data = [];
+			for(let i = 0; i < source.length; i++)
+				list.push(source[i]);
 			list.sort(this.sort);
-			return list && list.length && list.length > 1 ? new AudioTracks(list) : undefined;
+			return new AudioTracks(list);
 		}
 
 		private static sort(a:AudioTrack, b:AudioTrack) {
-			const c = a.language.toUpperCase();
-			const d = b.language.toUpperCase();
+			const c = a.language.toUpperCase() || "???";
+			const d = b.language.toUpperCase() || "???";
 			return (c < d) ? -1 : ((c > d) ? 1 : 0);
 		}
 
