@@ -157,7 +157,7 @@ namespace ymovie.tv.view.media {
 				this.submit();
 				return true;
 			}
-			return false;
+			return super.executeFocusEvent(event);
 		}
 
 		render() {

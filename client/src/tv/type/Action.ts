@@ -23,6 +23,7 @@ namespace ymovie.tv.type.Action {
 	export class ShowNotification extends Base<ShowNotificationData> {}
 	export class StreamUrlResolved extends Base<StreamUrlResolvedData> {}
 	export class Log extends Base<string> {}
+	export class AudioTrackSelected extends Base<AudioTrack> {}
 
 	export class RegisterFocusable extends Base<Array<Focus.IFocusable>> {
 		constructor() {super([]);}

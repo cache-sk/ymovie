@@ -42,7 +42,7 @@ namespace ymovie.tv.view {
 				this.submit();
 				return true;
 			}
-			return false;
+			return super.executeFocusEvent(event);
 		}
 
 		allowHorizontalCirculation(_event:Focus.Event):boolean {

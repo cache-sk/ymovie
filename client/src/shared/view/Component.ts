@@ -64,6 +64,10 @@ namespace ymovie.view {
 			DOM.clean(this.element);
 		}
 		
+		remove() {
+			DOM.remove(this.element);
+		}
+
 		render():TElement {
 			return this.element;
 		}
