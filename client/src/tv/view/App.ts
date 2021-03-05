@@ -1,6 +1,7 @@
 namespace ymovie.tv.view {
 	import Action = type.Action;
 	import Focus = util.Focus;
+	import GA = ymovie.util.GA;
 	import Keyboard = util.Keyboard;
 	import Media = ymovie.type.Media;
 	import Nav = util.Nav;
@@ -10,6 +11,7 @@ namespace ymovie.tv.view {
 	export class App extends ymovie.view.App {
 		private readonly api = new api.Api();
 		private readonly nav = new Nav.Manager();
+		private readonly ga = new GA();
 		private readonly focus = new Focus.Manager();
 		private readonly header = new Header();
 		private readonly notification = new Notification();
@@ -39,6 +41,8 @@ namespace ymovie.tv.view {
 			this.listen(Action.RequestMoreItems, this.onRequestMoreItems.bind(this));
 			this.listen(Action.GoBack, () => this.nav.goBack());
 			this.listen(Action.Log, event => this.help.logMessage(event.detail));
+
+			this.ga.init();
 
 			await this.api.init();
 
@@ -157,6 +161,7 @@ namespace ymovie.tv.view {
 		private onNavChange(data:Nav.ChangeData) {
 			const nav = this.nav;
 			const path = data;
+			this.ga.pageview(document.location.pathname, document.title);
 			if(nav.isAbout(path))
 				this.activateScreen("about", this.aboutScreen, this.header);
 			else if(nav.isPlayer(path))

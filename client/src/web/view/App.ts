@@ -2,6 +2,7 @@ namespace ymovie.web.view {
 	import Action = type.Action;
 	import Catalogue = ymovie.type.Catalogue;
 	import DOM = ymovie.util.DOM;
+	import GA = ymovie.util.GA;
 	import Media = ymovie.type.Media;
 	import Nav = util.Nav;
 	import Player = type.Player;
@@ -10,7 +11,7 @@ namespace ymovie.web.view {
 	export class App extends ymovie.view.App {
 		api:api.Api | undefined;
 		nav:Nav.Manager | undefined;
-		ga:util.GA | undefined;
+		ga:GA | undefined;
 		setupView:setup.SetupView | undefined;
 		aboutView:AboutView | undefined;
 		discoveryView:discovery.DiscoveryView | undefined;
@@ -34,7 +35,7 @@ namespace ymovie.web.view {
 			this.initPWA();
 			this.api = new api.Api();
 			this.nav = new Nav.Manager();
-			this.ga = new util.GA();
+			this.ga = new GA();
 			this.menu.push(new Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)));
 			this.menu.push(new Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav)));
 			
