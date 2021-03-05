@@ -7,12 +7,12 @@ namespace ymovie.tv.view.player {
 
 	export class AudioTracks extends FocusableDataComponent<HTMLUListElement, Data> {
 		private current:AudioTrack;
-		private focused:AudioTrack;
+		private highlight:AudioTrack;
 		
 		private constructor(data:Data) {
 			super("ul", data);
 			this.current = data.find(item => item.enabled) || data[0]!;
-			this.focused = this.current;
+			this.highlight = this.current;
 		}
 
 		static create(video:HTMLVideoElement):AudioTracks | undefined {
@@ -33,7 +33,7 @@ namespace ymovie.tv.view.player {
 		}
 
 		focus() {
-			this.focused = this.current;
+			this.highlight = this.current;
 			this.render();
 			super.focus();
 		}
@@ -44,14 +44,14 @@ namespace ymovie.tv.view.player {
 				const li = DOM.create("li", undefined, track.language || "???");
 				li.addEventListener("click", () => this.selectTrack(track));
 				li.classList.toggle("current", track === this.current);
-				li.classList.toggle("focused", track === this.focused);
+				li.classList.toggle("focused", track === this.highlight);
 				this.append(li);
 			}
 			return super.render();
 		}
 
 		executeFocusEvent(event:Focus.Event):boolean {
-			const index = this.data.indexOf(this.focused);
+			const index = this.data.indexOf(this.highlight);
 			if(event.action === "up" && index > 0) {
 				this.focusTrack(this.data[index - 1]!);
 				return true;
@@ -61,14 +61,14 @@ namespace ymovie.tv.view.player {
 				return true;
 			}
 			if(event.action === "submit") {
-				this.selectTrack(this.focused);
+				this.selectTrack(this.highlight);
 				return true;
 			}
 			return super.executeFocusEvent(event);
 		}
 
 		private focusTrack(value:AudioTrack) {
-			this.focused = value;
+			this.highlight = value;
 			this.render();
 		}
 

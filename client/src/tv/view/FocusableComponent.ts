@@ -12,6 +12,10 @@ namespace ymovie.tv.view {
 			this.listenGlobal(type.Action.RegisterFocusable, this.onRegister.bind(this));
 		}
 
+		get focused():boolean {
+			return this.element.classList.contains("focused");
+		}
+
 		focus():void {
 			this.element.classList.add("focused");
 			this.trigger(new Action.Focused({component:this, element:this.element}));
