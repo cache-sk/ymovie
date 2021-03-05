@@ -43,10 +43,12 @@ namespace ymovie.tv.view.media {
 		}
 
 		protected appendCatalogue(data:RowData, requestFocus:boolean) {
+			if(!data.length)
+				return;
 			const row = new Row(data);
 			DOM.append(this.rowContainer, row.render());
 			if(requestFocus)
-				row.focusFirst();
+				this.trigger(new Action.RequestFocus({component:row, element:row.element}));
 		}
 
 		protected removeCatalogues() {

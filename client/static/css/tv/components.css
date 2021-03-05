@@ -12,7 +12,7 @@
 	white-space: nowrap;
 }
 
-.Header .Item {
+.Header div {
 	display: inline-block;
 	vertical-align: middle;
 	border-radius: 1rem;
@@ -20,17 +20,23 @@
 	margin-right: .5rem;
 }
 
-.Header .Item.focused {
+.Header.focused {
 	outline: none;
-	box-shadow: 0 0 0 .2rem #fec401;
 }
 
-.screen-about .Header .Item.about,
-.screen-media .Header .Item.media,
-.screen-search .Header .Item.search,
-.screen-setup .Header .Item.setup {
+.screen-about .Header .about,
+.screen-media .Header .media,
+.screen-search .Header .search,
+.screen-setup .Header .setup {
 	background: white;
 	color: black;
+}
+
+.screen-about .Header.focused .about,
+.screen-media .Header.focused .media,
+.screen-search .Header.focused .search,
+.screen-setup .Header.focused .setup {
+	box-shadow: 0 0 0 .2rem #fec401;
 }
 
 .screen-player .Header {
@@ -71,6 +77,11 @@
 	will-change: transform, opacity;
 	backface-visibility: hidden;
 	margin-bottom: 1rem;
+}
+
+.MediaScreenBase .Row.focused,
+.MediaScreenBase .Row:not(.focused) .focused {
+	outline: none;
 }
 
 .MediaScreenBase .Row.up,

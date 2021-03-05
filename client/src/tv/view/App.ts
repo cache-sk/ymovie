@@ -104,6 +104,7 @@ namespace ymovie.tv.view {
 
 		private activateScreen(screenId:ScreenId, screen:Screen, defaultFocus?:Focus.IFocusable) {
 			util.ClassName.updateType(this.element, "screen", screenId);
+			this.header.current = screenId;
 			const screens:Array<Screen> = [this.aboutScreen, this.mediaScreen, this.playerScreen, this.searchScreen, this.setupScreen];
 			for(const item of screens)
 				if(item != screen && item.isActive)
@@ -157,15 +158,15 @@ namespace ymovie.tv.view {
 			const nav = this.nav;
 			const path = data;
 			if(nav.isAbout(path))
-				this.activateScreen("about", this.aboutScreen, this.header.about);
+				this.activateScreen("about", this.aboutScreen, this.header);
 			else if(nav.isPlayer(path))
 				this.activateScreen("player", this.playerScreen);
 			else if(nav.isSearch(path))
-				this.activateScreen("search", this.searchScreen, this.header.search);
+				this.activateScreen("search", this.searchScreen, this.header);
 			else if(nav.isSetup(path))
-				this.activateScreen("setup", this.setupScreen, this.header.setup);
+				this.activateScreen("setup", this.setupScreen, this.header);
 			else
-				this.activateScreen("media", this.mediaScreen, this.header.media);
+				this.activateScreen("media", this.mediaScreen, this.header);
 		}
 
 		private onDocumentKeyDown(event:KeyboardEvent) {
