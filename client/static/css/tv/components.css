@@ -662,7 +662,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	border: .2rem solid transparent;
 }
 
-.AudioTracks:not(.focused) li:not(.current) {
+.AudioTracks:not(:hover):not(.focused) li:not(.current) {
 	display: none;
 }
 
@@ -672,6 +672,7 @@ body:not(.webshare-ok) .Detail .Stream {
 	padding: .15rem .5rem .15rem 1.5rem;
 }
 
-.AudioTracks.focused .focused {
+.AudioTracks.focused .focused,
+.AudioTracks li:hover {
 	border-color: #fec401;
 }

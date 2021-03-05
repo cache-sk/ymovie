@@ -14,17 +14,7 @@ namespace ymovie.tv.view.player {
 			this.current = data.find(item => item.enabled) || data[0]!;
 			this.focused = this.current;
 		}
-/*
-		static create2() {
-			const list:Data = [
-				{enabled:true, id:"", kind:"", label:"", language:"czk"},
-				{enabled:false, id:"", kind:"", label:"", language:"slo"},
-				{enabled:false, id:"", kind:"", label:"", language:"hun"}
-			]
-			list.sort(this.sort);
-			return new AudioTracks(list);
-		}
-*/
+
 		static create(video:HTMLVideoElement):AudioTracks | undefined {
 			const source = (<any>video).audioTracks;
 			if(!source || !source.length || source.length < 2)
@@ -52,6 +42,7 @@ namespace ymovie.tv.view.player {
 			this.clean();
 			for(const track of this.data) {
 				const li = DOM.create("li", undefined, track.language || "???");
+				li.addEventListener("click", () => this.selectTrack(track));
 				li.classList.toggle("current", track === this.current);
 				li.classList.toggle("focused", track === this.focused);
 				this.append(li);
@@ -70,12 +61,8 @@ namespace ymovie.tv.view.player {
 				return true;
 			}
 			if(event.action === "submit") {
-				this.current = this.focused;
-				for(const track of this.data)
-					track.enabled = false;
-				this.current.enabled = true;
-				this.render();
-				this.trigger(new Action.AudioTrackSelected(this.current));
+				this.selectTrack(this.focused);
+				return true;
 			}
 			return super.executeFocusEvent(event);
 		}
@@ -83,6 +70,15 @@ namespace ymovie.tv.view.player {
 		private focusTrack(value:AudioTrack) {
 			this.focused = value;
 			this.render();
+		}
+
+		private selectTrack(value:AudioTrack) {
+			this.current = value;
+			for(const track of this.data)
+				track.enabled = false;
+			this.current.enabled = true;
+			this.render();
+			this.trigger(new Action.AudioTrackSelected(this.current));
 		}
 	}
 
