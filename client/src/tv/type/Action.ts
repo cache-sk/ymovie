@@ -24,6 +24,7 @@ namespace ymovie.tv.type.Action {
 	export class StreamUrlResolved extends Base<StreamUrlResolvedData> {}
 	export class Log extends Base<string> {}
 	export class AudioTrackSelected extends Base<AudioTrack> {}
+	export class TextTrackSelected extends Base<TextTrack | undefined> {}
 
 	export class RegisterFocusable extends Base<Array<Focus.IFocusable>> {
 		constructor() {super([]);}

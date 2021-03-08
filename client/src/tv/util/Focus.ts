@@ -31,11 +31,11 @@ namespace ymovie.tv.util.Focus {
 		}
 
 		private get virtualX():number {
-			return this._focusedComponent ? this._focusedComponent.getBoundingRect().centerX + this.virtualXOffset : 0;
+			return this._focusedComponent ? this._focusedComponent.getBoundingRect()?.centerX || 0 + this.virtualXOffset : 0;
 		}
 
 		private get virtualY():number {
-			return this._focusedComponent ? this._focusedComponent.getBoundingRect().centerY + this.virtualYOffset : 0;
+			return this._focusedComponent ? this._focusedComponent.getBoundingRect()?.centerY || 0 + this.virtualYOffset : 0;
 		}
 
 		executeEvent(components:Array<IFocusable>, event:Event):boolean {
@@ -55,7 +55,7 @@ namespace ymovie.tv.util.Focus {
 				var x = this.virtualX;
 				var y = this.virtualY;
 				this.focusedComponent = nearest;
-				this.optimizeVirtualPosition(customEvent.action, x, y, this.focusedComponent.getBoundingRect());
+				this.optimizeVirtualPosition(customEvent.action, x, y, this.focusedComponent.getBoundingRect()!);
 				return true;
 			}
 
@@ -66,7 +66,7 @@ namespace ymovie.tv.util.Focus {
 			const action = event.action;
 			const virtualX = this.virtualX;
 			const virtualY = this.virtualY;
-			const componentRect = component.getBoundingRect();
+			const componentRect = component.getBoundingRect()!;
 
 			const result = this.getNearestForRect(components, component, componentRect, virtualX, virtualY, action);
 			if(result)
@@ -95,7 +95,7 @@ namespace ymovie.tv.util.Focus {
 					continue;
 
 				var itemRect = item.getBoundingRect();
-				if(this.inDirection(action, itemRect, componentRect) && this.overlaps(action, itemRect, componentRect)) {
+				if(itemRect && this.inDirection(action, itemRect, componentRect) && this.overlaps(action, itemRect, componentRect)) {
 					var itemDistanceX = this.calculateDistance(virtualX, itemRect.x, itemRect.right);
 					var itemDistanceY = this.calculateDistance(virtualY, itemRect.y, itemRect.bottom);
 					if(this.isCloser(action, itemDistanceX, itemDistanceY, resultDistanceX, resultDistanceY)) {
@@ -169,7 +169,7 @@ namespace ymovie.tv.util.Focus {
 	export interface IFocusable {
 		focus():void;
 		blur():void;
-		getBoundingRect():Rect;
+		getBoundingRect():Rect | undefined;
 		getFocusLayer():string;
 		executeFocusEvent(event:Event):boolean;
 		modifyFocusEvent(event:Event):Event;

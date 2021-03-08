@@ -1,35 +1,38 @@
 namespace ymovie.tv.view.player {
 	import Action = type.Action;
-	import AudioTrack = type.AudioTrack;
 	import DOM = ymovie.util.DOM;
 	import Focus = util.Focus;
 	import FocusableDataComponent = view.FocusableDataComponent;
 
-	export class AudioTracks extends FocusableDataComponent<HTMLUListElement, Data> {
-		private current:AudioTrack;
-		private highlight:AudioTrack;
+	export class TextTracks extends FocusableDataComponent<HTMLUListElement, Data> {
+		private current:TextTrack;
+		private highlight:TextTrack;
 		
-		private constructor(data:Data) {
+		private constructor(data:Data, none:TextTrack) {
 			super("ul", data);
-			this.current = data.find(item => item.enabled) || data[0]!;
+			this.current = data.find(item => item.mode === "showing") || none;
 			this.highlight = this.current;
 		}
 
-		static create(video:HTMLVideoElement):AudioTracks | undefined {
-			const source = (<any>video).audioTracks;
-			if(!source || !source.length || source.length < 2)
+		static create2(_video:HTMLVideoElement):TextTracks {
+			const none = <TextTrack>{language: "off"};
+			const list:Data = [
+				<TextTrack>{language: "???"},
+				<TextTrack>{language: "???"},
+				none,
+			]
+			return new TextTracks(list, none);
+		}
+
+		static create(video:HTMLVideoElement):TextTracks | undefined {
+			const source = video.textTracks;
+			const none = video.addTextTrack("captions", "off", "off");
+			if(!source || !source.length || source.length < 1)
 				return undefined;
 			const list:Data = [];
 			for(let i = 0; i < source.length; i++)
-				list.push(source[i]);
-			list.sort(this.sort);
-			return new AudioTracks(list);
-		}
-
-		private static sort(a:AudioTrack, b:AudioTrack) {
-			const c = a.language.toUpperCase() || "???";
-			const d = b.language.toUpperCase() || "???";
-			return (c < d) ? -1 : ((c > d) ? 1 : 0);
+				list.push(source[i]!);
+			return new TextTracks(list, none);
 		}
 
 		focus() {
@@ -69,18 +72,19 @@ namespace ymovie.tv.view.player {
 			return super.executeFocusEvent(event);
 		}
 
-		private focusTrack(value:AudioTrack) {
+		private focusTrack(value:TextTrack) {
 			this.highlight = value;
 			this.render();
 		}
 
-		private selectTrack(value:AudioTrack) {
+		private selectTrack(value:TextTrack) {
 			this.current = value;
 			for(const track of this.data)
-				track.enabled = false;
-			this.current.enabled = true;
+				track.mode = "disabled";
+			if(this.current)
+				this.current.mode = "showing";
 			this.render();
-			this.trigger(new Action.AudioTrackSelected(this.current));
+			this.trigger(new Action.TextTrackSelected(this.current));
 		}
 
 		getBoundingRect():Focus.Rect | undefined {
@@ -90,5 +94,5 @@ namespace ymovie.tv.view.player {
 		}
 	}
 
-	type Data = Array<AudioTrack>;
+	type Data = Array<TextTrack>;
 }

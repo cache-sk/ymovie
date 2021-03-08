@@ -13,11 +13,13 @@ namespace ymovie.tv.view.player {
 	export class PlayerScreen extends Screen {
 		private data:PlayerScreenData;
 		private video?:HTMLVideoElement;
-		private controls = new Controls();
+		private readonly controls = new Controls();
+		private readonly tracks = DOM.div("tracks");
 		private readonly seekTimer = new Timeout(1000);
 		private readonly idleTimer = new Timeout(2000);
 		private readonly _onGlobalKeyDown = this.onGlobalKeyDown.bind(this);
 		private audioTracks:AudioTracks | undefined;
+		private textTracks:TextTracks | undefined;
 
 		constructor(context:Context) {
 			super(context);
@@ -26,7 +28,9 @@ namespace ymovie.tv.view.player {
 			this.listen(SeekTo, this.onSeekTo.bind(this));
 			this.listen(TogglePlay, this.onTogglePlay.bind(this));
 			this.listen(FocusAudioTracks, this.onFocusAudioTracks.bind(this));
+			this.listen(FocusTextTracks, this.onFocusTextTracks.bind(this));
 			this.listen(Action.AudioTrackSelected, this.onAudioTrackSelected.bind(this));
+			this.listen(Action.TextTrackSelected, this.onTextTrackSelected.bind(this));
 			this.element.addEventListener("mousemove", this.onMouseMove.bind(this));
 		}
 
@@ -42,6 +46,8 @@ namespace ymovie.tv.view.player {
 			this.idle = !data;
 			this.audioTracks?.remove();
 			this.audioTracks = undefined;
+			this.textTracks?.remove();
+			this.textTracks = undefined;
 			this.seekTimer.stop();
 			this.controls.update({duration:0, currentTime:0});
 			return this.render();
@@ -88,7 +94,7 @@ namespace ymovie.tv.view.player {
 				this.video.addEventListener("play", this.onVideoPlay.bind(this));
 				this.video.addEventListener("pause", this.onVideoPause.bind(this));
 				this.video.addEventListener("error", this.onVideoError.bind(this));
-				this.append([this.video, this.controls.render()]);
+				this.append([this.video, this.controls.render(), this.tracks]);
 			}
 
 			return super.render();
@@ -143,8 +149,15 @@ namespace ymovie.tv.view.player {
 			this.audioTracks?.remove();
 			this.audioTracks = AudioTracks.create(this.video!);
 			if(this.audioTracks)
-				this.append(this.audioTracks.render());
+				DOM.append(this.tracks, this.audioTracks.render());
+
+			this.textTracks?.remove();
+			this.textTracks = TextTracks.create(this.video!);
+			if(this.textTracks)
+				DOM.append(this.tracks, this.textTracks.render());
+			
 			this.updateControls();
+
 		}
 
 		private onVideoLoadedMetadata() {
@@ -194,6 +207,10 @@ namespace ymovie.tv.view.player {
 			this.focusControls();
 		}
 
+		private onTextTrackSelected() {
+			this.focusControls();
+		}
+
 		private onSeekBy(event:CustomEvent<number>) {
 			this.seek(this.controls.data.currentTime + event.detail);
 		}
@@ -216,6 +233,13 @@ namespace ymovie.tv.view.player {
 				return;
 			event.detail.result = true;
 			this.trigger(new Action.RequestFocus({component:this.audioTracks, element:this.audioTracks.element}));
+		}
+
+		private onFocusTextTracks(event:CustomEvent<FocusAudioTracksData>) {
+			if(!this.textTracks)
+				return;
+			event.detail.result = true;
+			this.trigger(new Action.RequestFocus({component:this.textTracks, element:this.textTracks.element}));
 		}
 
 		private onGlobalKeyDown(event:CustomEvent<KeyboardEvent>) {
@@ -277,7 +301,12 @@ namespace ymovie.tv.view.player {
 				return true;
 			}
 			if(event.action === "down") {
-				const action = new FocusAudioTracks();
+				let action = new FocusAudioTracks();
+				this.trigger(action);
+				if(action.data.result)
+					return true;
+
+				action = new FocusTextTracks();
 				this.trigger(action);
 				return action.data.result;
 			}
@@ -291,6 +320,8 @@ namespace ymovie.tv.view.player {
 
 		onClick(event:MouseEvent) {
 			const rect = DOMUtil.getGlobalRect(this.element);
+			if(!rect)
+				return;
 			const time = (event.clientX - rect.left) / rect.width * this.data.duration;
 			this.trigger(new SeekTo(time));
 		}
@@ -309,5 +340,10 @@ namespace ymovie.tv.view.player {
 		constructor() {super({result:false});}
 	}
 
+	class FocusTextTracks extends Base<FocusTextTracksData> {
+		constructor() {super({result:false});}
+	}
+
 	type FocusAudioTracksData = {result:boolean};
+	type FocusTextTracksData = {result:boolean};
 }

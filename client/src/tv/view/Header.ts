@@ -40,15 +40,18 @@ namespace ymovie.tv.view {
 			return super.executeFocusEvent(event);
 		}
 
-		getBoundingRect():Focus.Rect {
+		getBoundingRect():Focus.Rect | undefined {
+			const rect = super.getBoundingRect();
+			if(!rect)
+				return undefined;
+
 			const index = this.list.indexOf(this.current);
 			if(!this.focused || index === -1) {
-				const rect = super.getBoundingRect();
 				return new Focus.Rect(0, rect.y, document.body.clientWidth, rect.height);
 			}
 
-			const rect = DOMUtil.getGlobalRect(this.element.children[index]!);
-			return new Focus.Rect(rect.left, rect.top, rect.width, rect.height);
+			const itemRect = DOMUtil.getGlobalRect(this.element.children[index]!);
+			return itemRect ? new Focus.Rect(itemRect.left, itemRect.top, itemRect.width, itemRect.height) : undefined;
 		}
 	}
 }

@@ -26,9 +26,9 @@ namespace ymovie.tv.view {
 			this.element.classList.remove("focused");
 		}
 
-		getBoundingRect():Focus.Rect {
+		getBoundingRect():Focus.Rect | undefined {
 			const rect = DOMUtil.getGlobalRect(this.element);
-			return new Focus.Rect(rect.left, rect.top, rect.width, rect.height);
+			return rect ? new Focus.Rect(rect.left, rect.top, rect.width, rect.height) : undefined;
 		}
 
 		getFocusLayer():string {
@@ -49,7 +49,8 @@ namespace ymovie.tv.view {
 
 		onRegister(event:CustomEvent<Array<Focus.IFocusable>>) {
 			if ((<HTMLElement>event.target).contains(this.element))
-				event.detail.push(this);
+				if(this.getBoundingRect())
+					event.detail.push(this);
 		}
 	}
 }

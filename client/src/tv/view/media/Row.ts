@@ -113,9 +113,9 @@ namespace ymovie.tv.view.media {
 			return super.modifyFocusEvent(event);
 		}
 
-		getBoundingRect():Focus.Rect {
+		getBoundingRect():Focus.Rect | undefined {
 			const rect = super.getBoundingRect();
-			return rect.x ? new Focus.Rect(0, rect.y, document.body.clientWidth, rect.height) : rect;
+			return rect ? new Focus.Rect(0, rect.y, document.body.clientWidth, rect.height) : rect;
 		}
 
 		private onCatalogueLoaded(event:CustomEvent<Action.CatalogueLoadedData>) {
