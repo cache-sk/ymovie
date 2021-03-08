@@ -61,9 +61,13 @@
 	display: block;
 }
 
-.MediaScreenBase .rows {
+.MediaScreenBase .rows,
+.MediaScreenBase > .Navigation {
 	position: absolute;
 	top: calc(100% - 11rem);
+}
+
+.MediaScreenBase .rows {
 	transition: transform .5s;
 	-webkit-transition: all .5s;
 	will-change: transform;
@@ -179,11 +183,36 @@
 	width: 50%;
 }
 
-.Detail {
+.MediaScreenBase > .Navigation {
+	left: 2.5rem;
+	right: 2.5rem;
+}
+
+.MediaScreenBase:not(.focus-rows) > .Navigation span {
+	opacity: 0 !important;
+}
+
+.MediaScreenBase > .Navigation span.left {
 	left: 0;
-	top: 0;
+	top: 2.55rem;
+}
+
+.MediaScreenBase > .Navigation span.right {
 	right: 0;
-	bottom: 0;
+	top: 2.55rem;
+}
+
+.MediaScreenBase > .Navigation span.up {
+	top: 0;
+	left: calc(50% - 1.2rem);
+}
+
+.MediaScreenBase > .Navigation span.down {
+	top: 5.5rem;
+	left: calc(50% - 1.2rem);
+}
+
+.Detail {
 	padding-right: 40%;
 	transition: opacity .5s;
 	-webkit-transition: opacity .5s;
@@ -291,6 +320,30 @@
 	border: .2rem solid #fec401 !important;
 	padding: .1rem 2.5rem .1rem .7rem;
 	border-radius: 1rem;
+}
+
+.MediaScreenBase:not(.focus-detail) .Detail .Navigation span {
+	opacity: 0 !important;
+}
+
+.Detail .Navigation .left {
+	left: calc(60% + 1rem);
+	top: calc(50% - 1.2rem);
+}
+
+.Detail .Navigation .right {
+	top: calc(50% - 1.2rem);
+	right: 2.5rem;
+}
+
+.Detail .Navigation .up {
+	left: calc(80% - 1.8rem);
+	top: 2.5rem;
+}
+
+.Detail .Navigation .down {
+	left: calc(80% - 1.8rem);
+	bottom: 2.5rem;
 }
 
 .webshare-ok .Detail .Stream.focused {
@@ -690,4 +743,41 @@ body:not(.webshare-ok) .Detail .Stream {
 .AudioTracks.focused .focused,
 .AudioTracks li:hover {
 	border-color: #fec401;
+}
+
+.Navigation span {
+	opacity: 0;
+	transition: opacity .5s;
+	-webkit-transition: opacity .5s;
+	will-change: opacity;
+	position: absolute;
+	width: 2rem;
+	height: 2rem;
+	display: block;
+	border: .2rem solid black;
+	border-radius: 100%;
+	background: black url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23fec401" d="M256,0C114.837,0,0,114.837,0,256s114.837,256,256,256s256-114.837,256-256S397.163,0,256,0z M313.749,347.584 c8.341,8.341,8.341,21.824,0,30.165c-4.16,4.16-9.621,6.251-15.083,6.251c-5.461,0-10.923-2.091-15.083-6.251L176.917,271.083 c-8.341-8.341-8.341-21.824,0-30.165l106.667-106.667c8.341-8.341,21.824-8.341,30.165,0s8.341,21.824,0,30.165L222.165,256 L313.749,347.584z"/></svg>') no-repeat 0 / 100%;
+}
+
+body.mouseActive .Navigation span {
+	opacity: .5;
+}
+
+.Navigation span:hover {
+	opacity: 1 !important;
+}
+
+.Navigation span.right {
+	transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+}
+
+.Navigation span.up {
+	transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+}
+
+.Navigation span.down {
+	transform: rotate(-90deg);
+	-webkit-transform: rotate(-90deg);
 }

@@ -7,6 +7,7 @@ namespace ymovie.tv.view {
 	import Nav = util.Nav;
 	import Scc = ymovie.api.Scc;
 	import ScreenId = type.ScreenId;
+	import Timeout = ymovie.util.Timeout;
 
 	export class App extends ymovie.view.App {
 		private readonly api = new api.Api();
@@ -22,6 +23,7 @@ namespace ymovie.tv.view {
 		private readonly aboutScreen = new about.AboutScreen(this.context);
 		private readonly playerScreen = new player.PlayerScreen(this.context);
 		private readonly help = new Help();
+		private readonly mouseActivityTimeout = new Timeout(1000);
 
 		static async init(){
 			util.Polyfill.init();
@@ -54,6 +56,7 @@ namespace ymovie.tv.view {
 			this.element.classList.toggle("initializing", false);
 
 			document.addEventListener("keydown", this.onDocumentKeyDown.bind(this));
+			document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this));
 		}
 
 		private initDeeplink(){
@@ -186,6 +189,11 @@ namespace ymovie.tv.view {
 			} else {
 				this.help.logKey(event);
 			}
+		}
+
+		private onDocumentMouseMove() {
+			this.element.classList.toggle("mouseActive", true);
+			this.mouseActivityTimeout.start(() => this.element.classList.toggle("mouseActive", false));
 		}
 	}
 }

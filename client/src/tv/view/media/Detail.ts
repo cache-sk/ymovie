@@ -13,6 +13,7 @@ namespace ymovie.tv.view.media {
 		private readonly background = new Background();
 		private readonly container = DOM.div("container");
 		private readonly streams:Streams;
+		private readonly navigation = new Navigation().render();
 
 		constructor(context:Context) {
 			super("div", undefined);
@@ -26,10 +27,11 @@ namespace ymovie.tv.view.media {
 			if(this.data instanceof Media.Base) {
 				DOM.clean(this.container);
 				DOM.append(this.container, this.renderBase(this.data));
-				this.append([this.container, this.streams.render()]);
+				this.append([this.container, this.streams.render(), this.navigation]);
 			} else {
 				DOM.remove(this.container);
 				DOM.remove(this.streams.element);
+				DOM.remove(this.navigation);
 			}
 
 			return super.render();

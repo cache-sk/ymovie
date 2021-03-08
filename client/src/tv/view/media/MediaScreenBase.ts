@@ -38,7 +38,7 @@ namespace ymovie.tv.view.media {
 		}
 
 		render() {
-			this.append([this.detail.render(), this.rowContainer]);
+			this.append([this.detail.render(), this.rowContainer, new Navigation().render()]);
 			return super.render();
 		}
 
