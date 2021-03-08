@@ -94,7 +94,7 @@ namespace ymovie.tv.view.player {
 				this.video.addEventListener("play", this.onVideoPlay.bind(this));
 				this.video.addEventListener("pause", this.onVideoPause.bind(this));
 				this.video.addEventListener("error", this.onVideoError.bind(this));
-				this.append([this.video, this.controls.render(), this.tracks]);
+				this.append([this.video, this.tracks, this.controls.render()]);
 			}
 
 			return super.render();
