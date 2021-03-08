@@ -7,6 +7,8 @@ namespace ymovie.web.view {
 	import Nav = util.Nav;
 	import Player = type.Player;
 	import Status = ymovie.type.Status;
+	import Watched = ymovie.util.Watched;
+	import WebCatalogue = type.Catalogue;
 
 	export class App extends ymovie.view.App {
 		api:api.Api | undefined;
@@ -36,8 +38,8 @@ namespace ymovie.web.view {
 			this.api = new api.Api();
 			this.nav = new Nav.Manager();
 			this.ga = new GA();
-			this.menu.push(new Catalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)));
-			this.menu.push(new Catalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav)));
+			this.menu.push(new WebCatalogue.Callback("watched", "Watched Movies", this.nav.goSccWatchedMovies.bind(this.nav)));
+			this.menu.push(new WebCatalogue.Callback("watched", "Watched Series", this.nav.goSccWatchedSeries.bind(this.nav)));
 			
 			this.setupView = new setup.SetupView(this.api);
 			this.aboutView = new AboutView();
@@ -164,7 +166,7 @@ namespace ymovie.web.view {
 				this.nav?.goSccBrowse(item);
 			} else if(item instanceof ymovie.api.Webshare.CatalogueSearch) {
 				this.search({query:item.query, page:item.page});
-			} else if(item instanceof Catalogue.Callback) {
+			} else if(item instanceof WebCatalogue.Callback) {
 				item.callback();
 			} else if(item instanceof Media.Episode) {
 				this.nav?.goSccEpisode(item, data.replace);
@@ -249,10 +251,10 @@ namespace ymovie.web.view {
 				return this.aboutView.show();
 			if(nav.isSccWatchedMovies(path))
 				return await this.loadCatalogue(undefined,
-					async () => await this.api?.loadIds(util.Watched.movies, data.title));
+					async () => await this.api?.loadIds(Watched.movies, data.title));
 			if(nav.isSccWatchedSeries(path))
 				return await this.loadCatalogue(undefined,
-					async () => await this.api?.loadIds(util.Watched.series, data.title));
+					async () => await this.api?.loadIds(Watched.series, data.title));
 			if(isDetail(path))
 				return this.detailView.update({detail:<Media.Playable>state.source, list:<Array<Catalogue.AnyItem>>this.discoveryView.data?.catalogue});
 			if(nav.isSccSeries(path))

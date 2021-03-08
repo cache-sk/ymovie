@@ -11,11 +11,11 @@ namespace ymovie.view {
 			this.element.classList.add(this.constructor.name);
 		}
 
-		protected set loading(value:boolean) {
+		set loading(value:boolean) {
 			this.element.classList.toggle("loading", value);
 		}
 
-		protected get loading():boolean {
+		get loading():boolean {
 			return this.element.classList.contains("loading");
 		}
 		

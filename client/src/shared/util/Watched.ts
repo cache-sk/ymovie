@@ -1,7 +1,4 @@
-namespace ymovie.web.util {
-	import Storage = ymovie.util.Storage;
-	import Util = ymovie.util.Util;
-
+namespace ymovie.util {
 	export class Watched {
 		private static KEY_WATCHED_MOVIES = "KEY_WATCHED_MOVIES";
 		private static KEY_WATCHED_SERIES = "KEY_WATCHED_SERIES";

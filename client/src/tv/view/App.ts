@@ -1,5 +1,6 @@
 namespace ymovie.tv.view {
 	import Action = type.Action;
+	import Catalogue = type.Catalogue;
 	import Focus = util.Focus;
 	import GA = ymovie.util.GA;
 	import Keyboard = util.Keyboard;
@@ -8,6 +9,7 @@ namespace ymovie.tv.view {
 	import Scc = ymovie.api.Scc;
 	import ScreenId = type.ScreenId;
 	import Timeout = ymovie.util.Timeout;
+	import Watched = ymovie.util.Watched;
 
 	export class App extends ymovie.view.App {
 		private readonly api = new api.Api();
@@ -31,6 +33,9 @@ namespace ymovie.tv.view {
 		}
 
 		private async init():Promise<any> {
+			this.menu.push(new Catalogue.Callback("watched", "Watched Movies", this.loadWatchedMovies.bind(this)));
+			this.menu.push(new Catalogue.Callback("watched", "Watched Series", this.loadWatchedSeries.bind(this)));
+
 			this.api.webshareStatusChanged.add(this.onApiWebshareStatus.bind(this));
 
 			this.listen(Action.CatalogueItemSelected, this.onCatalogueItemSelected.bind(this));
@@ -128,10 +133,20 @@ namespace ymovie.tv.view {
 				this.nav.goBack();
 		}
 
+		private async loadWatchedMovies() {
+			return this.api.loadIds(Watched.movies, "more");
+		}
+
+		private async loadWatchedSeries() {
+			return this.api.loadIds(Watched.series, "more");
+		}
+
 		private async onCatalogueItemSelected(event:CustomEvent<Action.CatalogueItemSelectedData>) {
 			const {data} = event.detail;
 			if(data instanceof Scc.CatalogueLink)
 				return this.trigger(new Action.CatalogueLoaded({item:data, newRow:true, catalogue:await this.api.loadPath(data.url, "more")}));
+			if(data instanceof Catalogue.Callback)
+				return this.trigger(new Action.CatalogueLoaded({item:data, newRow:true, catalogue:await data.callback()}));
 			if(data instanceof Media.Series)
 				return this.trigger(new Action.CatalogueLoaded({item:data, newRow:true, catalogue:await this.api.loadSeasons(data.id, "more")}));
 			if(data instanceof Media.Season)
@@ -158,6 +173,14 @@ namespace ymovie.tv.view {
 			if(url) {
 				this.playerScreen.update({media:event.detail.media, stream:event.detail.stream, url});
 				this.showScreen("player");
+			}
+
+			if(media instanceof Media.Movie)
+				Watched.addMovie(media.id);
+			if(media instanceof Media.Episode) {
+				if(media.seriesId)
+					Watched.addSeries(media.seriesId);
+				Watched.addEpisode(media.id);
 			}
 		}
 

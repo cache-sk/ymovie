@@ -4,6 +4,9 @@ namespace ymovie.web.view.catalogue {
 	import DOM = ymovie.util.DOM;
 	import Media = ymovie.type.Media;
 	import Util = ymovie.util.Util;
+	import Watched = ymovie.util.Watched;
+	import WatchedMap = ymovie.util.WatchedMap;
+	import WebCatalogue = type.Catalogue;
 
 	export class Catalogue extends DataComponent<HTMLDivElement, Array<TCatalogue.AnyItem> | Error | undefined> {
 		constructor(){
@@ -14,7 +17,7 @@ namespace ymovie.web.view.catalogue {
 			this.clean();
 			this.element.classList.toggle("error", false);
 			this.element.classList.toggle("empty", false);
-			const watched = util.Watched.getMap();
+			const watched = Watched.getMap();
 			const items = <Array<TCatalogue.AnyItem> | undefined>this.data;
 			const error = <Error | undefined>this.data;
 			if(Util.isArray(this.data) && items?.length){
@@ -29,8 +32,8 @@ namespace ymovie.web.view.catalogue {
 			return super.render();
 		}
 		
-		renderItem(data:TCatalogue.AnyItem, watched:util.WatchedMap){
-			if(data instanceof TCatalogue.Callback)
+		renderItem(data:TCatalogue.AnyItem, watched:WatchedMap){
+			if(data instanceof WebCatalogue.Callback)
 				return new CatalogueItemCustom(data).render();
 			if(data instanceof ymovie.api.Scc.CatalogueLink)
 				return new CatalogueItemCustom(data).render();

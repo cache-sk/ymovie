@@ -1,6 +1,7 @@
 namespace ymovie.tv.view.media {
 	import Action = type.Action;
 	import Catalogue = ymovie.type.Catalogue;
+	import TvCatalogue = type.Catalogue;
 	import DataComponent = ymovie.view.DataComponent;
 	import DOM = ymovie.util.DOM;
 	import DOMUtil = util.DOMUtil;
@@ -83,10 +84,11 @@ namespace ymovie.tv.view.media {
 		}
 
 		private submit() {
-			this.loading = true;
 			const item = this.current;
-			if(item)
-				this.trigger(new Action.CatalogueItemSelected({component:this, data:item.data, element:item.element}));
+			if(!item)
+				return;
+			item.loading = true;
+			this.trigger(new Action.CatalogueItemSelected({component:this, data:item.data, element:item.element}));
 		}
 
 		executeFocusEvent(event:Focus.Event) {
@@ -155,7 +157,8 @@ namespace ymovie.tv.view.media {
 
 		render() {
 			this.clean();
-			if(this.data instanceof Scc.CatalogueLink) {
+			if(this.data instanceof Scc.CatalogueLink
+				|| this.data instanceof TvCatalogue.Callback) {
 				this.append(DOM.span("label", this.data.label));
 				this.element.classList.add(this.data.group);
 			} else if(this.data instanceof Media.Base) {

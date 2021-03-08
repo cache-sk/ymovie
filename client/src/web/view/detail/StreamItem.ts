@@ -4,6 +4,7 @@ namespace ymovie.web.view.detail {
 	import DOM = ymovie.util.DOM;
 	import Media = ymovie.type.Media;
 	import Util = ymovie.util.Util;
+	import Watched = ymovie.util.Watched;
 
 	export class StreamItem extends StreamOption<Data> {
 		renderInfo(){
@@ -29,11 +30,11 @@ namespace ymovie.web.view.detail {
 			this.loading = true;
 			this.trigger(new type.Action.ResolveStreamUrl({stream:<Media.Stream>this.data?.stream, callback:this.onUrl.bind(this)}));
 			if(this.data?.source instanceof Media.Movie)
-				util.Watched.addMovie(this.data.source.id);
+				Watched.addMovie(this.data.source.id);
 			if(this.data?.source instanceof Media.Episode) {
 				if(this.data.source.seriesId)
-					util.Watched.addSeries(this.data.source.seriesId);
-				util.Watched.addEpisode(this.data.source.id);
+					Watched.addSeries(this.data.source.seriesId);
+				Watched.addEpisode(this.data.source.id);
 			}
 		}
 		
