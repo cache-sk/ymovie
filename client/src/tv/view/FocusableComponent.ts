@@ -1,6 +1,7 @@
 namespace ymovie.tv.view {
 	import Action = ymovie.tv.type.Action;
 	import Component = ymovie.view.Component;
+	import DOMUtil = util.DOMUtil;
 	import Focus = util.Focus;
 
 	export class FocusableComponent<TElement extends HTMLElement> 
@@ -26,7 +27,7 @@ namespace ymovie.tv.view {
 		}
 
 		getBoundingRect():Focus.Rect {
-			const rect = this.element.getBoundingClientRect();
+			const rect = DOMUtil.getGlobalRect(this.element);
 			return new Focus.Rect(rect.left, rect.top, rect.width, rect.height);
 		}
 

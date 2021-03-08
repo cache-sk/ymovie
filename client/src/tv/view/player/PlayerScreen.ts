@@ -3,6 +3,7 @@ namespace ymovie.tv.view.player {
 	import Base = ymovie.type.Action.Base;
 	import Context = ymovie.tv.type.Context;
 	import DOM = ymovie.util.DOM;
+	import DOMUtil = util.DOMUtil;
 	import Focus = util.Focus;
 	import Keyboard = util.Keyboard;
 	import Media = ymovie.type.Media;
@@ -289,8 +290,8 @@ namespace ymovie.tv.view.player {
 		}
 
 		onClick(event:MouseEvent) {
-			const rect = this.element.getBoundingClientRect();
-			const time = (event.clientX - rect.x) / rect.width * this.data.duration;
+			const rect = DOMUtil.getGlobalRect(this.element);
+			const time = (event.clientX - rect.left) / rect.width * this.data.duration;
 			this.trigger(new SeekTo(time));
 		}
 	}

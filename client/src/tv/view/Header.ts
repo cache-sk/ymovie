@@ -1,6 +1,7 @@
 namespace ymovie.tv.view {
 	import Action = type.Action;
 	import DOM = ymovie.util.DOM;
+	import DOMUtil = util.DOMUtil;
 	import Focus = util.Focus;
 	import ScreenId = type.ScreenId;
 
@@ -46,7 +47,7 @@ namespace ymovie.tv.view {
 				return new Focus.Rect(0, rect.y, document.body.clientWidth, rect.height);
 			}
 
-			const rect = this.element.children[index]!.getBoundingClientRect();
+			const rect = DOMUtil.getGlobalRect(this.element.children[index]!);
 			return new Focus.Rect(rect.left, rect.top, rect.width, rect.height);
 		}
 	}

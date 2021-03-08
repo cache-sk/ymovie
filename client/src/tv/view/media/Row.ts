@@ -3,6 +3,7 @@ namespace ymovie.tv.view.media {
 	import Catalogue = ymovie.type.Catalogue;
 	import DataComponent = ymovie.view.DataComponent;
 	import DOM = ymovie.util.DOM;
+	import DOMUtil = util.DOMUtil;
 	import Focus = util.Focus;
 	import Media = ymovie.type.Media;
 	import Scc = ymovie.api.Scc;
@@ -74,8 +75,8 @@ namespace ymovie.tv.view.media {
 			if(!link || this.items.length < 2)
 				return;
 
-			const rect = this.items[this.items.length - 2]!.element.getBoundingClientRect();
-			if(rect && rect.x < document.body.clientWidth) {
+			const rect = DOMUtil.getGlobalRect(this.items[this.items.length - 2]!.element);
+			if(rect && rect.left < document.body.clientWidth) {
 				this.loading = true;
 				this.trigger(new Action.RequestMoreItems(link));
 			}
