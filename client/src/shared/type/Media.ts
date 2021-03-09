@@ -61,6 +61,7 @@ namespace ymovie.type.Media {
 		size:number;
 		language?:string;
 		subtitles?:string;
+		subtitleList?:Array<string>;
 		width:number;
 		height:number;
 		videoCodec?:string;

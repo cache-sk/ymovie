@@ -251,6 +251,9 @@ namespace ymovie.api.Scc {
 					?.filter((value, index, self) => self.indexOf(value) === index)
 					?.sort()
 					?.join("/"),
+				/** mapped to video.textTracks, must remain unsorted */
+				subtitleList: source.subtitles
+					?.map(item => item.language.toUpperCase() || "?"),
 				subtitles: source.subtitles
 					?.map(item => item.language.toUpperCase() || "?")
 					?.filter((value, index, self) => self.indexOf(value) === index)

@@ -100,26 +100,35 @@ namespace ymovie.tv.view.player {
 		}
 	}
 
-	export class TextTracks extends Tracks<TextTrack> {
-		private constructor(data:Array<TextTrack>, none:TextTrack) {
-			super(data, data.find(item => item.mode === "showing") || none);
+	export class TextTracks extends Tracks<TextTrackItem> {
+		private constructor(data:Array<TextTrackItem>, none:TextTrackItem) {
+			super(data, data.find(item => item.source.mode === "showing") || none);
 		}
 
-		static create(video:HTMLVideoElement):TextTracks | undefined {
+		static create(video:HTMLVideoElement, languages:Array<string> | undefined):TextTracks | undefined {
 			const source = video.textTracks;
-			const none = video.addTextTrack("captions", "off", "off");
-			if(!source || !source.length || source.length < 2)
+			if(!source || !source.length || source.length < 1)
 				return undefined;
-			const list:Array<TextTrack> = [];
-			for(let i = 0; i < source.length; i++)
-				list.push(source[i]!);
+			const list:Array<TextTrackItem> = [];
+			const useLanguages = languages?.length === source.length;
+			for(let i = 0; i < source.length; i++) {
+				const label = (useLanguages ? languages![i] : undefined) || source[i]?.language || "???";
+				list.push({source:source[i]!, label});
+			}
+			list.sort(this.sort);
+			const none = {source:video.addTextTrack("captions", "off", "off"), label:"off"};
+			list.push(none);
 			return new TextTracks(list, none);
+		}
+
+		private static sort(a:TextTrackItem, b:TextTrackItem) {
+			return (a.label < b.label) ? -1 : ((a.label > b.label) ? 1 : 0);
 		}
 
 		render() {
 			this.clean();
 			for(const track of this.data) {
-				const li = DOM.create("li", undefined, track.language || "???");
+				const li = DOM.create("li", undefined, track.label);
 				li.addEventListener("click", () => this.selectTrack(track));
 				li.classList.toggle("current", track === this.current);
 				li.classList.toggle("focused", track === this.highlight);
@@ -128,13 +137,18 @@ namespace ymovie.tv.view.player {
 			return super.render();
 		}
 
-		selectTrack(value:TextTrack) {
+		selectTrack(value:TextTrackItem) {
 			super.selectTrack(value);
 			for(const track of this.data)
-				track.mode = "disabled";
+				track.source.mode = "disabled";
 			if(this.current)
-				this.current.mode = "showing";
-			this.trigger(new Action.TextTrackSelected(this.current));
+				this.current.source.mode = "showing";
+			this.trigger(new Action.TextTrackSelected(this.current.source));
 		}
+	}
+
+	type TextTrackItem = {
+		readonly source:TextTrack;
+		readonly label:string;
 	}
 }

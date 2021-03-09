@@ -152,7 +152,7 @@ namespace ymovie.tv.view.player {
 				DOM.append(this.tracks, this.audioTracks.render());
 
 			this.textTracks?.remove();
-			this.textTracks = TextTracks.create(this.video!);
+			this.textTracks = TextTracks.create(this.video!, this.data?.stream.subtitleList);
 			if(this.textTracks)
 				DOM.append(this.tracks, this.textTracks.render());
 			
