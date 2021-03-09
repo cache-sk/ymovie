@@ -55,7 +55,17 @@ namespace ymovie.tv.view.media {
 		}
 
 		private renderBase(data:Media.Base) {
-			return [DOM.h1(data.longTitle),
+			let title = data.title;
+			let subtitle = undefined;
+			if(data instanceof Media.Episode) {
+				title = data.title || data.seriesTitle;
+				subtitle = data.subtitle;
+			} else if(data instanceof Media.Season) {
+				title = data.seriesTitle;
+				subtitle = data.subtitle;
+			}
+
+			return [DOM.h1(title), subtitle ? DOM.h2(subtitle) : undefined,
 				DOM.div("extra", [
 					data.rating ? DOM.span("rating", data.rating) : undefined,
 					data instanceof Media.Scc && data.year ? DOM.span("year", data.year) : undefined,

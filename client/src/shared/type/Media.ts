@@ -20,6 +20,7 @@ namespace ymovie.type.Media {
 	}
 
 	export class Season extends Scc {
+		subtitle?:string;
 		seriesId?:string;
 		seriesTitle?:string;
 		seasonNumber?:number;

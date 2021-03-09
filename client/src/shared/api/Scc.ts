@@ -212,6 +212,7 @@ namespace ymovie.api.Scc {
 			result.seriesId = this.normalizeRootId(source);
 			result.seriesTitle = this.normalizeRootTitle(source);
 			result.seasonNumber = source.info_labels.season;
+			result.subtitle = `Season ${result.seasonNumber}`;
 			result.longTitle = `${result.seriesTitle} - Season ${result.seasonNumber}`;
 			return result;
 		}

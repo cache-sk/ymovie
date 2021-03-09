@@ -266,6 +266,10 @@
 	opacity: 1;
 }
 
+.Detail h2 {
+	margin: -.1rem 0 .6rem 0;
+}
+
 .Detail > .extra {
 	overflow: hidden;
 	text-overflow: ellipsis;
