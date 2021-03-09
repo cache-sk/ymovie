@@ -128,7 +128,7 @@ namespace ymovie.api {
 		async checkWebshareStatus(){
 			let success = true;
 			try {
-				await this.webshare.getUsername(<string>this.webshareToken);
+				await this.webshare.getUsername(this.webshareToken!);
 			} catch(error) {
 				success = false;
 				this.webshareToken = null;
@@ -137,8 +137,8 @@ namespace ymovie.api {
 			return success;
 		}
 
-		pairPut(token:string, deviceId:string) {
-			return this.ymovie.pairPut(token, deviceId);
+		pairPut(deviceId:string) {
+			return this.ymovie.pairPut(this.webshareToken!, deviceId);
 		}
 	}
 }

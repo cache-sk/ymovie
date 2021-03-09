@@ -36,12 +36,18 @@ namespace ymovie.web.view.setup {
 
 		async process() {
 			const deviceId = this.input.value;
-			if(this.api.webshareToken && deviceId) {
-				await this.api.pairPut(this.api.webshareToken, deviceId);
-				const title = `Pair TV Success`;
-				const message = `Webshare authentication is now available for TV <strong>${deviceId}</strong>.`;
-				this.trigger(new Action.ShowNotification({title, message, html:true}));
+			if(!deviceId)
+				return;
+
+			if(!await this.api.checkWebshareStatus()) {
+				this.trigger(new Action.ShowNotification({title:"Pair TV Failed", message:"Webshare authentication is invalid, reauthenticate!", html:true}));
+				return;
 			}
+
+			await this.api.pairPut(deviceId);
+			const title = `Pair TV Success`;
+			const message = `Webshare authentication is now available for TV <strong>${deviceId}</strong>.`;
+			this.trigger(new Action.ShowNotification({title, message, html:true}));
 		}
 	}
 }
