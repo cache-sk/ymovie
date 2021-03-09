@@ -12,7 +12,7 @@ namespace ymovie.web.view.setup {
 			super("div");
 			this.api = api;
 			this.instructions = DOM.p();
-			this.instructions.innerHTML = `On your Kodi box, enable <a href="https://kodi.wiki/view/Settings/Services/Control" target="_blank">control settings</a>, including <q>other systems</q> option. Once enabled, provide an endpoint in the following format <strong>${KodiSetup.DEFAULT_URL}</strong> using your Kodi box IP address. This device needs direct visiblity to the used IP (i.e. same network). You can setup 2 different Kodi endpoints.`;
+			this.instructions.innerHTML = `On your Kodi box, enable <a href="https://kodi.wiki/view/Settings/Services/Control" target="_blank">control settings</a>, including <q>other systems</q> option. Starting Kodi 19, in the same settings screen, explicitly disable authentication. Once done, provide an endpoint in the following format <strong>${KodiSetup.DEFAULT_URL}</strong> using your Kodi box IP address. This device needs direct visiblity to the used IP (i.e. same network). You can setup 2 different Kodi endpoints.`;
 		}
 		
 		render(){
