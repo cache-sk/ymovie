@@ -127,6 +127,7 @@ namespace ymovie.api.Scc {
 			result.poster = this.resolveArtItem(source.i18n_info_labels, "poster");
 			result.fanart = this.resolveArtItem(source.i18n_info_labels, "fanart");
 			if(info2.title) result.title = info2.title;
+			if(!result.title) result.title = info.originaltitle;
 			if(!result.longTitle) result.longTitle = result.title;
 			if(info.year) result.year = (info.year + "") || undefined;
 			if(info2.plot) result.plot = info2.plot;
