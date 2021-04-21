@@ -29,7 +29,7 @@ namespace ymovie.type.Media {
 	export class Series extends Scc {}
 
 	export abstract class PlayableScc extends Scc {
-		trailers?:Array<string>;
+		trailers?:Array<Trailer>;
 		mpaa?:number;
 		studio?:string;
 		services?:Services;
@@ -77,5 +77,11 @@ namespace ymovie.type.Media {
 		imdb?:number;
 		trakt?:number;
 		tmdb?:number;
+	}
+
+	export type Trailer = {
+		title:string;
+		url:string;
+		language:string;
 	}
 }

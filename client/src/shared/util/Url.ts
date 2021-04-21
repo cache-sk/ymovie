@@ -20,4 +20,12 @@ namespace ymovie.util.Url {
 			newUrl += `&${keyVal}`;
 		return newUrl.replace("?&", "?");
 	}
+
+	export function ensureProtocol(url:string):string {
+		if(url && url.substr(0, 2) === "//")
+			return document.location.protocol + url;
+		if(url && url.substr(0, 4) !== "http")
+			return document.location.protocol + "//" + url;
+		return url;
+	}
 }

@@ -132,7 +132,7 @@ namespace ymovie.api.Scc {
 			if(info.year) result.year = (info.year + "") || undefined;
 			if(info2.plot) result.plot = info2.plot;
 			this.normalizeRating(source, result);
-			this.normalizeLanguage(source, result);
+			this.normalizeCZSK(source, result);
 			return result;
 		}
 		
@@ -160,8 +160,10 @@ namespace ymovie.api.Scc {
 		
 		private static normalizePlayable(source:Source, result:Media.PlayableScc):void {
 			const info = source.info_labels;
-			const trailers = source.i18n_info_labels.map(item => item.trailer).filter(item => !!item);
-			if(trailers.length) result.trailers = trailers;
+			const trailers = source.videos?.filter(item => (item.type === "trailer" || item.type === "teaser") && item.url).map(item => {
+					return {title:item.type === "trailer" ? "Trailer" : "Teaser", 
+						language:this.normalizeLanguage(item.lang), url:Url.ensureProtocol(item.url)}});
+			if(trailers && trailers.length) result.trailers = trailers;
 			if(info.mpaa) result.mpaa = info.mpaa;
 			if(info.studio) result.studio = info.studio.constructor === Array ? info.studio.join(", ") : <string>info.studio;
 			if(source.services) result.services = source.services;
@@ -186,7 +188,7 @@ namespace ymovie.api.Scc {
 				result.rating = (rating / count).toFixed(1);
 		}
 		
-		private static normalizeLanguage(source:Source, result:Media.Scc):void {
+		private static normalizeCZSK(source:Source, result:Media.Scc):void {
 			const stream = source?.stream_info;
 			const streams = source?.available_streams;
 			if(stream?.audio?.language == "cs"
@@ -248,15 +250,15 @@ namespace ymovie.api.Scc {
 			const result:Media.Stream = {
 				size: source.size,
 				language: source.audio
-					?.map(item => item.language.toUpperCase() || "?")
+					?.map(item => this.normalizeLanguage(item.language))
 					?.filter((value, index, self) => self.indexOf(value) === index)
 					?.sort()
 					?.join("/"),
 				/** mapped to video.textTracks, must remain unsorted */
 				subtitleList: source.subtitles
-					?.map(item => item.language.toUpperCase() || "?"),
+					?.map(item => this.normalizeLanguage(item.language)),
 				subtitles: source.subtitles
-					?.map(item => item.language.toUpperCase() || "?")
+					?.map(item => this.normalizeLanguage(item.language))
 					?.filter((value, index, self) => self.indexOf(value) === index)
 					?.sort()
 					?.join("/"),
@@ -276,6 +278,10 @@ namespace ymovie.api.Scc {
 			result.hdr = !!source.video.find((item:VideoStream) => item.hdr);
 			result.is3d = !!source.video.find((item:VideoStream) => (<any>item)['3d']);
 			return result;
+		}
+
+		private static normalizeLanguage(source:string):string {
+			return source.toUpperCase() || "?";
 		}
 	}
 
@@ -320,6 +326,15 @@ namespace ymovie.api.Scc {
 		root_parent:string;
 		ratings?:any;
 		stream_info?:StreamInfo;
+		videos?:Array<SourceVideo>;
+	}
+
+	type SourceVideo = {
+		lang:string;
+		name:string;
+		size:number;
+		type:"behind the scenes" | "bloopers" | "clip" | "featurette" | "teaser" | "trailer";
+		url:string;
 	}
 
 	type Services = {
@@ -342,20 +357,20 @@ namespace ymovie.api.Scc {
 	}
 
 	type StreamInfo = {
-		audio?:Audio;
-		subtitles?:Subtitles;
-		video?:Video;
+		audio?:StreamInfoAudio;
+		subtitles?:StreamInfoSubtitles;
+		video?:StreamInfoVideo;
 	}
 
-	type Audio = {
+	type StreamInfoAudio = {
 		language:string;
 	}
 
-	type Subtitles = {
+	type StreamInfoSubtitles = {
 		language:string;
 	}
 
-	type Video = {
+	type StreamInfoVideo = {
 		duration:number;
 	}
 
