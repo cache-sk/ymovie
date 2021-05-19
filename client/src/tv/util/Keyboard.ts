@@ -55,7 +55,8 @@ namespace ymovie.tv.util {
 				|| event.code == "Digit0"
 				|| event.keyCode == 8
 				|| event.keyCode == 27
-				|| event.keyCode == 48;
+				|| event.keyCode == 48
+				|| event.keyCode == 10009;
 		}
 
 		static isPlay(event:KeyboardEvent):boolean {
@@ -63,7 +64,8 @@ namespace ymovie.tv.util {
 		}
 
 		static isPlayPause(event:KeyboardEvent):boolean {
-			return event.key === "MediaPlayPause";
+			return event.key === "MediaPlayPause"
+				|| event.keyCode == 10252;
 		}
 
 		static isStop(event:KeyboardEvent):boolean {

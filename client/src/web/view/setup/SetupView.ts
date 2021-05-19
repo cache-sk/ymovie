@@ -5,7 +5,7 @@ namespace ymovie.web.view.setup {
 		kodiSetup:KodiSetup;
 
 		constructor(api:api.Api){
-			super(false, undefined);
+			super(true, undefined);
 			this.webshareSetup = new WebshareSetup(api);
 			this.tvSetup = new TVSetup(api);
 			this.kodiSetup = new KodiSetup(api);

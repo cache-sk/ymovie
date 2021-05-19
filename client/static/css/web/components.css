@@ -17,7 +17,7 @@
 	height: 30px;
 	border: none;
 	background-color: transparent;
-	text-indent: 30px;
+	text-indent: -9999px;
 	overflow: hidden;
 	vertical-align: top;
 	cursor: pointer;
@@ -78,7 +78,7 @@
 }
 
 .WebshareSetup .clear {
-	text-indent: 20px;
+	text-indent: -9999px;
 	width: 20px;
 	height: 20px;
 	overflow: hidden;
@@ -103,7 +103,7 @@
 
 .TVSetup.disabled::after {
 	color: #999;
-	content: "Available after Websher authentication.";
+	content: "Available after Webshare authentication.";
 }
 
 .DiscoveryHeader {
@@ -129,7 +129,7 @@
 	position: absolute;
 	right: 60px;
 	top: 20px;
-	text-indent: 30px;
+	text-indent: -9999px;
 	width: 30px;
 	height: 30px;
 	overflow: hidden;
@@ -148,7 +148,7 @@
 }
 
 .DiscoveryHeader .menu .menuButton {
-	text-indent: 30px;
+	text-indent: -9999px;
 	width: 30px;
 	height: 30px;
 	overflow: hidden;
@@ -167,7 +167,7 @@
 }
 
 .DiscoveryHeader .menu .container button {
-	text-indent: 30px;
+	text-indent: -9999px;
 	width: 30px;
 	height: 30px;
 	overflow: hidden;
@@ -418,7 +418,7 @@
 .Dialogue .close {
 	position: fixed;
 	overflow: hidden;
-	text-indent: 30px;
+	text-indent: -9999px;
 	width: 30px;
 	height: 30px;
 	background-size: 100%;
@@ -595,7 +595,7 @@ body:not(.webshare-na) .DetailView .WebshareSetup {
 .StreamOption .options .kodi2,
 .StreamOption .options .vlc {
 	overflow: hidden;
-	text-indent: 30px;
+	text-indent: -9999px;
 	width: 30px;
 	height: 30px;
 	background-size: 100%;
