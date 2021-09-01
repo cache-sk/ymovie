@@ -593,6 +593,7 @@ body:not(.webshare-na) .DetailView .WebshareSetup {
 .StreamOption .options .cast,
 .StreamOption .options .kodi,
 .StreamOption .options .kodi2,
+.StreamOption .options .potplayer,
 .StreamOption .options .vlc {
 	overflow: hidden;
 	text-indent: -9999px;
@@ -631,6 +632,9 @@ body:not(.webshare-na) .DetailView .WebshareSetup {
 
 .StreamOption .options .vlc {
 	background-image: var(--image-vlc);
+}
+.StreamOption .options .potplayer {
+	background-image: var(--image-potplayer);
 }
 
 .StreamOption .options .kodi,
@@ -688,7 +692,8 @@ body:not(.webshare-na) .DetailView .WebshareSetup {
 .AboutView li.cast,
 .AboutView li.android,
 .AboutView li.browser,
-.AboutView li.vlc {
+.AboutView li.vlc,
+.AboutView li.potplayer {
 	list-style: none;
 	background-repeat: no-repeat;
 	background-size: 1.2em;
@@ -703,6 +708,10 @@ body:not(.webshare-na) .DetailView .WebshareSetup {
 
 .AboutView li.vlc {
 	background-image: var(--image-vlc);
+}
+
+.AboutView li.potplayer {
+	background-image: var(--image-potplayer);
 }
 
 .AboutView li.cast {
