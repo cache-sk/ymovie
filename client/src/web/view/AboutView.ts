@@ -44,6 +44,7 @@ namespace ymovie.web.view {
 		<li class="cast">Cast (chromecast) - capabilities similiar to browser + <a href="https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding" target="_blank">HEVC</a></li>
 		<li class="android">Android - opens system dialogue to pick installed video app (or executes the default one)</li>
 		<li class="android fix">Android fix - same as Android while appends .mkv extension to the url to satisfy DLNA players.</li>
+		<li class="potplayer">PotPlayer</li>
 	</ul>
 
 	<p>Smart TV, gaming consoles, Set-top boxes and similiar devices compatible with <a href="https://en.wikipedia.org/wiki/Digital_Living_Network_Alliance" target="_blank">DLNA</a> or <a href="https://en.wikipedia.org/wiki/Universal_Plug_and_Play" target="_blank">UPnP</a> can be controlled by <a href="https://play.google.com/store/apps/details?id=com.bubblesoft.android.bubbleupnp&hl=en_US" target="_blank">BubbleUPNP</a> Android app.</p>
