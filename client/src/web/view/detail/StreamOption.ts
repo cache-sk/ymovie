@@ -60,7 +60,7 @@ namespace ymovie.web.view.detail {
 			kodi2.addEventListener("click", () => this.triggerPlay(new Player.Kodi(2)));
 			
 			const vlc = DOM.a("vlc", "Play on VLC", `vlc://${url}`, "_blank");
-			
+			const potplayer = DOM.a("potplayer", "Play in Potplayer", `potplayer://${url}`, "_blank");
 			return DOM.div("options", [textarea, 
 				isYoutube ? null : download, 
 				isYoutube ? null : android, 
@@ -69,7 +69,8 @@ namespace ymovie.web.view.detail {
 				isYoutube ? null : cast, 
 				isYoutube ? null : kodi,
 				isYoutube ? null : kodi2,
-				isYoutube ? null : vlc]);
+				isYoutube ? null : vlc,
+				isYoutube ? null : potplayer]);
 		}
 
 		triggerPlay(player:Player.Base){
