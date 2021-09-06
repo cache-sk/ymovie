@@ -1,15 +1,20 @@
 /// <reference path="../type/Catalogue.ts"/>
 /// <reference path="../type/Media.ts"/>
+/// <reference path="../util/MD5.ts"/>
+/// <reference path="../util/Sha.ts"/>
 /// <reference path="../util/Url.ts"/>
 
 namespace ymovie.api.Scc {
 	import Catalogue = type.Catalogue;
+	import MD5 = util.MD5;
 	import Media = type.Media;
+	import Sha = util.Sha;
 	import Url = ymovie.util.Url;
 
 	export class Api {
-		static ENDPOINT = "https://plugin.sc2.zone";
-		static PATH_SEARCH = "/api/media/filter/search?order=desc&sort=score&type=*";
+		private static ENDPOINT = "https://plugin.sc2.zone";
+		private static PATH_ANALYTICS = "/api/stats/analytics";
+		private static PATH_SEARCH = "/api/media/filter/search?order=desc&sort=score&type=*";
 
 		static PATH_MOVIES = "/api/media/filter/news?type=movie&sort=dateAdded&order=desc&days=365";
 		static PATH_SERIES = "/api/media/filter/news?type=tvshow&sort=dateAdded&order=desc&days=365";
@@ -24,13 +29,29 @@ namespace ymovie.api.Scc {
 		static PATH_MOVIES_ADDED = "/api/media/filter/all?type=movie&sort=dateAdded&order=desc";
 		static PATH_SERIES_ADDED = "/api/media/filter/all?type=tvshow&sort=dateAdded&order=desc";
 
-		static TOKEN_PARAM_NAME = "access_token"
-		static TOKEN_PARAM_VALUE = "th2tdy0no8v1zoh1fs59";
+		private static TOKEN_PARAM_NAME = "access_token"
+		private static TOKEN_PARAM_VALUE = "th2tdy0no8v1zoh1fs59";
+
+		webshareUsername:string | null;
 
 		private uuid:string;
 
-		constructor(uuid:string){
+		constructor(uuid:string, webshareUsername:string | null){
 			this.uuid = uuid;
+			this.webshareUsername = webshareUsername;
+		}
+
+		private async analytics(sourceUrl:string){
+			const apiIndex = sourceUrl.indexOf("/api");
+			if(!this.webshareUsername || apiIndex === -1)
+				return;
+			const url = this.getUrl(Api.PATH_ANALYTICS);
+			const headers:any = this.getHeaders();
+			headers["Content-Type"] = "application/json";
+			const a = Sha.sha256(MD5.md5crypt(this.webshareUsername, "0"));
+			const body = JSON.stringify({url:sourceUrl.substr(apiIndex), a});
+			const init:RequestInit = {method:"POST", headers, body};
+			return await fetch(url, init);
 		}
 
 		async search(query:string){
@@ -38,7 +59,13 @@ namespace ymovie.api.Scc {
 		}
 		
 		async loadPath(path:string){
-			return await this.loadUrl(`${Api.ENDPOINT}${path}`);
+			const headers = this.getHeaders();
+			const url = this.getUrl(path);
+			const result = await (await fetch(url, {headers})).json();
+			try {
+				this.analytics(url);
+			} catch(_e) {}
+			return result;
 		}
 		
 		async loadIds(ids:Array<string>){
@@ -61,15 +88,17 @@ namespace ymovie.api.Scc {
 		async loadEpisodes(id:string){
 			return await this.loadPath(`/api/media/filter/parent?value=${id}&sort=episode`);
 		}
-		
-		async loadUrl(url:string){
-			const headers = {"X-Uuid":this.uuid};
-			const finalUrl = Url.setParam(url, Api.TOKEN_PARAM_NAME, Api.TOKEN_PARAM_VALUE);
-			return await (await fetch(finalUrl, {headers})).json();
-		}
 
 		static setLimit(url:string, value:number) {
 			return Url.setParam(url, "limit", value.toString());
+		}
+
+		private getUrl(path:string):string {
+			return Url.setParam(Api.ENDPOINT + path, Api.TOKEN_PARAM_NAME, Api.TOKEN_PARAM_VALUE);
+		}
+
+		private getHeaders() {
+			return {"X-Uuid":this.uuid};
 		}
 	}
 

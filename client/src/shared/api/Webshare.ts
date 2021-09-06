@@ -1,6 +1,11 @@
+/// <reference path="../util/MD5.ts"/>
+/// <reference path="../util/Sha.ts"/>
+
 namespace ymovie.api.Webshare {
-	import Media = type.Media;
 	import Catalogue = type.Catalogue;
+	import MD5 = util.MD5;
+	import Media = type.Media;
+	import Sha = util.Sha;
 
 	export class Api {
 		static ENDPOINT = "https://webshare.cz";
@@ -50,7 +55,7 @@ namespace ymovie.api.Webshare {
 		}
 		
 		async getLogin(username:string, password:string, salt:string){
-			const hash = util.Sha.sha1(util.MD5.md5crypt(password, salt));
+			const hash = Sha.sha1(MD5.md5crypt(password, salt));
 			const body = `username_or_email=${encodeURIComponent(username)}&keep_logged_in=1&password=${hash}`;
 			return await this.loadValue(Api.PATH_LOGIN, body, "token");
 		}

@@ -10,6 +10,7 @@ namespace ymovie.api {
 	export abstract class Api {
 		static readonly KEY_UUID = "UUID";
 		static readonly KEY_WEBSHARE_TOKEN = "WEBSHARE_TOKEN";
+		static readonly KEY_WEBSHARE_USERNAME = "WEBSHARE_USERNAME";
 		
 		protected readonly ymovie:YMovie.Api;
 		protected readonly scc:Scc.Api;
@@ -19,7 +20,7 @@ namespace ymovie.api {
 
 		constructor(){
 			this.ymovie = new YMovie.Api();
-			this.scc = new Scc.Api(this.uuid);
+			this.scc = new Scc.Api(this.uuid, this.webshareUsername);
 			this.webshare = new Webshare.Api(this.uuid);
 		}
 		
@@ -53,6 +54,18 @@ namespace ymovie.api {
 				Storage.remove(Api.KEY_WEBSHARE_TOKEN);
 			else
 				Storage.set(Api.KEY_WEBSHARE_TOKEN, value);
+		}
+
+		private get webshareUsername(){
+			return Storage.get(Api.KEY_WEBSHARE_USERNAME);
+		}
+		
+		private set webshareUsername(value){
+			this.scc.webshareUsername = value;
+			if(value === null)
+				Storage.remove(Api.KEY_WEBSHARE_USERNAME);
+			else
+				Storage.set(Api.KEY_WEBSHARE_USERNAME, value);
 		}
 		
 		async searchScc(query:string, title:string):Promise<Array<Catalogue.AnyItem>> {
@@ -112,6 +125,7 @@ namespace ymovie.api {
 		async loginWebshare(username:string, password:string) {
 			let success = true;
 			try {
+				this.webshareUsername = username;
 				this.webshareToken = await this.webshare.getToken(username, password);
 			} catch(error) {
 				success = false;
@@ -121,6 +135,7 @@ namespace ymovie.api {
 		}
 		
 		logoutWebshare(){
+			this.webshareUsername = null;
 			this.webshareToken = null;
 			this.webshareStatusChanged.dispatch("na");
 		}
@@ -131,6 +146,7 @@ namespace ymovie.api {
 				await this.webshare.getUsername(this.webshareToken!);
 			} catch(error) {
 				success = false;
+				this.webshareUsername = null;
 				this.webshareToken = null;
 			}
 			this.webshareStatusChanged.dispatch(success ? "ok" : "na");
