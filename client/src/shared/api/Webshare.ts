@@ -63,7 +63,8 @@ namespace ymovie.api.Webshare {
 		}
 		
 		async getLink(ident:string, https:boolean, token:string):Promise<string> {
-			const body = `ident=${encodeURIComponent(ident)}&wst=${encodeURIComponent(token)}&device_uuid=${encodeURIComponent(this.uuid)}&force_https=${https ? 1 : 0}`;
+			const body = `ident=${encodeURIComponent(ident)}&wst=${encodeURIComponent(token)}&device_uuid=${encodeURIComponent(this.uuid)}&force_https=${https ? 1 : 0}`
+				+ `&download_type=video_stream&device_vendor=ymovie`;
 			return await this.loadValue(Api.PATH_FILE_LINK, body, "link");
 		}
 		
