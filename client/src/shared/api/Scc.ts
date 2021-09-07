@@ -31,6 +31,7 @@ namespace ymovie.api.Scc {
 
 		private static TOKEN_PARAM_NAME = "access_token"
 		private static TOKEN_PARAM_VALUE = "th2tdy0no8v1zoh1fs59";
+		private static USERNAME_SALT = "Webshare";
 
 		webshareUsername:string | null;
 
@@ -41,15 +42,14 @@ namespace ymovie.api.Scc {
 			this.webshareUsername = webshareUsername;
 		}
 
-		private async analytics(sourceUrl:string){
-			const apiIndex = sourceUrl.indexOf("/api");
-			if(!this.webshareUsername || apiIndex === -1)
+		private async analytics(path:string){
+			if(!this.webshareUsername)
 				return;
 			const url = this.getUrl(Api.PATH_ANALYTICS);
 			const headers:any = this.getHeaders();
 			headers["Content-Type"] = "application/json";
-			const a = Sha.sha256(MD5.md5crypt(this.webshareUsername, "0"));
-			const body = JSON.stringify({url:sourceUrl.substr(apiIndex), a});
+			const a = Sha.sha256(MD5.md5crypt(this.webshareUsername, Api.USERNAME_SALT));
+			const body = JSON.stringify({url:path, a});
 			const init:RequestInit = {method:"POST", headers, body};
 			return await fetch(url, init);
 		}
@@ -63,7 +63,7 @@ namespace ymovie.api.Scc {
 			const url = this.getUrl(path);
 			const result = await (await fetch(url, {headers})).json();
 			try {
-				this.analytics(url);
+				this.analytics(path);
 			} catch(_e) {}
 			return result;
 		}
