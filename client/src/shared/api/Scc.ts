@@ -6,14 +6,11 @@
 
 namespace ymovie.api.Scc {
 	import Catalogue = type.Catalogue;
-	import MD5 = util.MD5;
 	import Media = type.Media;
-	import Sha = util.Sha;
 	import Url = ymovie.util.Url;
 
 	export class Api {
 		private static ENDPOINT = "https://plugin.sc2.zone";
-		private static PATH_ANALYTICS = "/api/stats/analytics";
 		private static PATH_SEARCH = "/api/media/filter/search?order=desc&sort=score&type=*";
 
 		static PATH_MOVIES = "/api/media/filter/news?type=movie&sort=dateAdded&order=desc&days=365";
@@ -31,7 +28,6 @@ namespace ymovie.api.Scc {
 
 		private static TOKEN_PARAM_NAME = "access_token"
 		private static TOKEN_PARAM_VALUE = "th2tdy0no8v1zoh1fs59";
-		private static USERNAME_SALT = "Webshare";
 
 		webshareUsername:string | null;
 
@@ -42,18 +38,6 @@ namespace ymovie.api.Scc {
 			this.webshareUsername = webshareUsername;
 		}
 
-		private async analytics(path:string){
-			if(!this.webshareUsername)
-				return;
-			const url = this.getUrl(Api.PATH_ANALYTICS);
-			const headers:any = this.getHeaders();
-			headers["Content-Type"] = "application/json";
-			const a = Sha.sha256(MD5.md5crypt(this.webshareUsername, Api.USERNAME_SALT));
-			const body = JSON.stringify({url:path, a});
-			const init:RequestInit = {method:"POST", headers, body};
-			return await fetch(url, init);
-		}
-
 		async search(query:string){
 			return await this.loadPath(`${Api.PATH_SEARCH}&value=${encodeURIComponent(query)}`);
 		}
@@ -61,11 +45,7 @@ namespace ymovie.api.Scc {
 		async loadPath(path:string){
 			const headers = this.getHeaders();
 			const url = this.getUrl(path);
-			const result = await (await fetch(url, {headers})).json();
-			try {
-				this.analytics(path);
-			} catch(_e) {}
-			return result;
+			return await (await fetch(url, {headers})).json();
 		}
 		
 		async loadIds(ids:Array<string>){
