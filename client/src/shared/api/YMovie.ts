@@ -5,13 +5,13 @@ namespace ymovie.api.YMovie {
 		constructor() {}
 
 		async pairPut(token:string, deviceId:string):Promise<boolean> {
-			const url = `/api/v1/pair/${deviceId}`;
+			const url = `https://ymovie.streamcinema.cz/api/v1/pair/${deviceId}`;
 			const response = await fetch(url, {method:"PUT", body:token});
 			return response.ok;
 		}
 
 		async pairGet(deviceId:string):Promise<string | undefined> {
-			const url = `/api/v1/pair/${deviceId}`;
+			const url = `https://ymovie.streamcinema.cz/api/v1/pair/${deviceId}`;
 			const response = await fetch(url);
 			if(!response.ok)
 				return;

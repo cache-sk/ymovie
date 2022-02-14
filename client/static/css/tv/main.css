@@ -8,7 +8,7 @@ html {
 body {
 	margin: 0;
 	box-sizing: border-box;
-	background: black url(/img/bg.webp) no-repeat center/cover;
+	background: black url(img/bg.webp) no-repeat center/cover;
 	font-family: sans-serif;
 	letter-spacing: -.04em;
 	line-height: 1.3;

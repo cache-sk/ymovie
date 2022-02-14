@@ -1,5 +1,6 @@
 namespace ymovie.tv.util.Nav {
 	import ScreenId = type.ScreenId;
+	import Util = ymovie.util.Util;
 
 	export class Manager {
 		readonly changed = new ymovie.util.Signal.Signal1<ChangeData>();
@@ -53,6 +54,9 @@ namespace ymovie.tv.util.Nav {
 		}
 
 		goBack():void {
+			if (Util.isYmovieWrapper()){
+				Util.getYmovieWrapper().quit();
+			}
 			if(this.historyIndex > 0) {
 				this.historyIndex--;
 				this.triggerChange();

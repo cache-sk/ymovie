@@ -10,6 +10,7 @@ namespace ymovie.tv.view {
 	import ScreenId = type.ScreenId;
 	import Timeout = ymovie.util.Timeout;
 	import Watched = ymovie.util.Watched;
+	import Util = ymovie.util.Util;
 
 	export class App extends ymovie.view.App {
 		private readonly api = new api.Api();
@@ -171,8 +172,12 @@ namespace ymovie.tv.view {
 			const url = this.api.webshareToken ? await this.api.resolveStreamUrl(stream, https) : undefined;
 			this.trigger(new Action.StreamUrlResolved({media, stream, url}));
 			if(url) {
-				this.playerScreen.update({media:event.detail.media, stream:event.detail.stream, url});
-				this.showScreen("player");
+				if (Util.isYmovieWrapper()){
+					Util.getYmovieWrapper().play(url,media.title);
+				} else {
+					this.playerScreen.update({media:event.detail.media, stream:event.detail.stream, url});
+					this.showScreen("player");
+				}
 			}
 
 			if(media instanceof Media.Movie)

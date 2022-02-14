@@ -1,3 +1,5 @@
+declare var YmovieWrapper:any;
+
 namespace ymovie.util.Util {
 	export function isArray(value:any):boolean {
 		return value && typeof value === 'object' && value.constructor === Array;
@@ -24,6 +26,14 @@ namespace ymovie.util.Util {
 		return match ? match[1] : undefined;
 	}
 	
+	export function isYmovieWrapper():boolean {
+		return typeof YmovieWrapper != "undefined";
+	}
+	
+	export function getYmovieWrapper():any {
+		return YmovieWrapper;
+	}
+
 	export function removeDiacritics(source:string):string {
 		// @ts-ignore
 		return source.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
