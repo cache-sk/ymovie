@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Ymovie Wrapper</string>
+    <string name="really_quit">Do you really want to quit?</string>
+    <string name="you_need_vlc">You need to install VLC player!</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="okay">OK</string>
+</resources>

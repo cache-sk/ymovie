@@ -8,6 +8,7 @@
 	"main": "server/index.js",
 	"scripts": {
 		"build": "node build/prepare.js && npm run build-client && npm run build-server",
+		"build-pack": "npm run build && node build/minify.js",
 		"build-client": "npm run prepare-client && npm run compile-tv && npm run compile-web",
 		"build-server": "node server/build/prepare.js",
 		"compile-tv": "tsc --project client/tsconfig-tv.json",
