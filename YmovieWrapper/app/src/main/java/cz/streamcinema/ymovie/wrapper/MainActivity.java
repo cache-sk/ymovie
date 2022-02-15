@@ -6,10 +6,12 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -22,29 +24,27 @@ import android.widget.RelativeLayout;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import org.json.JSONObject;
+
+import org.json.JSONArray;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-import cz.streamcinema.ymovie.wrapper.BuildConfig;
 
 public class MainActivity extends Activity {
-    private final static String UPDATE_URL = "https://api.github.com/repos/cache-sk/ymovie/releases";
+    private final static String UPDATE_URL = "https://api.github.com/repos/cache-sk/ymovie/releases?per_page=1";
     private final static String HOME_URL = "file:///android_asset/tv.html";
     private final static String UA_PREFIX = "Ymovie ";
     private final static String YMOVIE_HOST = "ymovie.streamcinema.cz";
     private final static String JS_OBJECT = "YmovieWrapper";
     private final static String BACK_CLICK_SCRIPT =
             "(function() { document.dispatchEvent(new KeyboardEvent(\"keydown\",{code: \"Escape\", key: \"Escape\", keyCode:27}));})();";
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy kk:mm:ss", Locale.US);
     private WebView webView;
+    private boolean loaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,24 +116,55 @@ public class MainActivity extends Activity {
                 }
                 return assetLoader.shouldInterceptRequest(request.getUrl());
             }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                // to ignore ssl errors
+                handler.proceed();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                //for nicer start without white scree
+                if (url.equals(HOME_URL) && !loaded){
+                    loaded = true;
+                    main.addView(webView);
+                }
+            }
         });
 
         this.webView.loadUrl(HOME_URL);
-        main.addView(this.webView);
+
     }
 
     @Override
     public void onStart(){
         super.onStart();
         //version check
-        //BuildConfig.VERSION_CODE;
         final RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(UPDATE_URL, null,
-            new Response.Listener<JSONObject>() {
+        JsonArrayRequest request = new JsonArrayRequest(UPDATE_URL,
+            new Response.Listener<JSONArray>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(JSONArray response) {
                     if (null != response) {
-                        System.out.println(response.toString());
+                        try {
+                            String latestTag = response.getJSONObject(0).getString("tag_name");
+                            String currentTag = BuildConfig.VERSION_NAME;
+                            if (Float.compare(Float.parseFloat(latestTag),Float.parseFloat(currentTag)) > 0){
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle(R.string.app_name)
+                                        .setMessage(R.string.new_version)
+                                        .setNeutralButton(R.string.okay, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .show();
+                            }
+                        } catch (Exception ex) {
+                            //ignore?
+                        }
                     }
                 }
             }, new Response.ErrorListener() {
