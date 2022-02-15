@@ -6,7 +6,7 @@ Aplikacia aktualne nieje podpisana, vyuziva sa debug build, pri instalacii je po
 
 V aplikacii je zapracovany version check - pripadne dalsie releasy budu tu na githube a tu ich aj kontroluje, ci nieje novsi.
 
-Pre lahku instalaciu mozte natukat do downloader aplikacie nasledovnu url: [p.xf.cz/y](http://p.xf.cz/y) - pozor, nie httpS, len http.
+Pre lahku instalaciu mozte natukat do downloader aplikacie nasledovnu url: `http://p.xf.cz/y` - pozor, nie httpS, len http.
 
 Malo by to presmerovat na najnovsi release tu na githube. Pre istotu na to klikni aj teraz, ci to fnguje, skor nez to natukas na tv :)
 
