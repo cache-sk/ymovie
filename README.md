@@ -4,7 +4,11 @@ Wrapper pre ATV - vyuziva mierne upraveny tv client z ymovie zabaleny do android
 
 Aplikacia aktualne nieje podpisana, vyuziva sa debug build, pri instalacii je potrebne odsuhlasit neznameho vydavatela.
 
-V aplikacii bude zapracovany version check - releasy budu tu na githube a tu ich bude aj kontrolovat, ci nieje novsi.
+V aplikacii je zapracovany version check - pripadne dalsie releasy budu tu na githube a tu ich aj kontroluje, ci nieje novsi.
+
+Pre lahku instalaciu mozte natukat do downloader aplikacie nasledovnu url: [p.xf.cz/y](http://p.xf.cz/y) - pozor, nie httpS, len http.
+
+Malo by to presmerovat na najnovsi release tu na githube. Pre istotu na to klikni aj teraz, ci to fnguje, skor nez to natukas na tv :)
 
 ---
 
